@@ -1,0 +1,2 @@
+language = "java10"
+run = "javac java/com/topperbibb/hacktcnj2021/*/*.java -d build && java java/com/topperbibb/hacktcnj2021/client/Client.java"
