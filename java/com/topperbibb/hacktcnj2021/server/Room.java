@@ -6,7 +6,6 @@ import com.topperbibb.hacktcnj2021.shared.StartPacket;
 import com.topperbibb.hacktcnj2021.shared.EndPacket;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -35,12 +34,19 @@ public class Room {
         if (connection.host) {
             List<Connection> connsToChooseFrom = new ArrayList<>(conns);
             connsToChooseFrom.remove(connection);
+            if (connsToChooseFrom.size() == 0) {
+                connection.close();
+                RoomManager.removeRoom(this);
+                return;
+            }
             host[0] = connsToChooseFrom.get(0);
         }
         conns.stream().filter(conn -> conn != host[0]).forEach(c -> c.sendPacket(new PlayerLeavePacket(connection.id, false)));
         host[0].sendPacket(new PlayerLeavePacket(connection.id, true));
 
         RoomManager.removeConnection(this, connection);
+        if (connection.pingTimer != null) connection.pingTimer.cancel();
         connection.close();
+        checkForStart();
     }
 }

@@ -59,4 +59,8 @@ public class RoomManager {
         }
         return null;
     }
+
+    public static void removeRoom(Room room) {
+        rooms.remove(room);
+    }
 }

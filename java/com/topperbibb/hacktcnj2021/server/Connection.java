@@ -26,7 +26,7 @@ public class Connection implements Runnable {
     private ServerEventListener listener;
 
     public boolean lookingForPong;
-    private Timer pingTimer;
+    public Timer pingTimer;
 
     Runnable ping = new Runnable() {
 
@@ -37,7 +37,7 @@ public class Connection implements Runnable {
             System.out.println("PING sent!");
 
             try {
-                Thread.sleep(30000);
+                Thread.sleep(10000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -62,7 +62,7 @@ public class Connection implements Runnable {
 
     public void joinRoom(Room room) {
         this.room = room;
-        host = RoomManager.getAllConnections(room).size() == 0;
+        host = RoomManager.getAllConnections(room).stream().noneMatch(conn -> conn.host);
         sendPacket(new ConnectPacket(id, host));
         RoomManager.getAllConnections(room).forEach(conn -> conn.sendPacket(new PlayerJoinPacket(id, host)));
         this.room.checkForStart();
@@ -106,7 +106,7 @@ public class Connection implements Runnable {
             public void run() {
                 ping.run();
             }
-        }, 30000);
+        }, 10000);
 
     }
 
@@ -115,6 +115,7 @@ public class Connection implements Runnable {
             socket.close();
             in.close();
             out.close();
+            System.out.format("Disconnected from client at ip %s\n", socket.getInetAddress());
         } catch (IOException e) {
             e.printStackTrace();
         }
