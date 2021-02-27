@@ -24,6 +24,10 @@ public abstract class Packet {
             return new PingPacket();
         } else if (packetType == PongPacket.class) {
             return new PongPacket();
+        } else if (packetType == StartPacket.class) {
+            return new StartPacket();
+        } else if (packetType == EndPacket.class) {
+            return new EndPacket();
         }
         return null;
     }
@@ -40,7 +44,9 @@ public abstract class Packet {
         JOIN(1, PlayerJoinPacket.class),
         LEAVE(2, PlayerLeavePacket.class),
         PING(3, PingPacket.class),
-        PONG(4, PongPacket.class);
+        PONG(4, PongPacket.class),
+        START(5, StartPacket.class),
+        END(7, EndPacket.class);
 
         public int i;
         public Class<? extends Packet> cls;
