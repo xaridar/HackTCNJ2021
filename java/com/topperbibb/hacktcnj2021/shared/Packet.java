@@ -20,6 +20,10 @@ public abstract class Packet {
             int id = inputStream.read();
             boolean newHost = inputStream.read() == 1;
             return new PlayerLeavePacket(id, newHost);
+        } else if (packetType == PingPacket.class) {
+            return new PingPacket();
+        } else if (packetType == PongPacket.class) {
+            return new PongPacket();
         }
         return null;
     }
@@ -32,7 +36,11 @@ public abstract class Packet {
 
     public enum PacketType {
 
-        CONNECT(0, ConnectPacket.class);
+        CONNECT(0, ConnectPacket.class),
+        JOIN(1, PlayerJoinPacket.class),
+        LEAVE(2, PlayerLeavePacket.class),
+        PING(3, PingPacket.class),
+        PONG(4, PongPacket.class);
 
         public int i;
         public Class<? extends Packet> cls;
