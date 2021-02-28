@@ -23,8 +23,8 @@ com/topperbibb/hacktcnj2021/shared/ConnectPacket.java
  com.topperbibb.hacktcnj2021.shared.ConnectPacket
 com/topperbibb/hacktcnj2021/server/IDManager.java
  com.topperbibb.hacktcnj2021.server.IDManager
-com/topperbibb/hacktcnj2021/server/Room.java
- com.topperbibb.hacktcnj2021.server.Room
+com/topperbibb/hacktcnj2021/server/Server.java
+ com.topperbibb.hacktcnj2021.server.Server
 com/topperbibb/hacktcnj2021/client/Client.java
  com.topperbibb.hacktcnj2021.client.Client
 com/topperbibb/hacktcnj2021/client/game/objects/TestObject.java
@@ -60,10 +60,8 @@ com/topperbibb/hacktcnj2021/client/game/Board.java
  com.topperbibb.hacktcnj2021.client.game.Board
 com/topperbibb/hacktcnj2021/server/ServerEventListener.java
  com.topperbibb.hacktcnj2021.server.ServerEventListener
-com/topperbibb/hacktcnj2021/shared/StateChangePacket.java
- com.topperbibb.hacktcnj2021.shared.StateChangePacket
- com.topperbibb.hacktcnj2021.shared.StateChangePacket$Change
- com.topperbibb.hacktcnj2021.shared.StateChangePacket$ChangeList
+com/topperbibb/hacktcnj2021/server/Main.java
+ com.topperbibb.hacktcnj2021.server.Main
 com/topperbibb/hacktcnj2021/server/RoomManager.java
  com.topperbibb.hacktcnj2021.server.RoomManager
 com/topperbibb/hacktcnj2021/client/game/graphics/Spritesheet.java
@@ -76,7 +74,9 @@ com/topperbibb/hacktcnj2021/client/game/objects/BoardObject.java
  com.topperbibb.hacktcnj2021.client.game.objects.BoardObject
 com/topperbibb/hacktcnj2021/client/ClientEventListener.java
  com.topperbibb.hacktcnj2021.client.ClientEventListener
-com/topperbibb/hacktcnj2021/server/Server.java
- com.topperbibb.hacktcnj2021.server.Server
-com/topperbibb/hacktcnj2021/server/Main.java
- com.topperbibb.hacktcnj2021.server.Main
+com/topperbibb/hacktcnj2021/shared/StateChangePacket.java
+ com.topperbibb.hacktcnj2021.shared.StateChangePacket
+ com.topperbibb.hacktcnj2021.shared.StateChangePacket$Change
+ com.topperbibb.hacktcnj2021.shared.StateChangePacket$ChangeList
+com/topperbibb/hacktcnj2021/server/Room.java
+ com.topperbibb.hacktcnj2021.server.Room
