@@ -11,9 +11,9 @@ import java.awt.event.KeyListener;
 
 public class Engine implements KeyListener{
 
-    private static Engine INSTANCE;
-
     private Level currLevel;
+
+    private static Engine INSTANCE;
 
     public static Engine getInstance() {
         if(INSTANCE == null) {

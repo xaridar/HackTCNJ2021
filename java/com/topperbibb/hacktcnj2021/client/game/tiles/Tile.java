@@ -36,10 +36,18 @@ public class Tile {
     }
 
     public String getSprite() {
-        if(object != null) {
+        if (object != null) {
             return object.getSprite();
-        }else{
+        } else {
             return info.getSprite();
         }
+    }
+
+    public void addTag(TileTags tag) {
+        info.addTag(tag);
+    }
+
+    public boolean hasTag(TileTags tag) {
+        return info.tags.contains(tag);
     }
 }

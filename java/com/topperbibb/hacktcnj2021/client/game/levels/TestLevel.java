@@ -47,6 +47,11 @@ public class TestLevel extends Level{
     @Override
     public Tile[][] setObjects(Tile[][] level) {
         level[2][2].setObject(new TestObject("t"));
+//        for(int x = 0; x < level.length; x++){
+//            for(int y = 0; y < level[x].length; y++){
+//                continue;
+//            }
+//        }
         return level;
     }
 
@@ -62,6 +67,4 @@ public class TestLevel extends Level{
             player.move(0, 1);
         }
     }
-
-
 }

@@ -2,6 +2,7 @@ package com.topperbibb.hacktcnj2021.client;
 
 import com.topperbibb.hacktcnj2021.client.game.Board;
 import com.topperbibb.hacktcnj2021.client.game.objects.Player;
+import com.topperbibb.hacktcnj2021.client.game.tiles.TileTags;
 
 public class User implements Player {
 
@@ -13,7 +14,6 @@ public class User implements Player {
     // game variables
     int x;
     int y;
-    Board board;
     boolean isOverseer;
 
     public User(){
@@ -28,7 +28,13 @@ public class User implements Player {
     public boolean move(int directionX, int directionY) {
         int temp_x = x + directionX;
         int temp_y = y + directionY;
-        return true;
+        if(Board.board[temp_x][temp_y].hasTag(TileTags.WALKABLE)) {
+            x = temp_x;
+            y = temp_y;
+            return true;
+        }else{
+            return false;
+        }
     }
 
     @Override
