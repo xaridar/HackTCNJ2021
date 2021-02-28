@@ -26,6 +26,7 @@ public class Engine implements KeyListener {
     private JFrame window;
     private JPanel levelPanel;
     private JPanel playerPanel;
+    private JPanel spawnPanel;
     private ArrayList<JPanel> objectPanels;
     public static final long keyTimeout = 300;
     private long keyPressed;
@@ -61,6 +62,7 @@ public class Engine implements KeyListener {
         engine.createRenderWindow();
         engine.renderStaticTiles(16, 4);
         engine.renderPlayer(engine.currLevel.getPlayer(), User.PlayerSprite.RIGHT);
+        engine.renderSpawn(16, 4);
         engine.renderObjects(16, 4);
     }
 
@@ -80,7 +82,12 @@ public class Engine implements KeyListener {
         playerPanel = new JPanel(new BorderLayout());
         playerPanel.setBackground(new Color(0, 0, 0, 0));
         playerPanel.setBounds(0, 0, 16, 16);
-        renderer.add(playerPanel, 1);
+        renderer.add(playerPanel, 2);
+
+        spawnPanel = new JPanel(new BorderLayout());
+        spawnPanel.setBackground(new Color(0, 0, 0, 0));
+        spawnPanel.setBounds(16 * 4 * Board.getSpawnTile(Board.board).getX(), 16 * 4 * Board.getSpawnTile(Board.board).getY(), 16, 16);
+        renderer.add(spawnPanel, 1);
 
         renderer.addKeyListener(this);
         renderer.setFocusable(true);
@@ -122,9 +129,24 @@ public class Engine implements KeyListener {
             index++;
         }
 
+        renderer.remove(spawnPanel);
+        renderer.add(spawnPanel, index);
+        index++;
+
         renderer.remove(playerPanel);
         renderer.add(playerPanel, index);
 //
+        window.revalidate();
+        window.pack();
+    }
+
+    public void renderSpawn(int spriteSize, int scale) {
+        Image img = renderer.renderSpawn(spriteSize, scale);
+        img = img.getScaledInstance(spriteSize * scale, spriteSize * scale, Image.SCALE_DEFAULT);
+        spawnPanel.removeAll();
+        spawnPanel.add(new JLabel(new ImageIcon(img)));
+        spawnPanel.setBounds(scale * spriteSize * Board.getSpawnTile(Board.board).getX(), scale * spriteSize * Board.getSpawnTile(Board.board).getY(), spriteSize * scale, spriteSize * scale);
+
         window.revalidate();
         window.pack();
     }

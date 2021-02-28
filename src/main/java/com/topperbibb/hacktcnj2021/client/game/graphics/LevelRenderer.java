@@ -76,4 +76,17 @@ public class LevelRenderer extends JLayeredPane {
         }
         return out;
     }
+
+    public BufferedImage renderSpawn(int spriteSize, int scale) {
+        BufferedImage img = new BufferedImage(spriteSize, spriteSize, BufferedImage.TYPE_INT_ARGB);
+        SpriteInfo sprite = new SpriteInfo(spriteSize, 128, 24);
+        int pixel;
+        for (int x = sprite.x, imgX = 0; x < sprite.size + sprite.x; x++, imgX++) {
+            for (int y = sprite.y, imgY = 0; y < sprite.size + sprite.y; y++, imgY++) {
+                pixel = sheet.pixels[y * sheet.width + x];
+                img.setRGB(imgX, imgY, pixel);
+            }
+        }
+        return img;
+    }
 }
