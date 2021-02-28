@@ -23,9 +23,6 @@ jar {
             'Main-Class': 'com.topperbibb.hacktcnj2021.server.Main'
         )
     }
-    from {
-        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
-    }
 }
 
 repositories {
@@ -37,7 +34,6 @@ repositories {
 dependencies {
     // This dependency is used by the application.
     implementation 'com.google.guava:guava:29.0-jre'
-    implementation 'io.github.cdimascio:java-dotenv:5.2.1'
 
     // Use JUnit test framework
     testImplementation 'junit:junit:4.13'
