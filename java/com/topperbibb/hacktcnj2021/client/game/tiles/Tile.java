@@ -1,5 +1,6 @@
 package com.topperbibb.hacktcnj2021.client.game.tiles;
 
+import com.topperbibb.hacktcnj2021.client.game.graphics.SpriteInfo;
 import com.topperbibb.hacktcnj2021.client.game.objects.BoardObject;
 
 public class Tile {
@@ -55,12 +56,8 @@ public class Tile {
         this.object = object;
     }
 
-    public String getSprite() {
-        if (object != null) {
-            return object.getSprite();
-        } else {
-            return info.getSprite();
-        }
+    public SpriteInfo getSprite() {
+        return info.getSprite();
     }
 
     public void addTag(TileTags tag) {
