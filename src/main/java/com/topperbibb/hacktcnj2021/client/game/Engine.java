@@ -1,6 +1,7 @@
 package com.topperbibb.hacktcnj2021.client.game;
 
 import com.topperbibb.hacktcnj2021.client.game.graphics.FlipEnum;
+import com.topperbibb.hacktcnj2021.client.game.tiles.Tile;
 import com.topperbibb.hacktcnj2021.client.game.user.MovableUser;
 import com.topperbibb.hacktcnj2021.client.game.graphics.LevelRenderer;
 import com.topperbibb.hacktcnj2021.client.game.graphics.SpriteInfo;
@@ -152,7 +153,7 @@ public class Engine implements KeyListener, MouseListener {
         img = img.getScaledInstance(spriteSize * scale, spriteSize * scale, Image.SCALE_DEFAULT);
         spawnPanel.removeAll();
         spawnPanel.add(new JLabel(new ImageIcon(img)));
-        spawnPanel.setBounds(scale * spriteSize * Board.getSpawnTile(Board.board).getX(), scale * spriteSize * Board.getSpawnTile(Board.board).getY(), spriteSize * scale, spriteSize * scale);
+        spawnPanel.setBounds(scale * spriteSize * Board.getSpawnTile(Board.board).getY(), scale * spriteSize * Board.getSpawnTile(Board.board).getX(), spriteSize * scale, spriteSize * scale);
 
         window.revalidate();
         window.pack();
@@ -229,11 +230,7 @@ public class Engine implements KeyListener, MouseListener {
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        if(localUser instanceof StaticUser) {
-            int x = e.getX();
-            int y = e.getY();
-            System.out.println((x / 64) + ", " + (y / 64));
-        }
+
     }
 
     @Override
@@ -243,7 +240,12 @@ public class Engine implements KeyListener, MouseListener {
 
     @Override
     public void mouseReleased(MouseEvent e) {
-
+//        if(localUser instanceof StaticUser) {
+            int x = e.getX()/64;
+            int y = e.getY()/64;
+            Board.setSpawn(Board.board[y][x]);
+            renderSpawn(16, 4);
+//        }
     }
 
     @Override

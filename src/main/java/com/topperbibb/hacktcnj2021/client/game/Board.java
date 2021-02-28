@@ -39,6 +39,12 @@ public class Board {
         return Arrays.stream(board).flatMap(Arrays::stream).filter(tile -> tile.getInfo().isSpawnPoint()).findFirst().orElse(null);
     }
 
+    public static void setSpawn(int x, int y) {
+        System.out.println(x + ", " + y);
+        getSpawnTile(board).getInfo().removeSpawnPoint();
+        board[x][y].getInfo().setSpawnPoint();
+    }
+
     public static void setSpawn(Tile spawn) {
         getSpawnTile(board).getInfo().removeSpawnPoint();
         spawn.getInfo().setSpawnPoint();
