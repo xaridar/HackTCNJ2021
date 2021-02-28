@@ -99,4 +99,12 @@ public class User implements Player {
     public BoardObject copy() {
         return new User(x, y, sprites);
     }
+
+    public boolean isOverseer() {
+        return isOverseer;
+    }
+
+    public void setOverseer(boolean overseer) {
+        isOverseer = overseer;
+    }
 }

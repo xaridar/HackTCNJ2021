@@ -13,12 +13,14 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Engine implements KeyListener {
+public class Engine implements KeyListener, MouseListener {
 
     private Level currLevel;
     private Spritesheet spritesheet;
@@ -75,7 +77,7 @@ public class Engine implements KeyListener {
         renderer.setBounds(0, 0, Board.board[0].length * 16 * 4, Board.board.length * 16 * 4);
 
         levelPanel = new JPanel(new BorderLayout());
-        levelPanel.setBackground(new Color(0,0,0,0));
+        levelPanel.setBackground(new Color(0, 0, 0, 0));
         levelPanel.setBounds(0, 0, Board.board[0].length * 16 * 4, Board.board.length * 16 * 4);
         renderer.add(levelPanel, 1000);
 
@@ -90,6 +92,7 @@ public class Engine implements KeyListener {
         renderer.add(spawnPanel, 1);
 
         renderer.addKeyListener(this);
+        renderer.addMouseListener(this);
         renderer.setFocusable(true);
         renderer.requestFocusInWindow();
         window.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -117,7 +120,7 @@ public class Engine implements KeyListener {
     }
 
     public void renderObjects(int spriteSize, int scale) {
-        if(objectPanels != null) {
+        if (objectPanels != null) {
             for (JPanel object : objectPanels) {
                 renderer.remove(object);
             }
@@ -161,60 +164,89 @@ public class Engine implements KeyListener {
 
     @Override
     public void keyPressed(KeyEvent e) {
-        switch(e.getKeyChar()){
-            case 'W':
-            case 'w':
-                if (keyPressed + keyTimeout <= System.currentTimeMillis()) {
-                    if (currLevel.getPlayer().move(0, -1)) {
-                        User.PlayerSprite dir = lastDir == User.PlayerSprite.UP ? User.PlayerSprite.UP2 : User.PlayerSprite.UP;
-                        renderPlayer(currLevel.getPlayer(), dir);
-                        renderObjects(16, 4);
-                        lastDir = dir;
+        if (!currLevel.getPlayer().isOverseer()) {
+            switch (e.getKeyChar()) {
+                case 'W':
+                case 'w':
+                    if (keyPressed + keyTimeout <= System.currentTimeMillis()) {
+                        if (currLevel.getPlayer().move(0, -1)) {
+                            User.PlayerSprite dir = lastDir == User.PlayerSprite.UP ? User.PlayerSprite.UP2 : User.PlayerSprite.UP;
+                            renderPlayer(currLevel.getPlayer(), dir);
+                            renderObjects(16, 4);
+                            lastDir = dir;
+                        }
+                        keyPressed = System.currentTimeMillis();
                     }
-                    keyPressed = System.currentTimeMillis();
-                }
-                break;
-            case 'S':
-            case 's':
-                if (keyPressed + keyTimeout <= System.currentTimeMillis()) {
-                    if (currLevel.getPlayer().move(0, 1)) {
-                        User.PlayerSprite dir = lastDir == User.PlayerSprite.DOWN ? User.PlayerSprite.DOWN2 : User.PlayerSprite.DOWN;
-                        renderPlayer(currLevel.getPlayer(), dir);
-                        renderObjects(16, 4);
-                        lastDir = dir;
+                    break;
+                case 'S':
+                case 's':
+                    if (keyPressed + keyTimeout <= System.currentTimeMillis()) {
+                        if (currLevel.getPlayer().move(0, 1)) {
+                            User.PlayerSprite dir = lastDir == User.PlayerSprite.DOWN ? User.PlayerSprite.DOWN2 : User.PlayerSprite.DOWN;
+                            renderPlayer(currLevel.getPlayer(), dir);
+                            renderObjects(16, 4);
+                            lastDir = dir;
+                        }
+                        keyPressed = System.currentTimeMillis();
                     }
-                    keyPressed = System.currentTimeMillis();
-                }
-                break;
-            case 'A':
-            case 'a':
-                if (keyPressed + keyTimeout <= System.currentTimeMillis()) {
-                    if (currLevel.getPlayer().move(-1, 0)) {
-                        User.PlayerSprite dir = lastDir == User.PlayerSprite.LEFT ? User.PlayerSprite.LEFT2 : User.PlayerSprite.LEFT;
-                        renderPlayer(currLevel.getPlayer(), dir);
-                        renderObjects(16, 4);
-                        lastDir = dir;
+                    break;
+                case 'A':
+                case 'a':
+                    if (keyPressed + keyTimeout <= System.currentTimeMillis()) {
+                        if (currLevel.getPlayer().move(-1, 0)) {
+                            User.PlayerSprite dir = lastDir == User.PlayerSprite.LEFT ? User.PlayerSprite.LEFT2 : User.PlayerSprite.LEFT;
+                            renderPlayer(currLevel.getPlayer(), dir);
+                            renderObjects(16, 4);
+                            lastDir = dir;
+                        }
+                        keyPressed = System.currentTimeMillis();
                     }
-                    keyPressed = System.currentTimeMillis();
-                }
-                break;
-            case 'D':
-            case 'd':
-                if (keyPressed + keyTimeout <= System.currentTimeMillis()) {
-                    if (currLevel.getPlayer().move(1, 0)) {
-                        User.PlayerSprite dir = lastDir == User.PlayerSprite.RIGHT ? User.PlayerSprite.RIGHT2 : User.PlayerSprite.RIGHT;
-                        renderPlayer(currLevel.getPlayer(), dir);
-                        renderObjects(16, 4);
-                        lastDir = dir;
+                    break;
+                case 'D':
+                case 'd':
+                    if (keyPressed + keyTimeout <= System.currentTimeMillis()) {
+                        if (currLevel.getPlayer().move(1, 0)) {
+                            User.PlayerSprite dir = lastDir == User.PlayerSprite.RIGHT ? User.PlayerSprite.RIGHT2 : User.PlayerSprite.RIGHT;
+                            renderPlayer(currLevel.getPlayer(), dir);
+                            renderObjects(16, 4);
+                            lastDir = dir;
+                        }
+                        keyPressed = System.currentTimeMillis();
                     }
-                    keyPressed = System.currentTimeMillis();
-                }
-                break;
+                    break;
+            }
         }
     }
 
     @Override
     public void keyReleased(KeyEvent e) {
         keyPressed = 0;
+    }
+
+    @Override
+    public void mouseClicked(MouseEvent e) {
+        int x = e.getX();
+        int y = e.getY();
+        System.out.println((x / 64) + ", " + (y / 64));
+    }
+
+    @Override
+    public void mousePressed(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseExited(MouseEvent e) {
+
     }
 }
