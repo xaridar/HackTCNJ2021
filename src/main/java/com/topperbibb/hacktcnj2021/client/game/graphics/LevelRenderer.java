@@ -26,7 +26,7 @@ public class LevelRenderer extends JLayeredPane {
                 for (int x = sprite.x, imgX = 0; x < sprite.size + sprite.x; x++, imgX++) {
                     for (int y = sprite.y, imgY = 0; y < sprite.size + sprite.y; y++, imgY++) {
                         pixel = sheet.pixels[(y) * sheet.width + (x)];
-                        img.setRGB(sprite.reversed ? (sprite.size - 1 - imgY) + yo : imgY + yo, imgX + xo, pixel);
+                        img.setRGB(sprite.flipX() ? (sprite.size - 1 - imgX) + yo : imgX + yo, sprite.flipY() ? (sprite.size - 1 - imgY) + yo : imgY + xo, pixel);
                     }
                 }
             }
@@ -41,7 +41,7 @@ public class LevelRenderer extends JLayeredPane {
         for (int x = sprite.x, imgX = 0; x < sprite.size + sprite.x; x++, imgX++) {
             for (int y = sprite.y, imgY = 0; y < sprite.size + sprite.y; y++, imgY++) {
                 pixel = sheet.pixels[y * sheet.width + x];
-                img.setRGB(sprite.reversed ? sprite.size - 1 - imgX : imgX, imgY, pixel);
+                img.setRGB(sprite.flipX() ? sprite.size - 1 - imgX : imgX, sprite.flipY() ? sprite.size - 1 - imgY : imgY, pixel);
             }
         }
         return img;
@@ -60,7 +60,7 @@ public class LevelRenderer extends JLayeredPane {
                     for (int x = sprite.x, imgX = 0; x < sprite.size + sprite.x; x++, imgX++) {
                         for (int y = sprite.y, imgY = 0; y < sprite.size + sprite.y; y++, imgY++) {
                             pixel = sheet.pixels[(y) * sheet.width + (x)];
-                            img.setRGB(sprite.reversed ? sprite.size - 1 - imgY : imgY, imgX, pixel);
+                            img.setRGB(sprite.flipX() ? sprite.size - 1 - imgX : imgX, sprite.flipY() ? sprite.size - 1 - imgY : imgY, pixel);
                         }
                     }
                     Image scaledImage = img.getScaledInstance(scale * spriteSize, scale * spriteSize, Image.SCALE_DEFAULT);

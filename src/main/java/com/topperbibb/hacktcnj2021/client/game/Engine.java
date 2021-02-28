@@ -1,5 +1,6 @@
 package com.topperbibb.hacktcnj2021.client.game;
 
+import com.topperbibb.hacktcnj2021.client.game.graphics.FlipEnum;
 import com.topperbibb.hacktcnj2021.client.game.user.MovableUser;
 import com.topperbibb.hacktcnj2021.client.game.graphics.LevelRenderer;
 import com.topperbibb.hacktcnj2021.client.game.graphics.SpriteInfo;
@@ -43,12 +44,12 @@ public class Engine implements KeyListener {
         Map<MovableUser.PlayerSprite, SpriteInfo> playerSprites = new HashMap<>();
         playerSprites.put(MovableUser.PlayerSprite.RIGHT, new SpriteInfo(16, 32, 88));
         playerSprites.put(MovableUser.PlayerSprite.RIGHT2, new SpriteInfo(16, 48, 88));
-        playerSprites.put(MovableUser.PlayerSprite.LEFT, new SpriteInfo(16, 32, 88, true));
-        playerSprites.put(MovableUser.PlayerSprite.LEFT2, new SpriteInfo(16, 48, 88, true));
+        playerSprites.put(MovableUser.PlayerSprite.LEFT, new SpriteInfo(16, 32, 88, FlipEnum.X));
+        playerSprites.put(MovableUser.PlayerSprite.LEFT2, new SpriteInfo(16, 48, 88, FlipEnum.X));
         playerSprites.put(MovableUser.PlayerSprite.UP, new SpriteInfo(16, 16, 88));
-        playerSprites.put(MovableUser.PlayerSprite.UP2, new SpriteInfo(16, 16, 88, true));
+        playerSprites.put(MovableUser.PlayerSprite.UP2, new SpriteInfo(16, 16, 88, FlipEnum.X));
         playerSprites.put(MovableUser.PlayerSprite.DOWN, new SpriteInfo(16, 0, 88));
-        playerSprites.put(MovableUser.PlayerSprite.DOWN2, new SpriteInfo(16, 0, 88, true));
+        playerSprites.put(MovableUser.PlayerSprite.DOWN2, new SpriteInfo(16, 0, 88, FlipEnum.X));
         currLevel = new TestLevel(new MovableUser(1, 1, playerSprites));
         spritesheet = new Spritesheet("/tiles.png");
     }
