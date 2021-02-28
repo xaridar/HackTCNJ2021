@@ -3,7 +3,7 @@
     <output-path>$PROJECT_DIR$/out/artifacts/HackTCNJ2021_jar</output-path>
     <root id="archive" name="HackTCNJ2021.jar">
       <element id="directory" name="META-INF">
-        <element id="file-copy" path="$PROJECT_DIR$/res/server/META-INF/MANIFEST.MF" />
+        <element id="file-copy" path="$PROJECT_DIR$/src/main/res/server/META-INF/MANIFEST.MF" />
       </element>
       <element id="module-output" name="HackTCNJ2021" />
     </root>
