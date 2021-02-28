@@ -16,7 +16,13 @@ public class TileInfo {
 
     String sprite;
     TileDescriptor descriptor;
-    ArrayList<TileTags> tags;
+    ArrayList<TileTags> tags = new ArrayList<>();
+
+    public TileInfo(String sprite, TileDescriptor descriptor, ArrayList<TileTags> tags) {
+        this.sprite = sprite;
+        this.descriptor = descriptor;
+        this.tags = tags;
+    }
 
     public TileInfo(String sprite, TileDescriptor descriptor) {
         this.sprite = sprite;
@@ -37,7 +43,6 @@ public class TileInfo {
 
     public void setSpawnPoint() {
         this.descriptor = TileDescriptor.SPAWN_POINT;
-        sprite = "o";
     }
 
     public void removeSpawnPoint() {
@@ -47,7 +52,6 @@ public class TileInfo {
 
     public void setEndPoint() {
         this.descriptor = TileDescriptor.END_POINT;
-        sprite = "d";
     }
 
     public void addTag(TileTags tag) {

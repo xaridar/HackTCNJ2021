@@ -19,6 +19,26 @@ public class Tile {
         this.info = info;
     }
 
+    public Tile(int x, int y, TileInfo info, BoardObject object){
+        this.x = x;
+        this.y = y;
+        this.info = info;
+        this.object = object;
+    }
+
+    public Tile(TileInfo info, BoardObject object){
+        this.x = 0;
+        this.y = 0;
+        this.info = info;
+        this.object = object;
+    }
+
+    public Tile(TileInfo info){
+        this.x = 0;
+        this.y = 0;
+        this.info = info;
+    }
+
     public TileInfo getInfo() {
         return info;
     }
@@ -57,5 +77,10 @@ public class Tile {
 
     public int getY() {
         return y;
+    }
+
+    public void setPos(int x, int y) {
+        this.x = x;
+        this.y = y;
     }
 }

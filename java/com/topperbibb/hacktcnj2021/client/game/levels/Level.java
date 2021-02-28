@@ -2,41 +2,24 @@ package com.topperbibb.hacktcnj2021.client.game.levels;
 
 import com.topperbibb.hacktcnj2021.client.game.Board;
 import com.topperbibb.hacktcnj2021.client.game.tiles.Tile;
-import com.topperbibb.hacktcnj2021.client.game.tiles.TileInfo;
 import com.topperbibb.hacktcnj2021.client.game.util.PlayerKeyEvent;
 
 import java.awt.*;
-import java.awt.event.KeyEvent;
+import java.util.Map;
 
 public abstract class Level {
     private Tile[][] level;
-    protected Point spawnPoint;
-    protected Point endPoint;
 
     public Level(){
-        level = setLevel();
-        setSpawnPoint(setSpawnPoint());
-        endPoint = setEndPoint();
-        level[endPoint.x][endPoint.y].getInfo().setEndPoint();
-
-        level = setObjects(level);
+        level = Board.loadBoard(setLevel(), mapObjects());
 
         Board.board = level;
         Board.lastBoard = level;
     }
 
-    public abstract Tile[][] setLevel();
+    public abstract String[][] setLevel();
 
-    public abstract Point setSpawnPoint();
-
-    public void setSpawnPoint(Point spawnPoint) {
-        this.spawnPoint = spawnPoint;
-        level[spawnPoint.x][spawnPoint.y].getInfo().setSpawnPoint();
-    }
-
-    public abstract Point setEndPoint();
-
-    public abstract Tile[][] setObjects(Tile[][] level);
+    public abstract Map<String, Tile> mapObjects();
 
     public abstract void input(PlayerKeyEvent e);
 }

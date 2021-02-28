@@ -1,32 +1,39 @@
 package com.topperbibb.hacktcnj2021.client.game.levels;
 
 import com.topperbibb.hacktcnj2021.client.User;
-import com.topperbibb.hacktcnj2021.client.game.Board;
+import com.topperbibb.hacktcnj2021.client.game.graphics.Spritesheet;
 import com.topperbibb.hacktcnj2021.client.game.objects.TestObject;
 import com.topperbibb.hacktcnj2021.client.game.tiles.Tile;
+import com.topperbibb.hacktcnj2021.client.game.tiles.TileInfo;
+import com.topperbibb.hacktcnj2021.client.game.tiles.TileTags;
 import com.topperbibb.hacktcnj2021.client.game.util.PlayerKeyEvent;
 
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 public class TestLevel extends Level{
 
     User player;
+    Spritesheet spritesheet;
 
     @Override
-    public Tile[][] setLevel() {
-        return Board.loadBoard(new String[][]{
-                {"#", "#", "#", "#", "#", "#", "#", "#", "#", "#"},
-                {"#", "_", "_", "_", "_", "_", "_", "_", "_", "#"},
-                {"#", "_", "_", "_", "_", "_", "_", "_", "_", "#"},
-                {"#", "_", "_", "_", "_", "_", "_", "_", "_", "#"},
-                {"#", "_", "_", "_", "_", "_", "_", "_", "_", "#"},
-                {"#", "_", "_", "_", "_", "_", "_", "_", "_", "#"},
-                {"#", "_", "_", "_", "_", "_", "_", "_", "_", "#"},
-                {"#", "_", "_", "_", "_", "_", "_", "_", "_", "#"},
-                {"#", "_", "_", "_", "_", "_", "_", "_", "_", "#"},
-                {"#", "_", "_", "_", "_", "_", "_", "_", "_", "#"},
-                {"#", "#", "#", "#", "#", "#", "#", "#", "#", "#"}
-        });
+    public String[][] setLevel() {
+        return new String[][]{
+                {"#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#"},
+                {"#", "o", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "#"},
+                {"#", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "#"},
+                {"#", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "#"},
+                {"#", "_", "_", "t", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "#"},
+                {"#", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "#"},
+                {"#", "_", "_", "_", "_", "_", "_", "d", "_", "_", "_", "_", "_", "_", "_", "_", "#"},
+                {"#", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "#"},
+                {"#", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "#"},
+                {"#", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "#"},
+                {"#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#"}
+        };
     }
 
     public TestLevel(User player) {
@@ -35,24 +42,14 @@ public class TestLevel extends Level{
     }
 
     @Override
-    public Point setSpawnPoint() {
-        return new Point(1, 1);
-    }
-
-    @Override
-    public Point setEndPoint() {
-        return new Point(9, 8);
-    }
-
-    @Override
-    public Tile[][] setObjects(Tile[][] level) {
-        level[2][2].setObject(new TestObject("t"));
-//        for(int x = 0; x < level.length; x++){
-//            for(int y = 0; y < level[x].length; y++){
-//                continue;
-//            }
-//        }
-        return level;
+    public Map<String, Tile> mapObjects() {
+        HashMap<String, Tile> map = new HashMap<>();
+        map.put( "_", new Tile(new TileInfo("_ ", TileInfo.TileDescriptor.NONE, new ArrayList<>(Collections.singletonList(TileTags.WALKABLE)))));
+        map.put( "#", new Tile(new TileInfo("# ", TileInfo.TileDescriptor.NONE, new ArrayList<>(Collections.emptyList()))) );
+        map.put( "o", new Tile(new TileInfo("o ", TileInfo.TileDescriptor.SPAWN_POINT, new ArrayList<>(Collections.singletonList(TileTags.WALKABLE)))));
+        map.put( "d", new Tile(new TileInfo("d ", TileInfo.TileDescriptor.END_POINT, new ArrayList<>(Collections.singletonList(TileTags.WALKABLE)))));
+        map.put( "t", new Tile(new TileInfo("_ ", TileInfo.TileDescriptor.NONE, new ArrayList<>(Collections.singletonList(TileTags.WALKABLE))), new TestObject("t ")));
+        return map;
     }
 
     @Override
