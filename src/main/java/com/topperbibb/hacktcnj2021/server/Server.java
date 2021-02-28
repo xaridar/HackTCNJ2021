@@ -30,7 +30,7 @@ public class Server implements Runnable {
     @Override
     public void run() {
         running = true;
-        System.out.format("Running at %s, port %d!\n", serverSocket.getInetAddress(), port);
+        System.out.format("Running at %s, port %d!\n", serverSocket.getLocalSocketAddress(), port);
         while (running) {
             try {
                 Socket socket = serverSocket.accept();
