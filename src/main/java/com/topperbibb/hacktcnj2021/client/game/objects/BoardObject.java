@@ -8,8 +8,6 @@ import com.topperbibb.hacktcnj2021.client.game.graphics.SpriteInfo;
 public interface BoardObject {
     public SpriteInfo getSprite();
 
-    public void setSprite(SpriteInfo sprite);
-
     public int getX();
 
     public int getY();

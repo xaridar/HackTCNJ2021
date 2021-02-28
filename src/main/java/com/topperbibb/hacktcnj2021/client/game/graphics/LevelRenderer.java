@@ -28,7 +28,7 @@ public class LevelRenderer extends JLayeredPane {
                 for (int x = sprite.x, imgX = 0; x < sprite.size + sprite.x; x++, imgX++) {
                     for (int y = sprite.y, imgY = 0; y < sprite.size + sprite.y; y++, imgY++) {
                         pixel = sheet.pixels[(y) * sheet.width + (x)];
-                        img.setRGB(imgY + yo, imgX + xo, pixel);
+                        img.setRGB(sprite.reversed ? (sprite.size - 1 - imgY) + yo : imgY + yo, imgX + xo, pixel);
                     }
                 }
             }
@@ -36,14 +36,14 @@ public class LevelRenderer extends JLayeredPane {
         return img;
     }
 
-    public BufferedImage renderPlayer(User player, int width, int height) {
+    public BufferedImage renderPlayer(User player, int width, int height, User.PlayerSprite spriteEnum) {
         BufferedImage img = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-        SpriteInfo sprite = player.getSprite();
+        SpriteInfo sprite = player.getSprite(spriteEnum);
         int pixel;
         for (int x = sprite.x, imgX = 0; x < sprite.size + sprite.x; x++, imgX++) {
             for (int y = sprite.y, imgY = 0; y < sprite.size + sprite.y; y++, imgY++) {
                 pixel = sheet.pixels[y * sheet.width + x];
-                img.setRGB(imgX, imgY, pixel);
+                img.setRGB(sprite.reversed ? sprite.size - 1 - imgX : imgX, imgY, pixel);
             }
         }
         return img;
@@ -62,7 +62,7 @@ public class LevelRenderer extends JLayeredPane {
                     for (int x = sprite.x, imgX = 0; x < sprite.size + sprite.x; x++, imgX++) {
                         for (int y = sprite.y, imgY = 0; y < sprite.size + sprite.y; y++, imgY++) {
                             pixel = sheet.pixels[(y) * sheet.width + (x)];
-                            img.setRGB(imgY, imgX, pixel);
+                            img.setRGB(sprite.reversed ? sprite.size - 1 - imgY : imgY, imgX, pixel);
                         }
                     }
                     Image scaledImage = img.getScaledInstance(scale * spriteSize, scale * spriteSize, Image.SCALE_DEFAULT);

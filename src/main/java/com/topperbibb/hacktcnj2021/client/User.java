@@ -6,7 +6,14 @@ import com.topperbibb.hacktcnj2021.client.game.graphics.Spritesheet;
 import com.topperbibb.hacktcnj2021.client.game.objects.Player;
 import com.topperbibb.hacktcnj2021.client.game.tiles.TileTags;
 
+import java.util.Map;
+
 public class User implements Player {
+
+    public enum PlayerSprite {
+        DOWN, UP, LEFT, RIGHT,
+        DOWN2, UP2, LEFT2, RIGHT2,
+    }
 
     // server variables
     int id;
@@ -16,17 +23,17 @@ public class User implements Player {
     // game variables
     public int x;
     public int y;
-    SpriteInfo sprite;
+    Map<PlayerSprite, SpriteInfo> sprites;
     boolean isOverseer;
 
     public User(){
 
     }
 
-    public User(int x, int y, SpriteInfo sprite) {
+    public User(int x, int y, Map<PlayerSprite, SpriteInfo> sprites) {
         this.x = x;
         this.y = y;
-        this.sprite = sprite;
+        this.sprites = sprites;
     }
 
     public User(int id, boolean host) {
@@ -48,12 +55,15 @@ public class User implements Player {
 
     @Override
     public SpriteInfo getSprite() {
-        return sprite;
+        return sprites.get(PlayerSprite.RIGHT);
     }
 
-    @Override
-    public void setSprite(SpriteInfo sprite) {
-        this.sprite = sprite;
+    public SpriteInfo getSprite(PlayerSprite spriteEnum) {
+        return sprites.get(spriteEnum);
+    }
+
+    public void setSprite(PlayerSprite which, SpriteInfo sprite) {
+        sprites.put(which, sprite);
     }
 
     @Override

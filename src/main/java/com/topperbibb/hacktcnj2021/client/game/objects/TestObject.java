@@ -16,7 +16,6 @@ public class TestObject implements RigidBoardObject{
         return sprite;
     }
 
-    @Override
     public void setSprite(SpriteInfo sprite) {
         this.sprite = sprite;
     }
