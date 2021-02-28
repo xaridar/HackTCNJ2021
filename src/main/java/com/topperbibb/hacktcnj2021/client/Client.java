@@ -1,5 +1,6 @@
 package com.topperbibb.hacktcnj2021.client;
 
+import com.topperbibb.hacktcnj2021.client.game.user.NetUser;
 import com.topperbibb.hacktcnj2021.shared.*;
 
 import java.io.*;
@@ -10,7 +11,7 @@ public class Client implements Runnable {
 
     private final String host;
     private final int port;
-    public final User user;
+    public final NetUser user;
 
     private Socket socket;
     private DataInputStream in;
@@ -19,7 +20,7 @@ public class Client implements Runnable {
 
     private ClientEventListener listener;
 
-    public Client(String host, int port, User user) {
+    public Client(String host, int port, NetUser user) {
         this.host = host;
         this.port = port;
         this.user = user;

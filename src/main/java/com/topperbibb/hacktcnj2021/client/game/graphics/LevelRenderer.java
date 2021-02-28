@@ -1,13 +1,11 @@
 package com.topperbibb.hacktcnj2021.client.game.graphics;
 
-import com.topperbibb.hacktcnj2021.client.User;
+import com.topperbibb.hacktcnj2021.client.game.user.MovableUser;
 import com.topperbibb.hacktcnj2021.client.game.Board;
-import com.topperbibb.hacktcnj2021.client.game.Engine;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.nio.Buffer;
 import java.util.ArrayList;
 
 public class LevelRenderer extends JLayeredPane {
@@ -36,7 +34,7 @@ public class LevelRenderer extends JLayeredPane {
         return img;
     }
 
-    public BufferedImage renderPlayer(User player, int width, int height, User.PlayerSprite spriteEnum) {
+    public BufferedImage renderPlayer(MovableUser player, int width, int height, MovableUser.PlayerSprite spriteEnum) {
         BufferedImage img = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
         SpriteInfo sprite = player.getSprite(spriteEnum);
         int pixel;

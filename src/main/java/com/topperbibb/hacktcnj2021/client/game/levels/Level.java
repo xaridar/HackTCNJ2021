@@ -1,16 +1,15 @@
 package com.topperbibb.hacktcnj2021.client.game.levels;
 
-import com.topperbibb.hacktcnj2021.client.User;
+import com.topperbibb.hacktcnj2021.client.game.user.MovableUser;
 import com.topperbibb.hacktcnj2021.client.game.Board;
 import com.topperbibb.hacktcnj2021.client.game.tiles.Tile;
 import com.topperbibb.hacktcnj2021.client.game.util.PlayerKeyEvent;
 
-import java.awt.*;
 import java.util.Map;
 
 public abstract class Level {
     private Tile[][] level;
-    User player;
+    MovableUser player;
 
     public Level(){
         level = Board.loadBoard(setLevel(), mapObjects());
@@ -27,11 +26,11 @@ public abstract class Level {
 
     }
 
-    public User getPlayer() {
+    public MovableUser getPlayer() {
         return player;
     }
 
-    public void setPlayer(User player) {
+    public void setPlayer(MovableUser player) {
         this.player = player;
     }
 }

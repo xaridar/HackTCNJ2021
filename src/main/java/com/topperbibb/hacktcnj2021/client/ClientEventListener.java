@@ -1,6 +1,7 @@
 package com.topperbibb.hacktcnj2021.client;
 
 import com.topperbibb.hacktcnj2021.client.game.Board;
+import com.topperbibb.hacktcnj2021.client.game.user.NetUser;
 import com.topperbibb.hacktcnj2021.shared.*;
 
 public class ClientEventListener {
@@ -12,11 +13,11 @@ public class ClientEventListener {
             if (((PlayerJoinPacket) p).id == client.user.id) {
                 UserManager.addUser(client.user);
             } else {
-                UserManager.addUser(new User(((PlayerJoinPacket) p).id, ((PlayerJoinPacket) p).host));
+                UserManager.addUser(new NetUser(((PlayerJoinPacket) p).id, ((PlayerJoinPacket) p).host));
             }
             System.out.format("Player %d joined!%s\n", ((PlayerJoinPacket) p).id, ((PlayerJoinPacket) p).host ? " (host)" : "");
         } else if (p instanceof PlayerLeavePacket) {
-            User user;
+            NetUser user;
             if (((PlayerLeavePacket) p).id == client.user.id) {
                 user = UserManager.removeUser(client.user.id);
                 client.close();
