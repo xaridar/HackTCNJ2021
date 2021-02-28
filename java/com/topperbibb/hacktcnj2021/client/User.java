@@ -1,7 +1,7 @@
 package com.topperbibb.hacktcnj2021.client;
 
 import com.topperbibb.hacktcnj2021.client.game.Board;
-import com.topperbibb.hacktcnj2021.client.game.Player;
+import com.topperbibb.hacktcnj2021.client.game.objects.Player;
 
 public class User implements Player {
 
@@ -29,5 +29,15 @@ public class User implements Player {
         int temp_x = x + directionX;
         int temp_y = y + directionY;
         return true;
+    }
+
+    @Override
+    public String getSprite() {
+        return null;
+    }
+
+    @Override
+    public void setSprite(String sprite) {
+
     }
 }
