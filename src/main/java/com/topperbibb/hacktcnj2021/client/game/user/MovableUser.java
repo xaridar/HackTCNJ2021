@@ -5,6 +5,7 @@ import com.topperbibb.hacktcnj2021.client.game.Board;
 import com.topperbibb.hacktcnj2021.client.game.graphics.SpriteInfo;
 import com.topperbibb.hacktcnj2021.client.game.graphics.Spritesheet;
 import com.topperbibb.hacktcnj2021.client.game.objects.BoardObject;
+import com.topperbibb.hacktcnj2021.client.game.objects.Key;
 import com.topperbibb.hacktcnj2021.client.game.objects.Player;
 import com.topperbibb.hacktcnj2021.client.game.objects.RigidBoardObject;
 import com.topperbibb.hacktcnj2021.client.game.tiles.TileTags;
@@ -48,6 +49,9 @@ public class MovableUser extends NetUser implements Player {
                 else {
                     return false;
                 }
+            }else if(Board.board[temp_y][temp_x].getObject() != null && Board.board[temp_y][temp_x].getObject() instanceof Key){
+                System.out.println("true");
+                ((Key) Board.board[temp_y][temp_x].getObject()).collect();
             }
             x = temp_x;
             y = temp_y;
