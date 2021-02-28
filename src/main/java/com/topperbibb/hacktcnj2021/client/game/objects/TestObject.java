@@ -27,11 +27,14 @@ public class TestObject implements RigidBoardObject{
         int temp_x = x + directionY;
         int temp_y = y + directionX;
         if(Board.board[temp_x][temp_y].hasTag(TileTags.WALKABLE)) {
-            Board.board[x][y].setObject(null);
-            x = temp_x;
-            y = temp_y;
-            Board.board[x][y].setObject(this);
-            return true;
+            if(Board.board[temp_x][temp_y].getObject()==null) {
+                Board.board[x][y].setObject(null);
+                x = temp_x;
+                y = temp_y;
+                Board.board[x][y].setObject(this);
+                return true;
+            }
+            return false;
         }else{
             return false;
         }
@@ -48,5 +51,10 @@ public class TestObject implements RigidBoardObject{
     public void setPos(int x, int y) {
         this.x = x;
         this.y = y;
+    }
+
+    @Override
+    public BoardObject copy() {
+        return new TestObject(sprite);
     }
 }

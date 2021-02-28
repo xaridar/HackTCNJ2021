@@ -4,6 +4,7 @@ import com.topperbibb.hacktcnj2021.client.Client;
 import com.topperbibb.hacktcnj2021.client.game.Board;
 import com.topperbibb.hacktcnj2021.client.game.graphics.SpriteInfo;
 import com.topperbibb.hacktcnj2021.client.game.graphics.Spritesheet;
+import com.topperbibb.hacktcnj2021.client.game.objects.BoardObject;
 import com.topperbibb.hacktcnj2021.client.game.objects.Player;
 import com.topperbibb.hacktcnj2021.client.game.objects.RigidBoardObject;
 import com.topperbibb.hacktcnj2021.client.game.tiles.TileTags;
@@ -83,5 +84,18 @@ public class MovableUser extends NetUser implements Player {
     public void setPos(int x, int y) {
         this.x = x;
         this.y = y;
+    }
+
+    @Override
+    public BoardObject copy() {
+        return new MovableUser(x, y, sprites);
+    }
+
+    public boolean isOverseer() {
+        return isOverseer;
+    }
+
+    public void setOverseer(boolean overseer) {
+        isOverseer = overseer;
     }
 }

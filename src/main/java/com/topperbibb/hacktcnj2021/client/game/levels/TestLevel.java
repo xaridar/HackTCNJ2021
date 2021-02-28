@@ -6,6 +6,7 @@ import com.topperbibb.hacktcnj2021.client.game.objects.TestObject;
 import com.topperbibb.hacktcnj2021.client.game.tiles.Tile;
 import com.topperbibb.hacktcnj2021.client.game.tiles.TileInfo;
 import com.topperbibb.hacktcnj2021.client.game.tiles.TileTags;
+import com.topperbibb.hacktcnj2021.client.game.user.StaticUser;
 import com.topperbibb.hacktcnj2021.client.game.util.PlayerKeyEvent;
 
 import java.util.ArrayList;
@@ -21,11 +22,11 @@ public class TestLevel extends Level{
                 {"#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#"},
                 {"#", "o", "_", "_", "_", "_", "_", "#", "#", "#", "_", "_", "_", "_", "_", "_", "#"},
                 {"#", "_", "_", "_", "_", "_", "_", "#", "#", "#", "_", "_", "_", "_", "_", "_", "#"},
-                {"#", "_", "_", "_", "#", "_", "_", "#", "#", "#", "_", "_", "_", "_", "_", "_", "#"},
+                {"#", "_", "_", "_", "#", "_", "_", "#", "#", "#", "_", "t", "_", "_", "_", "_", "#"},
                 {"#", "_", "_", "_", "#", "_", "_", "_", "_", "#", "_", "_", "_", "_", "#", "_", "#"},
                 {"#", "_", "_", "_", "#", "_", "_", "#", "_", "#", "_", "_", "_", "#", "#", "_", "#"},
                 {"#", "_", "_", "_", "#", "_", "_", "#", "_", "_", "_", "t", "_", "_", "#", "#", "#"},
-                {"#", "_", "_", "_", "#", "_", "_", "#", "#", "_", "_", "_", "_", "_", "#", "#", "#"},
+                {"#", "_", "t", "_", "#", "_", "_", "#", "#", "_", "_", "_", "_", "_", "#", "#", "#"},
                 {"#", "_", "_", "_", "#", "_", "_", "_", "#", "#", "_", "_", "_", "_", "#", "_", "#"},
                 {"#", "_", "_", "_", "_", "_", "_", "_", "#", "#", "_", "_", "_", "_", "_", "_", "#"},
                 {"#", "_", "_", "_", "_", "_", "_", "_", "_", "#", "_", "_", "_", "_", "_", "d", "#"},
@@ -33,9 +34,10 @@ public class TestLevel extends Level{
         };
     }
 
-    public TestLevel(MovableUser player) {
+    public TestLevel(MovableUser movableUser, StaticUser staticUser) {
         super();
-        this.player = player;
+        this.movableUser = movableUser;
+        this.staticUser = staticUser;
     }
 
     @Override
@@ -43,7 +45,7 @@ public class TestLevel extends Level{
         HashMap<String, Tile> map = new HashMap<>();
         map.put( "_", new Tile(new TileInfo(new SpriteInfo(16, 0, 0), TileInfo.TileDescriptor.NONE, new ArrayList<>(Collections.singletonList(TileTags.WALKABLE)))));
         map.put( "#", new Tile(new TileInfo(new SpriteInfo(16, 128, 0), TileInfo.TileDescriptor.NONE, new ArrayList<>(Collections.emptyList()))) );
-        map.put( "o", new Tile(new TileInfo(new SpriteInfo(16, 80, 16), TileInfo.TileDescriptor.SPAWN_POINT, new ArrayList<>(Collections.singletonList(TileTags.WALKABLE)))));
+        map.put( "o", new Tile(new TileInfo(new SpriteInfo(16, 0, 0), TileInfo.TileDescriptor.SPAWN_POINT, new ArrayList<>(Collections.singletonList(TileTags.WALKABLE)))));
         map.put( "d", new Tile(new TileInfo(new SpriteInfo(16, 96, 48), TileInfo.TileDescriptor.END_POINT, new ArrayList<>(Collections.singletonList(TileTags.WALKABLE)))));
         map.put( "t", new Tile(new TileInfo(new SpriteInfo(16, 0, 0), TileInfo.TileDescriptor.NONE, new ArrayList<>(Collections.singletonList(TileTags.WALKABLE))), new TestObject(new SpriteInfo(16, 80, 48))));
         return map;
