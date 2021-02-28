@@ -1,13 +1,13 @@
 package com.topperbibb.hacktcnj2021.client.game;
 
-import com.topperbibb.hacktcnj2021.client.User;
+import com.topperbibb.hacktcnj2021.client.game.user.MovableUser;
 import com.topperbibb.hacktcnj2021.client.game.graphics.LevelRenderer;
 import com.topperbibb.hacktcnj2021.client.game.graphics.SpriteInfo;
 import com.topperbibb.hacktcnj2021.client.game.graphics.Spritesheet;
 import com.topperbibb.hacktcnj2021.client.game.levels.Level;
 import com.topperbibb.hacktcnj2021.client.game.levels.TestLevel;
-import com.topperbibb.hacktcnj2021.client.game.objects.Player;
-import com.topperbibb.hacktcnj2021.client.game.util.PlayerKeyEvent;
+import com.topperbibb.hacktcnj2021.client.game.user.NetUser;
+import com.topperbibb.hacktcnj2021.client.game.user.StaticUser;
 
 import javax.swing.*;
 import java.awt.*;
@@ -15,12 +15,13 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 public class Engine implements KeyListener, MouseListener {
+
+    private NetUser localUser;
 
     private Level currLevel;
     private Spritesheet spritesheet;
@@ -32,7 +33,7 @@ public class Engine implements KeyListener, MouseListener {
     private ArrayList<JPanel> objectPanels;
     public static final long keyTimeout = 300;
     private long keyPressed;
-    private User.PlayerSprite lastDir;
+    private MovableUser.PlayerSprite lastDir;
 
 
     private static Engine INSTANCE;
@@ -46,16 +47,20 @@ public class Engine implements KeyListener, MouseListener {
     }
 
     public Engine() {
-        Map<User.PlayerSprite, SpriteInfo> playerSprites = new HashMap<>();
-        playerSprites.put(User.PlayerSprite.RIGHT, new SpriteInfo(16, 32, 88));
-        playerSprites.put(User.PlayerSprite.RIGHT2, new SpriteInfo(16, 48, 88));
-        playerSprites.put(User.PlayerSprite.LEFT, new SpriteInfo(16, 32, 88, true));
-        playerSprites.put(User.PlayerSprite.LEFT2, new SpriteInfo(16, 48, 88, true));
-        playerSprites.put(User.PlayerSprite.UP, new SpriteInfo(16, 16, 88));
-        playerSprites.put(User.PlayerSprite.UP2, new SpriteInfo(16, 16, 88, true));
-        playerSprites.put(User.PlayerSprite.DOWN, new SpriteInfo(16, 0, 88));
-        playerSprites.put(User.PlayerSprite.DOWN2, new SpriteInfo(16, 0, 88, true));
-        currLevel = new TestLevel(new User(1, 1, playerSprites));
+
+
+
+        Map<MovableUser.PlayerSprite, SpriteInfo> playerSprites = new HashMap<>();
+        playerSprites.put(MovableUser.PlayerSprite.RIGHT, new SpriteInfo(16, 32, 88));
+        playerSprites.put(MovableUser.PlayerSprite.RIGHT2, new SpriteInfo(16, 48, 88));
+        playerSprites.put(MovableUser.PlayerSprite.LEFT, new SpriteInfo(16, 32, 88, true));
+        playerSprites.put(MovableUser.PlayerSprite.LEFT2, new SpriteInfo(16, 48, 88, true));
+        playerSprites.put(MovableUser.PlayerSprite.UP, new SpriteInfo(16, 16, 88));
+        playerSprites.put(MovableUser.PlayerSprite.UP2, new SpriteInfo(16, 16, 88, true));
+        playerSprites.put(MovableUser.PlayerSprite.DOWN, new SpriteInfo(16, 0, 88));
+        playerSprites.put(MovableUser.PlayerSprite.DOWN2, new SpriteInfo(16, 0, 88, true));
+        currLevel = new TestLevel(new MovableUser(1, 1, playerSprites), new StaticUser());
+        localUser = currLevel.getMovableUser();
         spritesheet = new Spritesheet("/tiles.png");
     }
 
@@ -63,8 +68,9 @@ public class Engine implements KeyListener, MouseListener {
         Engine engine = new Engine();
         engine.createRenderWindow();
         engine.renderStaticTiles(16, 4);
-        engine.renderPlayer(engine.currLevel.getPlayer(), User.PlayerSprite.RIGHT);
+        engine.renderPlayer(engine.currLevel.getMovableUser(), MovableUser.PlayerSprite.RIGHT);
         engine.renderSpawn(16, 4);
+        engine.renderPlayer(engine.currLevel.getMovableUser(), MovableUser.PlayerSprite.RIGHT);
         engine.renderObjects(16, 4);
     }
 
@@ -79,17 +85,17 @@ public class Engine implements KeyListener, MouseListener {
         levelPanel = new JPanel(new BorderLayout());
         levelPanel.setBackground(new Color(0, 0, 0, 0));
         levelPanel.setBounds(0, 0, Board.board[0].length * 16 * 4, Board.board.length * 16 * 4);
-        renderer.add(levelPanel, 1000);
+        renderer.add(levelPanel, JLayeredPane.DEFAULT_LAYER);
 
         playerPanel = new JPanel(new BorderLayout());
         playerPanel.setBackground(new Color(0, 0, 0, 0));
         playerPanel.setBounds(0, 0, 16, 16);
-        renderer.add(playerPanel, 2);
+        renderer.add(playerPanel, JLayeredPane.DRAG_LAYER);
 
         spawnPanel = new JPanel(new BorderLayout());
         spawnPanel.setBackground(new Color(0, 0, 0, 0));
         spawnPanel.setBounds(16 * 4 * Board.getSpawnTile(Board.board).getX(), 16 * 4 * Board.getSpawnTile(Board.board).getY(), 16, 16);
-        renderer.add(spawnPanel, 1);
+        renderer.add(spawnPanel, JLayeredPane.PALETTE_LAYER);
 
         renderer.addKeyListener(this);
         renderer.addMouseListener(this);
@@ -109,7 +115,7 @@ public class Engine implements KeyListener, MouseListener {
         window.pack();
     }
 
-    public void renderPlayer(User player, User.PlayerSprite direction) {
+    public void renderPlayer(MovableUser player, MovableUser.PlayerSprite direction) {
         Image img = renderer.renderPlayer(player, 16, 16, direction);
         img = img.getScaledInstance(16 * 4, 16 * 4, Image.SCALE_DEFAULT);
         playerPanel.removeAll();
@@ -126,21 +132,18 @@ public class Engine implements KeyListener, MouseListener {
             }
         }
         objectPanels = renderer.renderObjects(spriteSize, scale);
-        int index = 0;
+
         for (JPanel object : objectPanels) {
-            renderer.add(object, index);
-            index++;
+            renderer.add(object, JLayeredPane.MODAL_LAYER);
         }
 
         renderer.remove(spawnPanel);
-        renderer.add(spawnPanel, index);
-        index++;
+        renderer.add(spawnPanel, JLayeredPane.PALETTE_LAYER);
 
         renderer.remove(playerPanel);
-        renderer.add(playerPanel, index);
-//
+        renderer.add(playerPanel, JLayeredPane.DRAG_LAYER);
+
         window.revalidate();
-        window.pack();
     }
 
     public void renderSpawn(int spriteSize, int scale) {
@@ -164,14 +167,15 @@ public class Engine implements KeyListener, MouseListener {
 
     @Override
     public void keyPressed(KeyEvent e) {
-        if (!currLevel.getPlayer().isOverseer()) {
+        if (localUser instanceof MovableUser) {
+            MovableUser user = (MovableUser) localUser;
             switch (e.getKeyChar()) {
                 case 'W':
                 case 'w':
                     if (keyPressed + keyTimeout <= System.currentTimeMillis()) {
-                        if (currLevel.getPlayer().move(0, -1)) {
-                            User.PlayerSprite dir = lastDir == User.PlayerSprite.UP ? User.PlayerSprite.UP2 : User.PlayerSprite.UP;
-                            renderPlayer(currLevel.getPlayer(), dir);
+                        if (user.move(0, -1)) {
+                            MovableUser.PlayerSprite dir = lastDir == MovableUser.PlayerSprite.UP ? MovableUser.PlayerSprite.UP2 : MovableUser.PlayerSprite.UP;
+                            renderPlayer(user, dir);
                             renderObjects(16, 4);
                             lastDir = dir;
                         }
@@ -181,9 +185,9 @@ public class Engine implements KeyListener, MouseListener {
                 case 'S':
                 case 's':
                     if (keyPressed + keyTimeout <= System.currentTimeMillis()) {
-                        if (currLevel.getPlayer().move(0, 1)) {
-                            User.PlayerSprite dir = lastDir == User.PlayerSprite.DOWN ? User.PlayerSprite.DOWN2 : User.PlayerSprite.DOWN;
-                            renderPlayer(currLevel.getPlayer(), dir);
+                        if (user.move(0, 1)) {
+                            MovableUser.PlayerSprite dir = lastDir == MovableUser.PlayerSprite.DOWN ? MovableUser.PlayerSprite.DOWN2 : MovableUser.PlayerSprite.DOWN;
+                            renderPlayer(user, dir);
                             renderObjects(16, 4);
                             lastDir = dir;
                         }
@@ -193,9 +197,9 @@ public class Engine implements KeyListener, MouseListener {
                 case 'A':
                 case 'a':
                     if (keyPressed + keyTimeout <= System.currentTimeMillis()) {
-                        if (currLevel.getPlayer().move(-1, 0)) {
-                            User.PlayerSprite dir = lastDir == User.PlayerSprite.LEFT ? User.PlayerSprite.LEFT2 : User.PlayerSprite.LEFT;
-                            renderPlayer(currLevel.getPlayer(), dir);
+                        if (user.move(-1, 0)) {
+                            MovableUser.PlayerSprite dir = lastDir == MovableUser.PlayerSprite.LEFT ? MovableUser.PlayerSprite.LEFT2 : MovableUser.PlayerSprite.LEFT;
+                            renderPlayer(user, dir);
                             renderObjects(16, 4);
                             lastDir = dir;
                         }
@@ -205,15 +209,14 @@ public class Engine implements KeyListener, MouseListener {
                 case 'D':
                 case 'd':
                     if (keyPressed + keyTimeout <= System.currentTimeMillis()) {
-                        if (currLevel.getPlayer().move(1, 0)) {
-                            User.PlayerSprite dir = lastDir == User.PlayerSprite.RIGHT ? User.PlayerSprite.RIGHT2 : User.PlayerSprite.RIGHT;
-                            renderPlayer(currLevel.getPlayer(), dir);
+                        if (user.move(1, 0)) {
+                            MovableUser.PlayerSprite dir = lastDir == MovableUser.PlayerSprite.RIGHT ? MovableUser.PlayerSprite.RIGHT2 : MovableUser.PlayerSprite.RIGHT;
+                            renderPlayer(user, dir);
                             renderObjects(16, 4);
                             lastDir = dir;
                         }
-                        keyPressed = System.currentTimeMillis();
+                        break;
                     }
-                    break;
             }
         }
     }
@@ -225,9 +228,11 @@ public class Engine implements KeyListener, MouseListener {
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        int x = e.getX();
-        int y = e.getY();
-        System.out.println((x / 64) + ", " + (y / 64));
+        if(localUser instanceof StaticUser) {
+            int x = e.getX();
+            int y = e.getY();
+            System.out.println((x / 64) + ", " + (y / 64));
+        }
     }
 
     @Override
