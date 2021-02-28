@@ -28,6 +28,8 @@ public abstract class Packet {
             return new StartPacket();
         } else if (packetType == EndPacket.class) {
             return new EndPacket();
+        } else if (packetType == StateChangePacket.class) {
+
         }
         return null;
     }
@@ -46,7 +48,8 @@ public abstract class Packet {
         PING(3, PingPacket.class),
         PONG(4, PongPacket.class),
         START(5, StartPacket.class),
-        END(7, EndPacket.class);
+        END(7, EndPacket.class),
+        STATE_CHANGE(8, StateChangePacket.class);
 
         public int i;
         public Class<? extends Packet> cls;

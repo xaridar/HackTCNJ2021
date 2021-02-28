@@ -17,11 +17,12 @@ public abstract class Level {
         level = setLevel();
         setSpawnPoint(setSpawnPoint());
         endPoint = setEndPoint();
-        level[endPoint.x][endPoint.y].getInfo().setEndPoint(true);
+        level[endPoint.x][endPoint.y].getInfo().setEndPoint();
 
         level = setObjects(level);
 
         Board.board = level;
+        Board.lastBoard = level;
     }
 
     public abstract Tile[][] setLevel();
@@ -30,7 +31,7 @@ public abstract class Level {
 
     public void setSpawnPoint(Point spawnPoint) {
         this.spawnPoint = spawnPoint;
-        level[spawnPoint.x][spawnPoint.y].getInfo().setSpawnPoint(true);
+        level[spawnPoint.x][spawnPoint.y].getInfo().setSpawnPoint();
     }
 
     public abstract Point setEndPoint();

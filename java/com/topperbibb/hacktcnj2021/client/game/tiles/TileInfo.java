@@ -5,14 +5,22 @@ import java.util.ArrayList;
 
 public class TileInfo {
 
+    public enum TileDescriptor {
+        SPAWN_POINT(0), END_POINT(1), NONE(2);
+
+        int i;
+        TileDescriptor(int i) {
+            this.i = i;
+        }
+    }
+
     String sprite;
-    boolean spawnPoint;
-    boolean endPoint;
+    TileDescriptor descriptor;
     ArrayList<TileTags> tags;
 
-    public TileInfo(String sprite, boolean spawnPoint) {
+    public TileInfo(String sprite, TileDescriptor descriptor) {
         this.sprite = sprite;
-        this.spawnPoint = spawnPoint;
+        this.descriptor = descriptor;
     }
 
     public String getSprite() {
@@ -24,16 +32,16 @@ public class TileInfo {
     }
 
     public boolean isSpawnPoint() {
-        return spawnPoint;
+        return descriptor == TileDescriptor.SPAWN_POINT;
     }
 
-    public void setSpawnPoint(boolean spawnPoint) {
-        this.spawnPoint = spawnPoint;
+    public void setSpawnPoint() {
+        this.descriptor = TileDescriptor.SPAWN_POINT;
         sprite = "o";
     }
 
-    public void setEndPoint(boolean endPoint) {
-        this.endPoint = endPoint;
+    public void setEndPoint() {
+        this.descriptor = TileDescriptor.END_POINT;
         sprite = "d";
     }
 
