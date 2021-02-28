@@ -51,6 +51,8 @@ com/topperbibb/hacktcnj2021/shared/PlayerJoinPacket.java
  com.topperbibb.hacktcnj2021.shared.PlayerJoinPacket
 com/topperbibb/hacktcnj2021/client/game/util/PlayerKeyEvent.java
  com.topperbibb.hacktcnj2021.client.game.util.PlayerKeyEvent
+com/topperbibb/hacktcnj2021/server/Config.java
+ com.topperbibb.hacktcnj2021.server.Config
 com/topperbibb/hacktcnj2021/shared/Packet.java
  com.topperbibb.hacktcnj2021.shared.Packet
  com.topperbibb.hacktcnj2021.shared.Packet$PacketType

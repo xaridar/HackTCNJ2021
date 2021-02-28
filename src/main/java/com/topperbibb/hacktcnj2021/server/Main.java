@@ -2,6 +2,10 @@ package com.topperbibb.hacktcnj2021.server;
 
 public class Main {
     public static void main(String[] args) {
-        new Server(443).start();
+        String port = Config.get("port");
+        if (port == null) {
+            port = "3000";
+        }
+        new Server(Integer.parseInt(port)).start();
     }
 }
