@@ -1,15 +1,13 @@
 package com.topperbibb.hacktcnj2021.client.game.levels;
 
-import com.topperbibb.hacktcnj2021.client.User;
+import com.topperbibb.hacktcnj2021.client.game.user.MovableUser;
 import com.topperbibb.hacktcnj2021.client.game.graphics.SpriteInfo;
-import com.topperbibb.hacktcnj2021.client.game.graphics.Spritesheet;
 import com.topperbibb.hacktcnj2021.client.game.objects.TestObject;
 import com.topperbibb.hacktcnj2021.client.game.tiles.Tile;
 import com.topperbibb.hacktcnj2021.client.game.tiles.TileInfo;
 import com.topperbibb.hacktcnj2021.client.game.tiles.TileTags;
 import com.topperbibb.hacktcnj2021.client.game.util.PlayerKeyEvent;
 
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -35,7 +33,7 @@ public class TestLevel extends Level{
         };
     }
 
-    public TestLevel(User player) {
+    public TestLevel(MovableUser player) {
         super();
         this.player = player;
     }
