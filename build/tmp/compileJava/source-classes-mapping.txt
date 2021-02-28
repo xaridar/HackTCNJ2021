@@ -1,7 +1,5 @@
 com/topperbibb/hacktcnj2021/server/Connection.java
  com.topperbibb.hacktcnj2021.server.Connection
- com.topperbibb.hacktcnj2021.server.Connection$1
- com.topperbibb.hacktcnj2021.server.Connection$2
 com/topperbibb/hacktcnj2021/client/UserManager.java
  com.topperbibb.hacktcnj2021.client.UserManager
 com/topperbibb/hacktcnj2021/client/game/tiles/Tile.java
