@@ -43,11 +43,11 @@ public class TestLevel extends Level{
     @Override
     public Map<String, Tile> mapObjects() {
         HashMap<String, Tile> map = new HashMap<>();
-        map.put( "_", new Tile(new TileInfo(new SpriteInfo(16, 0, 0), TileInfo.TileDescriptor.NONE, new ArrayList<>(Collections.singletonList(TileTags.WALKABLE)))));
-        map.put( "#", new Tile(new TileInfo(new SpriteInfo(16, 128, 0), TileInfo.TileDescriptor.NONE, new ArrayList<>(Collections.emptyList()))) );
-        map.put( "o", new Tile(new TileInfo(new SpriteInfo(16, 0, 0), TileInfo.TileDescriptor.SPAWN_POINT, new ArrayList<>(Collections.singletonList(TileTags.WALKABLE)))));
-        map.put( "d", new Tile(new TileInfo(new SpriteInfo(16, 96, 48), TileInfo.TileDescriptor.END_POINT, new ArrayList<>(Collections.singletonList(TileTags.WALKABLE)))));
-        map.put( "t", new Tile(new TileInfo(new SpriteInfo(16, 0, 0), TileInfo.TileDescriptor.NONE, new ArrayList<>(Collections.singletonList(TileTags.WALKABLE))), new TestObject(new SpriteInfo(16, 80, 48))));
+        map.put( "_", new Tile(new TileInfo(SpriteInfo.sprites.get("Basic_ground"), TileInfo.TileDescriptor.CAN_SPAWN, new ArrayList<>(Collections.singletonList(TileTags.WALKABLE)))));
+        map.put( "#", new Tile(new TileInfo(SpriteInfo.sprites.get("Wall"), TileInfo.TileDescriptor.NO_SPAWN, new ArrayList<>(Collections.emptyList()))) );
+        map.put( "o", new Tile(new TileInfo(SpriteInfo.sprites.get("Basic_ground"), TileInfo.TileDescriptor.SPAWN_POINT, new ArrayList<>(Collections.singletonList(TileTags.WALKABLE)))));
+        map.put( "d", new Tile(new TileInfo(SpriteInfo.sprites.get("End"), TileInfo.TileDescriptor.END_POINT, new ArrayList<>(Collections.singletonList(TileTags.WALKABLE)))));
+        map.put( "t", new Tile(new TileInfo(SpriteInfo.sprites.get("Basic_ground"), TileInfo.TileDescriptor.NO_SPAWN, new ArrayList<>(Collections.singletonList(TileTags.WALKABLE))), new TestObject(SpriteInfo.sprites.get("Crate"))));
         return map;
     }
 
