@@ -30,7 +30,8 @@ public abstract class Packet {
         } else if (packetType == PongPacket.class) {
             return new PongPacket();
         } else if (packetType == StartPacket.class) {
-            return new StartPacket();
+            StartPacket.PlayerType playerType = StartPacket.PlayerType.forInt(inputStream.read());
+            return new StartPacket(playerType);
         } else if (packetType == EndPacket.class) {
             return new EndPacket();
         } else if (packetType == StateChangePacket.class) {
