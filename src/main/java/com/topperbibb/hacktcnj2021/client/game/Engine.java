@@ -116,16 +116,14 @@ public class Engine implements KeyListener {
             }
         }
         objectPanels = renderer.renderObjects(spriteSize, scale);
-        int index = 0;
+
         for (JPanel object : objectPanels) {
-            renderer.add(object, index);
-            index++;
+            renderer.add(object, 0);
         }
         renderer.remove(playerPanel);
-        renderer.add(playerPanel, index);
-//
+        renderer.add(playerPanel, JLayeredPane.POPUP_LAYER);
+
         window.revalidate();
-        window.pack();
     }
 
     public Level getCurrLevel() {
