@@ -2,12 +2,14 @@ package com.topperbibb.hacktcnj2021.client.game.user;
 
 import com.topperbibb.hacktcnj2021.client.Client;
 import com.topperbibb.hacktcnj2021.client.game.Board;
+import com.topperbibb.hacktcnj2021.client.game.Engine;
 import com.topperbibb.hacktcnj2021.client.game.graphics.SpriteInfo;
 import com.topperbibb.hacktcnj2021.client.game.graphics.Spritesheet;
 import com.topperbibb.hacktcnj2021.client.game.objects.BoardObject;
 import com.topperbibb.hacktcnj2021.client.game.objects.Key;
 import com.topperbibb.hacktcnj2021.client.game.objects.Player;
 import com.topperbibb.hacktcnj2021.client.game.objects.RigidBoardObject;
+import com.topperbibb.hacktcnj2021.client.game.tiles.Tile;
 import com.topperbibb.hacktcnj2021.client.game.tiles.TileTags;
 
 import java.util.Map;
@@ -25,8 +27,14 @@ public class MovableUser extends NetUser implements Player {
     Map<PlayerSprite, SpriteInfo> sprites;
     boolean isOverseer;
 
-    public MovableUser(){
+    public MovableUser() {
 
+    }
+
+    public MovableUser(Map<PlayerSprite, SpriteInfo> sprites) {
+        this.x = 0;
+        this.y = 0;
+        this.sprites = sprites;
     }
 
     public MovableUser(int x, int y, Map<PlayerSprite, SpriteInfo> sprites) {
@@ -38,25 +46,25 @@ public class MovableUser extends NetUser implements Player {
     public boolean move(int directionX, int directionY) {
         int temp_x = x + directionX;
         int temp_y = y + directionY;
-        if(Board.board[temp_y][temp_x].hasTag(TileTags.WALKABLE)) {
-            if(Board.board[temp_y][temp_x].getObject() != null && Board.board[temp_y][temp_x].getObject() instanceof RigidBoardObject) {
-                RigidBoardObject object = (RigidBoardObject)Board.board[temp_y][temp_x].getObject();
-                if(object.move(directionX, directionY)) {
+        Tile tile = Board.board[temp_y][temp_x];
+        if (tile.hasTag(TileTags.WALKABLE)) {
+            if (tile.getObject() != null && tile.getObject() instanceof RigidBoardObject) {
+                RigidBoardObject object = (RigidBoardObject) tile.getObject();
+                if (object.move(directionX, directionY)) {
                     x = temp_x;
                     y = temp_y;
                     return true;
-                }
-                else {
+                } else {
                     return false;
                 }
-            }else if(Board.board[temp_y][temp_x].getObject() != null && Board.board[temp_y][temp_x].getObject() instanceof Key){
+            } else if (tile.getObject() != null && tile.getObject() instanceof Key) {
                 System.out.println("true");
-                ((Key) Board.board[temp_y][temp_x].getObject()).collect();
+                ((Key) tile.getObject()).collect();
             }
             x = temp_x;
             y = temp_y;
             return true;
-        }else{
+        } else {
             return false;
         }
     }
@@ -104,7 +112,15 @@ public class MovableUser extends NetUser implements Player {
     }
 
     public void die() {
-        this.x = Board.getSpawnTile(Board.board).getX();
-        this.y = Board.getSpawnTile(Board.board).getY();
+        System.out.println("died");
+        System.out.println(Engine.getInstance().getCurrLevel().getKeys());
+        System.out.println(Engine.loadOrder[Engine.loadIndex]);
+        for (Key key : Engine.getInstance().getCurrLevel().getKeys()) {
+            System.out.println("keys replaced");
+            Board.board[key.getX()][key.getY()].setObject(key);
+        }
+        System.out.println(Board.getSpawnTile().getY() + ", " + Board.getSpawnTile().getX());
+        this.x = Board.getSpawnTile().getY();
+        this.y = Board.getSpawnTile().getX();
     }
 }

@@ -18,21 +18,33 @@ public abstract class Level {
     StaticUser staticUser;
     ArrayList<Key> keys = new ArrayList<>();
     int levelCountdown = -1;
+    Tile spawnTile;
+    Tile endTile;
 
-    public Level(){
+    public Level(MovableUser movableUser, StaticUser staticUser){
+        this.movableUser = movableUser;
+        this.staticUser = staticUser;
+
         level = Board.loadBoard(setLevel(), mapObjects());
 
         for (int x = 0; x < level.length; x++) {
             for (int y = 0; y < level[x].length; y++) {
                 if(level[x][y].getObject()!=null && level[x][y].getObject() instanceof Key) {
                     keys.add((Key) level[x][y].getObject());
-                    System.out.println(((Key) level[x][y].getObject()).getX() + ", " +((Key) level[x][y].getObject()).getY());
+                    System.out.println("Key: "+ level[x][y].getObject().getX() + ", " +level[x][y].getObject().getY());
+                }
+                if(level[x][y].getInfo().isSpawnPoint()) {
+                    spawnTile = level[x][y];
+                }else if(level[x][y].getInfo().isEndPoint()) {
+                    endTile = level[x][y];
                 }
             }
         }
 
         Board.board = level;
         Board.lastBoard = level;
+
+        movableUser.setPos(Board.getSpawnTile(Board.board).getY(), Board.getSpawnTile(Board.board).getX());
     }
 
     public abstract String[][] setLevel();
@@ -63,16 +75,40 @@ public abstract class Level {
 
     public boolean isWinnable() {
         if(levelCountdown == 0) {
+            System.out.println("Countdown finished");
             return false;
         }
         if(keys.size() == 0) {
+            System.out.println("No keys");
             return true;
         }
         for (Key key : keys) {
             if(!key.isCollected()) {
+                System.out.println("Some keys are uncollected");
                 return false;
             }
         }
+        System.out.println("All keys collected");
         return true;
+    }
+
+    public Tile[][] getLevel() {
+        return level;
+    }
+
+    public ArrayList<Key> getKeys() {
+        return keys;
+    }
+
+    public Tile getSpawnTile() {
+        return spawnTile;
+    }
+
+    public void setSpawnTile(Tile spawnTile) {
+        this.spawnTile = spawnTile;
+    }
+
+    public Tile getEndTile() {
+        return endTile;
     }
 }

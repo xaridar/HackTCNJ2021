@@ -15,6 +15,8 @@ import java.util.Map;
 public class Board {
     public static Tile[][] lastBoard;
     public static Tile[][] board;
+    private static Tile spawnTile;
+    private static Tile endTile;
 
     public static Tile[][] loadBoard(String[][] arrayBoard, Map<String, Tile> map) {
         Tile[][] tempBoard = new Tile[arrayBoard.length][arrayBoard[0].length];
@@ -39,6 +41,10 @@ public class Board {
         return Arrays.stream(board).flatMap(Arrays::stream).filter(tile -> tile.getInfo().isSpawnPoint()).findFirst().orElse(null);
     }
 
+    public static Tile getSpawnTile() {
+        return spawnTile;
+    }
+
     public static void setSpawn(int x, int y) {
         System.out.println(x + ", " + y);
         getSpawnTile(board).getInfo().removeSpawnPoint();
@@ -48,6 +54,15 @@ public class Board {
     public static void setSpawn(Tile spawn) {
         getSpawnTile(board).getInfo().removeSpawnPoint();
         spawn.getInfo().setSpawnPoint();
+        spawnTile = spawn;
+    }
+
+    public static Tile getEndTile() {
+        return endTile;
+    }
+
+    public static void setEndTile(Tile endTile) {
+        Board.endTile = endTile;
     }
 
     public static void moveObj(Tile fromTile, Tile toTile) {

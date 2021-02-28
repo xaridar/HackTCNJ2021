@@ -1,14 +1,11 @@
 package com.topperbibb.hacktcnj2021.client.game;
 
-import com.topperbibb.hacktcnj2021.client.game.graphics.FlipEnum;
-import com.topperbibb.hacktcnj2021.client.game.tiles.Tile;
+import com.topperbibb.hacktcnj2021.client.game.levels.*;
 import com.topperbibb.hacktcnj2021.client.game.tiles.TileInfo;
 import com.topperbibb.hacktcnj2021.client.game.user.MovableUser;
 import com.topperbibb.hacktcnj2021.client.game.graphics.LevelRenderer;
 import com.topperbibb.hacktcnj2021.client.game.graphics.SpriteInfo;
 import com.topperbibb.hacktcnj2021.client.game.graphics.Spritesheet;
-import com.topperbibb.hacktcnj2021.client.game.levels.Level;
-import com.topperbibb.hacktcnj2021.client.game.levels.TestLevel;
 import com.topperbibb.hacktcnj2021.client.game.user.NetUser;
 import com.topperbibb.hacktcnj2021.client.game.user.StaticUser;
 
@@ -30,6 +27,9 @@ public class Engine implements KeyListener, MouseListener {
     public static final int PIXEL_SCALE = 4;
     public static final int TILE_SIZE = 16;
 
+    public static Level[] loadOrder;
+
+    public static int loadIndex = 0;
     private Level currLevel;
     private Spritesheet spritesheet;
     private LevelRenderer renderer;
@@ -63,7 +63,19 @@ public class Engine implements KeyListener, MouseListener {
         playerSprites.put(MovableUser.PlayerSprite.UP2, SpriteInfo.sprites.get("Player_up_2"));
         playerSprites.put(MovableUser.PlayerSprite.DOWN, SpriteInfo.sprites.get("Player_down_1"));
         playerSprites.put(MovableUser.PlayerSprite.DOWN2, SpriteInfo.sprites.get("Player_down_2"));
-        currLevel = new TestLevel(new MovableUser(1, 1, playerSprites), new StaticUser());
+//        currLevel = new TestLevel(new MovableUser(1, 1, playerSprites), new StaticUser());
+        MovableUser movableUser= new MovableUser(playerSprites);
+        StaticUser staticUser = new StaticUser();
+        loadOrder = new Level[]{
+                new Tutorial(movableUser, staticUser),
+                new Wall(movableUser, staticUser),
+                new KeyShowcase(movableUser, staticUser),
+                new TestLevel(movableUser, staticUser)
+        };
+        currLevel = loadOrder[loadIndex];
+        Board.board = currLevel.getLevel();
+        Board.setEndTile(currLevel.getEndTile());
+        currLevel.getMovableUser().setPos(Board.getSpawnTile(Board.board).getY(), Board.getSpawnTile(Board.board).getX());
         localUser = currLevel.getMovableUser();
         spritesheet = new Spritesheet("/tiles.png");
     }
@@ -173,7 +185,7 @@ public class Engine implements KeyListener, MouseListener {
     @Override
     public void keyPressed(KeyEvent e) {
         if (localUser instanceof MovableUser) {
-            MovableUser user = (MovableUser) localUser;
+            MovableUser user = currLevel.getMovableUser();
             switch (e.getKeyChar()) {
                 case 'W':
                 case 'w':
@@ -224,20 +236,36 @@ public class Engine implements KeyListener, MouseListener {
                             lastDir = dir;
                             currLevel.incrementCountdown();
                         }
-                        break;
                     }
+                    break;
                 case 'Q':
                 case 'q':
                     user.die();
                     renderPlayer(user, MovableUser.PlayerSprite.RIGHT);
                     renderObjects();
+                    break;
             }
             if(Board.board[user.getY()][user.getX()].getInfo().isEndPoint() && currLevel.isWinnable()) {
+
+                loadIndex++;
+                currLevel = loadOrder[loadIndex];
+
+                Board.board = currLevel.getLevel();
+                Board.setSpawn(currLevel.getSpawnTile());
+                Board.setEndTile(currLevel.getEndTile());
+                currLevel.getMovableUser().setPos(Board.getSpawnTile(Board.board).getY(), Board.getSpawnTile(Board.board).getX());
+                currLevel.getMovableUser().setPos(Board.getSpawnTile().getY(), Board.getSpawnTile().getX());
+                renderStaticTiles();
+                renderPlayer(currLevel.getMovableUser(), MovableUser.PlayerSprite.RIGHT);
+                renderObjects();
+                renderSpawn();
+                System.out.println(Board.getSpawnTile().getY() + ", " + Board.getSpawnTile().getX());
+                System.out.println(user.getY() + ", " + user.getX());
                 System.out.println("You win!");
             }
         }
         if(e.getKeyChar() == 'r') {
-            currLevel = new TestLevel(currLevel.getMovableUser(), currLevel.getStaticUser());
+            currLevel = loadOrder[loadIndex];
             currLevel.getMovableUser().die();
             renderPlayer(currLevel.getMovableUser(), MovableUser.PlayerSprite.RIGHT);
             renderObjects();
@@ -260,14 +288,15 @@ public class Engine implements KeyListener, MouseListener {
 
     @Override
     public void mouseReleased(MouseEvent e) {
-        if(localUser instanceof StaticUser) {
+//        if(localUser instanceof StaticUser) {
             int x = e.getX()/64;
             int y = e.getY()/64;
             if (Board.board[y][x].getInfo().getDescriptor() == TileInfo.TileDescriptor.CAN_SPAWN) {
+                System.out.println(y + ", " + x);
                 Board.setSpawn(Board.board[y][x]);
                 renderSpawn();
             }
-        }
+//        }
     }
 
     @Override
