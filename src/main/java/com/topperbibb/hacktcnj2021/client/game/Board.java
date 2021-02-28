@@ -4,13 +4,12 @@ import com.topperbibb.hacktcnj2021.client.game.graphics.SpriteInfo;
 import com.topperbibb.hacktcnj2021.client.game.objects.BoardObject;
 import com.topperbibb.hacktcnj2021.client.game.tiles.Tile;
 import com.topperbibb.hacktcnj2021.client.game.tiles.TileInfo;
+import com.topperbibb.hacktcnj2021.client.game.user.MovableUser;
 import com.topperbibb.hacktcnj2021.shared.StateChangePacket;
 
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
 
 public class Board {
     public static Tile[][] lastBoard;
@@ -40,14 +39,26 @@ public class Board {
     }
 
     public static void setSpawn(Tile spawn) {
+        setSpawnNet(spawn);
+        Engine.INSTANCE.applyChanges();
+    }
+
+    public static void setSpawnNet(Tile spawn) {
         getSpawnTile(board).getInfo().removeSpawnPoint();
         spawn.getInfo().setSpawnPoint();
+        Engine.INSTANCE.renderSpawn();
     }
 
     public static void moveObj(Tile fromTile, Tile toTile) {
         BoardObject obj = fromTile.getObject();
         fromTile.setObject(null);
         toTile.setObject(obj);
+        obj.setPos(toTile.getX(), toTile.getY());
+        Engine.INSTANCE.renderObjects();
+        if (obj instanceof MovableUser) {
+            obj.setPos(toTile.getY(), toTile.getX());
+            Engine.INSTANCE.renderPlayer(((MovableUser) obj), MovableUser.PlayerSprite.RIGHT);
+        }
     }
 
     public static StateChangePacket.ChangeList findChanges(Tile[][] oldBoard, Tile[][] newBoard) {
@@ -59,11 +70,15 @@ public class Board {
                         BoardObject obj = newBoard[x][y].getObject();
                         Tile oldTile = getTileForObject(obj, oldBoard);
                         Tile newTile = newBoard[x][y];
-                        changes.add(new StateChangePacket.Change(oldTile, newTile));
+                        if (obj instanceof MovableUser) {
+                            changes.add(new StateChangePacket.Change(oldTile.getX(), oldTile.getY(), newTile.getX(), newTile.getY()));
+                        } else {
+                            changes.add(new StateChangePacket.Change(oldTile.getX(), oldTile.getY(), newTile.getX(), newTile.getY()));
+                        }
                     }
                 }
             }
         }
-        return new StateChangePacket.ChangeList(changes, getSpawnTile(newBoard));
+        return new StateChangePacket.ChangeList(changes, getSpawnTile(newBoard).getX(), getSpawnTile(newBoard).getY());
     }
 }

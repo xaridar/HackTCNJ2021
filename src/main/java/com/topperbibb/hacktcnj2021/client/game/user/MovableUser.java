@@ -2,6 +2,7 @@ package com.topperbibb.hacktcnj2021.client.game.user;
 
 import com.topperbibb.hacktcnj2021.client.Client;
 import com.topperbibb.hacktcnj2021.client.game.Board;
+import com.topperbibb.hacktcnj2021.client.game.Engine;
 import com.topperbibb.hacktcnj2021.client.game.graphics.SpriteInfo;
 import com.topperbibb.hacktcnj2021.client.game.graphics.Spritesheet;
 import com.topperbibb.hacktcnj2021.client.game.objects.BoardObject;
@@ -13,9 +14,25 @@ import java.util.Map;
 
 public class MovableUser extends NetUser implements Player {
 
+    private PlayerSprite currentSprite;
+
     public enum PlayerSprite {
-        DOWN, UP, LEFT, RIGHT,
-        DOWN2, UP2, LEFT2, RIGHT2,
+        DOWN(0), UP(1), LEFT(2), RIGHT(3),
+        DOWN2(4), UP2(5), LEFT2(6), RIGHT2(7);
+
+        public int i;
+        PlayerSprite(int i) {
+            this.i = i;
+        }
+
+        public static PlayerSprite fromInt(int i) {
+            for (PlayerSprite val : values()) {
+                if (val.i == i) {
+                    return val;
+                }
+            }
+            return null;
+        }
     }
 
     // game variables
@@ -33,6 +50,9 @@ public class MovableUser extends NetUser implements Player {
         this.y = y;
         this.sprites = sprites;
     }
+    public MovableUser(int id, boolean host) {
+        super(id, host);
+    }
 
     public boolean move(int directionX, int directionY) {
         int temp_x = x + directionX;
@@ -41,16 +61,22 @@ public class MovableUser extends NetUser implements Player {
             if(Board.board[temp_y][temp_x].getObject() != null && Board.board[temp_y][temp_x].getObject() instanceof RigidBoardObject) {
                 RigidBoardObject object = (RigidBoardObject)Board.board[temp_y][temp_x].getObject();
                 if(object.move(directionX, directionY)) {
+                    Board.board[y][x].setObject(null);
                     x = temp_x;
                     y = temp_y;
+                    Board.board[y][x].setObject(this);
+                    Engine.INSTANCE.applyChanges();
                     return true;
                 }
                 else {
                     return false;
                 }
             }
+            Board.board[y][x].setObject(null);
             x = temp_x;
             y = temp_y;
+            Board.board[y][x].setObject(this);
+            Engine.INSTANCE.applyChanges();
             return true;
         }else{
             return false;
@@ -68,6 +94,17 @@ public class MovableUser extends NetUser implements Player {
 
     public void setSprite(PlayerSprite which, SpriteInfo sprite) {
         sprites.put(which, sprite);
+    }
+    public void setSprites(Map<PlayerSprite, SpriteInfo> sprites) {
+        this.sprites = sprites;
+    }
+
+    public void setCurrentSprite(PlayerSprite which) {
+        this.currentSprite = which;
+    }
+
+    public PlayerSprite getCurrentSprite() {
+        return currentSprite;
     }
 
     @Override

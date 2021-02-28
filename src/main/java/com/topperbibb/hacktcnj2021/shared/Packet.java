@@ -1,6 +1,7 @@
 package com.topperbibb.hacktcnj2021.shared;
 
 import com.topperbibb.hacktcnj2021.client.game.Board;
+import com.topperbibb.hacktcnj2021.client.game.user.MovableUser;
 
 import java.io.*;
 import java.lang.reflect.Array;
@@ -45,9 +46,9 @@ public abstract class Packet {
                 int oldY = inputStream.read();
                 int newX = inputStream.read();
                 int newY = inputStream.read();
-                changes.add(new StateChangePacket.Change(Board.board[oldX][oldY], Board.board[newX][newY]));
+                changes.add(new StateChangePacket.Change(oldX, oldY, newX, newY));
             }
-            return new StateChangePacket(id, new StateChangePacket.ChangeList(changes, Board.board[spawnX][spawnY]));
+            return new StateChangePacket(id, new StateChangePacket.ChangeList(changes, spawnX, spawnY));
         }
         return null;
     }

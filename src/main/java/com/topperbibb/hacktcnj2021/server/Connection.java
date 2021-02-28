@@ -46,6 +46,11 @@ public class Connection implements Runnable {
         host = RoomManager.getAllConnections(room).stream().noneMatch(conn -> conn.host);
         sendPacket(new ConnectPacket(id, host));
         RoomManager.getAllConnections(room).forEach(conn -> conn.sendPacket(new PlayerJoinPacket(id, host)));
+        for (Connection c : RoomManager.getAllConnections(room)) {
+            if (c != this) {
+                sendPacket(new PlayerJoinPacket(c.id, c.host));
+            }
+        }
         this.room.checkForStart();
         resetPing();
     }

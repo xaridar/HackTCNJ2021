@@ -11,7 +11,7 @@ public class Client implements Runnable {
 
     private final String host;
     private final int port;
-    public final NetUser user;
+    public NetUser user;
 
     private Socket socket;
     private DataInputStream in;

@@ -2,7 +2,9 @@ package com.topperbibb.hacktcnj2021.shared;
 
 import com.topperbibb.hacktcnj2021.client.game.Board;
 import com.topperbibb.hacktcnj2021.client.game.objects.BoardObject;
+import com.topperbibb.hacktcnj2021.client.game.objects.Player;
 import com.topperbibb.hacktcnj2021.client.game.tiles.Tile;
+import com.topperbibb.hacktcnj2021.client.game.user.MovableUser;
 
 import java.io.ByteArrayOutputStream;
 import java.util.List;
@@ -30,14 +32,14 @@ public class StateChangePacket extends Packet {
         if (changes == null) {
             changes = Board.findChanges(oldBoard, board);
         }
-        boardState.write(changes.newSpawn.getX());
-        boardState.write(changes.newSpawn.getY());
+        boardState.write(changes.spawnX);
+        boardState.write(changes.spawnY);
         boardState.write(changes.changes.size());
         for (Change ch : changes.changes) {
-            boardState.write(ch.oldTile.getX());
-            boardState.write(ch.oldTile.getY());
-            boardState.write(ch.newTile.getX());
-            boardState.write(ch.newTile.getY());
+            boardState.write(ch.oldTileX);
+            boardState.write(ch.oldTileY);
+            boardState.write(ch.newTileX);
+            boardState.write(ch.newTileY);
         }
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -49,21 +51,27 @@ public class StateChangePacket extends Packet {
     }
 
     public static class Change {
-        public Tile oldTile;
-        public Tile newTile;
+        public int oldTileX;
+        public int oldTileY;
+        public int newTileX;
+        public int newTileY;
 
-        public Change(Tile oldTile, Tile newTile) {
-            this.newTile = newTile;
+        public Change(int oldTileX, int oldTileY, int newTileX, int newTileY) {
+            this.oldTileX = oldTileX;
+            this.oldTileY = oldTileY;
+            this.newTileX = newTileX;
+            this.newTileY = newTileY;
         }
     }
 
     public static class ChangeList {
         public List<Change> changes;
-        public Tile newSpawn;
+        public int spawnX, spawnY;
 
-        public ChangeList(List<Change> changes, Tile newSpawn) {
+        public ChangeList(List<Change> changes, int spawnX, int spawnY) {
             this.changes = changes;
-            this.newSpawn = newSpawn;
+            this.spawnX = spawnX;
+            this.spawnY = spawnY;
         }
     }
 }
