@@ -49,6 +49,10 @@ public class TileInfo {
         sprite = SpriteInfo.sprites.get("Basic_ground");
     }
 
+    public boolean isEndPoint() {
+        return descriptor == TileDescriptor.END_POINT;
+    }
+
     public void setEndPoint() {
         this.descriptor = TileDescriptor.END_POINT;
     }
@@ -63,5 +67,9 @@ public class TileInfo {
 
     public TileDescriptor getDescriptor() {
         return descriptor;
+    }
+
+    public void setDescriptor(TileDescriptor descriptor) {
+        this.descriptor = descriptor;
     }
 }

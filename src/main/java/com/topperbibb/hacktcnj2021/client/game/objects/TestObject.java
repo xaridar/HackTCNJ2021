@@ -3,6 +3,8 @@ package com.topperbibb.hacktcnj2021.client.game.objects;
 import com.topperbibb.hacktcnj2021.client.game.Board;
 import com.topperbibb.hacktcnj2021.client.game.Engine;
 import com.topperbibb.hacktcnj2021.client.game.graphics.SpriteInfo;
+import com.topperbibb.hacktcnj2021.client.game.tiles.Tile;
+import com.topperbibb.hacktcnj2021.client.game.tiles.TileInfo;
 import com.topperbibb.hacktcnj2021.client.game.tiles.TileTags;
 
 public class TestObject implements RigidBoardObject{
@@ -30,9 +32,11 @@ public class TestObject implements RigidBoardObject{
         if(Board.board[temp_x][temp_y].hasTag(TileTags.WALKABLE)) {
             if(Board.board[temp_x][temp_y].getObject()==null) {
                 Board.board[x][y].setObject(null);
+                Board.board[x][y].getInfo().setDescriptor(TileInfo.TileDescriptor.CAN_SPAWN);
                 x = temp_x;
                 y = temp_y;
                 Board.board[x][y].setObject(this);
+                Board.board[x][y].getInfo().setDescriptor(TileInfo.TileDescriptor.NO_SPAWN);
                 return true;
             }
         }

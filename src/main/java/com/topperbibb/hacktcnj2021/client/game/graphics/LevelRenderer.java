@@ -1,6 +1,7 @@
 package com.topperbibb.hacktcnj2021.client.game.graphics;
 
 import com.topperbibb.hacktcnj2021.client.game.Engine;
+import com.topperbibb.hacktcnj2021.client.game.objects.Key;
 import com.topperbibb.hacktcnj2021.client.game.user.MovableUser;
 import com.topperbibb.hacktcnj2021.client.game.Board;
 
@@ -68,7 +69,8 @@ public class LevelRenderer extends JLayeredPane {
                     Image scaledImage = img.getScaledInstance(Engine.PIXEL_SCALE * sprite.size, Engine.PIXEL_SCALE * sprite.size, Image.SCALE_DEFAULT);
                     panel.setBackground(new Color(0, 0, 0, 0));
                     panel.add(new JLabel(new ImageIcon(scaledImage)));
-                    panel.setBounds(sprite.size * Engine.PIXEL_SCALE * j, sprite.size * Engine.PIXEL_SCALE * i, sprite.size * Engine.PIXEL_SCALE, sprite.size * Engine.PIXEL_SCALE);
+                    panel.setBounds(Engine.TILE_SIZE * Engine.PIXEL_SCALE * j + (Engine.TILE_SIZE/sprite.size) * Engine.PIXEL_SCALE, Engine.TILE_SIZE * Engine.PIXEL_SCALE * i + (Engine.TILE_SIZE/sprite.size) * Engine.PIXEL_SCALE, sprite.size * Engine.PIXEL_SCALE, sprite.size * Engine.PIXEL_SCALE);
+
                     out.add(panel);
                 }
 

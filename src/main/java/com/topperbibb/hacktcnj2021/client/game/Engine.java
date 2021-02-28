@@ -30,6 +30,7 @@ public class Engine implements KeyListener, MouseListener {
     private NetUser localUser;
 
     public static final int PIXEL_SCALE = 4;
+    public static final int TILE_SIZE = 16;
 
     private Level currLevel;
     private Spritesheet spritesheet;
@@ -196,6 +197,7 @@ public class Engine implements KeyListener, MouseListener {
                             renderPlayer(user, dir);
                             renderObjects();
                             lastDir = dir;
+                            currLevel.incrementCountdown();
                         }
                         keyPressed = System.currentTimeMillis();
                     }
@@ -208,6 +210,7 @@ public class Engine implements KeyListener, MouseListener {
                             renderPlayer(user, dir);
                             renderObjects();
                             lastDir = dir;
+                            currLevel.incrementCountdown();
                         }
                         keyPressed = System.currentTimeMillis();
                     }
@@ -220,6 +223,7 @@ public class Engine implements KeyListener, MouseListener {
                             renderPlayer(user, dir);
                             renderObjects();
                             lastDir = dir;
+                            currLevel.incrementCountdown();
                         }
                         keyPressed = System.currentTimeMillis();
                     }
@@ -232,10 +236,25 @@ public class Engine implements KeyListener, MouseListener {
                             renderPlayer(user, dir);
                             renderObjects();
                             lastDir = dir;
+                            currLevel.incrementCountdown();
                         }
                         break;
                     }
+                case 'Q':
+                case 'q':
+                    user.die();
+                    renderPlayer(user, MovableUser.PlayerSprite.RIGHT);
+                    renderObjects();
             }
+            if(Board.board[user.getY()][user.getX()].getInfo().isEndPoint() && currLevel.isWinnable()) {
+                System.out.println("You win!");
+            }
+        }
+        if(e.getKeyChar() == 'r') {
+            currLevel = new TestLevel(currLevel.getMovableUser(), currLevel.getStaticUser());
+            currLevel.getMovableUser().die();
+            renderPlayer(currLevel.getMovableUser(), MovableUser.PlayerSprite.RIGHT);
+            renderObjects();
         }
     }
 

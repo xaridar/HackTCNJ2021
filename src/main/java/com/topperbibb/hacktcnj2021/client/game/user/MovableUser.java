@@ -6,6 +6,7 @@ import com.topperbibb.hacktcnj2021.client.game.Engine;
 import com.topperbibb.hacktcnj2021.client.game.graphics.SpriteInfo;
 import com.topperbibb.hacktcnj2021.client.game.graphics.Spritesheet;
 import com.topperbibb.hacktcnj2021.client.game.objects.BoardObject;
+import com.topperbibb.hacktcnj2021.client.game.objects.Key;
 import com.topperbibb.hacktcnj2021.client.game.objects.Player;
 import com.topperbibb.hacktcnj2021.client.game.objects.RigidBoardObject;
 import com.topperbibb.hacktcnj2021.client.game.tiles.TileTags;
@@ -71,6 +72,9 @@ public class MovableUser extends NetUser implements Player {
                 else {
                     return false;
                 }
+            }else if(Board.board[temp_y][temp_x].getObject() != null && Board.board[temp_y][temp_x].getObject() instanceof Key){
+                System.out.println("true");
+                ((Key) Board.board[temp_y][temp_x].getObject()).collect();
             }
             Board.board[y][x].setObject(null);
             x = temp_x;
@@ -134,5 +138,10 @@ public class MovableUser extends NetUser implements Player {
 
     public void setOverseer(boolean overseer) {
         isOverseer = overseer;
+    }
+
+    public void die() {
+        this.x = Board.getSpawnTile(Board.board).getX();
+        this.y = Board.getSpawnTile(Board.board).getY();
     }
 }

@@ -23,6 +23,7 @@ public class Config {
         sprites.put("Wall", new SpriteInfo(16, 128, 0));
         sprites.put("End", new SpriteInfo(16, 96, 48));
         sprites.put("Crate", new SpriteInfo(16, 80, 48));
+        sprites.put("Key", new SpriteInfo(8, 56, 56));
 
         sprites.put("Spawn_point", new SpriteInfo(16, 128, 24));
 
