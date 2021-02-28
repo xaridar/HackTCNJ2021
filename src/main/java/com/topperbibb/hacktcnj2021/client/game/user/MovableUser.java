@@ -88,7 +88,7 @@ public class MovableUser extends NetUser implements Player {
 
     @Override
     public BoardObject copy() {
-        return new User(x, y, sprites);
+        return new MovableUser(x, y, sprites);
     }
 
     public boolean isOverseer() {

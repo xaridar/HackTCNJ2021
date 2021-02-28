@@ -6,6 +6,7 @@ import com.topperbibb.hacktcnj2021.client.game.objects.TestObject;
 import com.topperbibb.hacktcnj2021.client.game.tiles.Tile;
 import com.topperbibb.hacktcnj2021.client.game.tiles.TileInfo;
 import com.topperbibb.hacktcnj2021.client.game.tiles.TileTags;
+import com.topperbibb.hacktcnj2021.client.game.user.StaticUser;
 import com.topperbibb.hacktcnj2021.client.game.util.PlayerKeyEvent;
 
 import java.util.ArrayList;
@@ -33,9 +34,10 @@ public class TestLevel extends Level{
         };
     }
 
-    public TestLevel(MovableUser player) {
+    public TestLevel(MovableUser movableUser, StaticUser staticUser) {
         super();
-        this.player = player;
+        this.movableUser = movableUser;
+        this.staticUser = staticUser;
     }
 
     @Override

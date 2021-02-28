@@ -3,13 +3,17 @@ package com.topperbibb.hacktcnj2021.client.game.levels;
 import com.topperbibb.hacktcnj2021.client.game.user.MovableUser;
 import com.topperbibb.hacktcnj2021.client.game.Board;
 import com.topperbibb.hacktcnj2021.client.game.tiles.Tile;
+import com.topperbibb.hacktcnj2021.client.game.user.NetUser;
+import com.topperbibb.hacktcnj2021.client.game.user.StaticUser;
 import com.topperbibb.hacktcnj2021.client.game.util.PlayerKeyEvent;
 
+import javax.swing.plaf.basic.BasicInternalFrameTitlePane;
 import java.util.Map;
 
 public abstract class Level {
     private Tile[][] level;
-    MovableUser player;
+    MovableUser movableUser;
+    StaticUser staticUser;
 
     public Level(){
         level = Board.loadBoard(setLevel(), mapObjects());
@@ -26,11 +30,19 @@ public abstract class Level {
 
     }
 
-    public MovableUser getPlayer() {
-        return player;
+    public MovableUser getMovableUser() {
+        return movableUser;
     }
 
-    public void setPlayer(MovableUser player) {
-        this.player = player;
+    public void setMovableUser(MovableUser movableUser) {
+        this.movableUser = movableUser;
+    }
+
+    public StaticUser getStaticUser() {
+        return staticUser;
+    }
+
+    public void setStaticUser(StaticUser staticUser) {
+        this.staticUser = staticUser;
     }
 }
