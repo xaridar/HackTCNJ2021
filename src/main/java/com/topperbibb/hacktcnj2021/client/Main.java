@@ -13,6 +13,6 @@ import java.util.Scanner;
 public class Main {
     public static void main(String[] args) {
         User u = new User();
-        new Client("hacktcnj-2021.herokuapp.com", 443, u).connect();
+        new Client("127.0.0.1", 443, u).connect();
     }
 }

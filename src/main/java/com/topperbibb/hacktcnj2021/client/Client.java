@@ -57,6 +57,7 @@ public class Client implements Runnable {
         try {
             while (running) {
                 int len = in.read();
+                if (len < 0) continue;
                 Packet p = Packet.from(in.readNBytes(len));
                 listener.received(p, this);
             }

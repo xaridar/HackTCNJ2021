@@ -26,26 +26,7 @@ public class Connection implements Runnable {
     private ServerEventListener listener;
 
     public boolean lookingForPong;
-    public Timer pingTimer;
-
-    Runnable ping = new Runnable() {
-
-        @Override
-        public void run() {
-            lookingForPong = true;
-            sendPacket(new PingPacket());
-            System.out.println("PING sent!");
-
-            try {
-                Thread.sleep(10000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-
-            lookingForPong = false;
-            room.sendPlayerLeave(Connection.this);
-        }
-    };
+    public Thread pingThread;
 
     public Connection(Socket socket) {
         this.socket = socket;
@@ -95,22 +76,41 @@ public class Connection implements Runnable {
     }
 
     public void resetPing() {
-        if (pingTimer != null) {
-            pingTimer.cancel();
+        if (pingThread != null) {
+            pingThread.stop();
         }
+        if (socket.isClosed()) return;
 
         lookingForPong = false;
-        pingTimer = new Timer();
-        pingTimer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                ping.run();
+        pingThread = new Thread(() -> {
+
+            try {
+                Thread.sleep(10000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
-        }, 10000);
+            lookingForPong = true;
+            sendPacket(new PingPacket());
+            System.out.println("PING sent!");
+
+            try {
+                Thread.sleep(10000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            if (socket.isClosed()) return;
+            lookingForPong = false;
+            room.sendPlayerLeave(Connection.this);
+            pingThread.stop();
+        });
+        pingThread.start();
 
     }
 
     public void close() {
+        if (pingThread != null) {
+            pingThread.stop();
+        }
         try {
             socket.close();
             in.close();

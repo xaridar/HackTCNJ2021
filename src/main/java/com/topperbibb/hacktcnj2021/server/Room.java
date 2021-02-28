@@ -45,7 +45,6 @@ public class Room {
         host[0].sendPacket(new PlayerLeavePacket(connection.id, true));
 
         RoomManager.removeConnection(this, connection);
-        if (connection.pingTimer != null) connection.pingTimer.cancel();
         connection.close();
         checkForStart();
     }
