@@ -8,16 +8,18 @@ import com.topperbibb.hacktcnj2021.shared.StateChangePacket;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 public class Board {
     public static Tile[][] lastBoard;
     public static Tile[][] board;
 
-    public static Tile[][] loadBoard(String[][] arrayBoard) {
+    public static Tile[][] loadBoard(String[][] arrayBoard, Map<String, Tile> map) {
         Tile[][] tempBoard = new Tile[arrayBoard.length][arrayBoard[0].length];
         for(int x = 0; x < tempBoard.length; x++) {
             for(int y = 0; y < tempBoard[x].length; y++) {
-                tempBoard[x][y] = new Tile(x, y, new TileInfo(arrayBoard[x][y], TileInfo.TileDescriptor.NONE));
+                tempBoard[x][y] = map.getOrDefault(arrayBoard[x][y], new Tile(x, y, new TileInfo(arrayBoard[x][y], TileInfo.TileDescriptor.NONE)));
+                tempBoard[x][y].setPos(x, y);
             }
         }
         return tempBoard;
