@@ -102,4 +102,9 @@ public class MovableUser extends NetUser implements Player {
     public void setOverseer(boolean overseer) {
         isOverseer = overseer;
     }
+
+    public void die() {
+        this.x = Board.getSpawnTile(Board.board).getX();
+        this.y = Board.getSpawnTile(Board.board).getY();
+    }
 }

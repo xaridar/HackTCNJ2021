@@ -226,10 +226,21 @@ public class Engine implements KeyListener, MouseListener {
                         }
                         break;
                     }
+                case 'Q':
+                case 'q':
+                    user.die();
+                    renderPlayer(user, MovableUser.PlayerSprite.RIGHT);
+                    renderObjects();
             }
             if(Board.board[user.getY()][user.getX()].getInfo().isEndPoint() && currLevel.isWinnable()) {
                 System.out.println("You win!");
             }
+        }
+        if(e.getKeyChar() == 'r') {
+            currLevel = new TestLevel(currLevel.getMovableUser(), currLevel.getStaticUser());
+            currLevel.getMovableUser().die();
+            renderPlayer(currLevel.getMovableUser(), MovableUser.PlayerSprite.RIGHT);
+            renderObjects();
         }
     }
 

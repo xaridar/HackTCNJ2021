@@ -2,6 +2,7 @@ package com.topperbibb.hacktcnj2021.client.game.objects;
 
 import com.topperbibb.hacktcnj2021.client.game.Board;
 import com.topperbibb.hacktcnj2021.client.game.graphics.SpriteInfo;
+import com.topperbibb.hacktcnj2021.client.game.tiles.TileInfo;
 
 public class Key implements BoardObject {
 
@@ -46,6 +47,7 @@ public class Key implements BoardObject {
 
     public void collect() {
         collected = true;
+        Board.getTileForObject(this, Board.board).getInfo().setDescriptor(TileInfo.TileDescriptor.CAN_SPAWN);
         Board.getTileForObject(this, Board.board).setObject(null);
     }
 

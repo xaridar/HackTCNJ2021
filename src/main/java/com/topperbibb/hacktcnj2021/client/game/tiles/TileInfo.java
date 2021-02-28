@@ -68,4 +68,8 @@ public class TileInfo {
     public TileDescriptor getDescriptor() {
         return descriptor;
     }
+
+    public void setDescriptor(TileDescriptor descriptor) {
+        this.descriptor = descriptor;
+    }
 }
