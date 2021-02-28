@@ -23,6 +23,9 @@ jar {
             'Main-Class': 'com.topperbibb.hacktcnj2021.server.Main'
         )
     }
+    from {
+        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+    }
 }
 
 repositories {

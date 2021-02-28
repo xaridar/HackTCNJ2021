@@ -1,1 +1,1 @@
-web: java -Dserver.port=$PORT $JAVA_OPTS -jar build/libs/HackTCNJ2021.jar $PORT
+web: java -Dserver.port=$PORT $JAVA_OPTS -jar build/libs/HackTCNJ2021.jar
