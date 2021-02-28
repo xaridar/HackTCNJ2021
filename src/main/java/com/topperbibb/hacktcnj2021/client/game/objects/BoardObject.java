@@ -13,4 +13,6 @@ public interface BoardObject {
     public int getY();
 
     public void setPos(int x, int y);
+
+    public BoardObject copy();
 }

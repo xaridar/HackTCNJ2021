@@ -74,7 +74,6 @@ public class LevelRenderer extends JLayeredPane {
 
             }
         }
-        System.out.println(out);
         return out;
     }
 }

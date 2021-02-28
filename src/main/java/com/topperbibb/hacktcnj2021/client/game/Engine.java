@@ -73,7 +73,7 @@ public class Engine implements KeyListener {
         renderer.setBounds(0, 0, Board.board[0].length * 16 * 4, Board.board.length * 16 * 4);
 
         levelPanel = new JPanel(new BorderLayout());
-        levelPanel.setBackground(Color.BLACK);
+        levelPanel.setBackground(new Color(0,0,0,0));
         levelPanel.setBounds(0, 0, Board.board[0].length * 16 * 4, Board.board.length * 16 * 4);
         renderer.add(levelPanel, 1000);
 
@@ -121,6 +121,7 @@ public class Engine implements KeyListener {
             renderer.add(object, index);
             index++;
         }
+
         renderer.remove(playerPanel);
         renderer.add(playerPanel, index);
 //

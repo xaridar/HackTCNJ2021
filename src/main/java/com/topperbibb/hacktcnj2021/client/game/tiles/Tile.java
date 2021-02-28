@@ -82,6 +82,6 @@ public class Tile {
     }
 
     public Tile copy() {
-        return new Tile(x, y, new TileInfo(info.sprite, info.descriptor, info.tags), object);
+        return new Tile(x, y, new TileInfo(info.sprite, info.descriptor, info.tags), object != null ? object.copy() : null);
     }
 }
