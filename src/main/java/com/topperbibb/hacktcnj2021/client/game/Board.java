@@ -19,7 +19,7 @@ public class Board {
         Tile[][] tempBoard = new Tile[arrayBoard.length][arrayBoard[0].length];
         for(int x = 0; x < tempBoard.length; x++) {
             for(int y = 0; y < tempBoard[x].length; y++) {
-                tempBoard[x][y] = map.getOrDefault(arrayBoard[x][y], new Tile(x, y, new TileInfo(new SpriteInfo(16, 0, 0), TileInfo.TileDescriptor.NONE)));
+                tempBoard[x][y] = map.getOrDefault(arrayBoard[x][y], new Tile(x, y, new TileInfo(new SpriteInfo(16, 0, 0), TileInfo.TileDescriptor.NONE))).copy();
                 tempBoard[x][y].setPos(x, y);
                 if(tempBoard[x][y].getObject() != null) {
                     tempBoard[x][y].getObject().setPos(x, y);

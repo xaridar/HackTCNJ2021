@@ -80,4 +80,8 @@ public class Tile {
         this.x = x;
         this.y = y;
     }
+
+    public Tile copy() {
+        return new Tile(x, y, new TileInfo(info.sprite, info.descriptor, info.tags), object);
+    }
 }

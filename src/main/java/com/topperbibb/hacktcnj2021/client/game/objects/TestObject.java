@@ -1,6 +1,8 @@
 package com.topperbibb.hacktcnj2021.client.game.objects;
 
+import com.topperbibb.hacktcnj2021.client.game.Board;
 import com.topperbibb.hacktcnj2021.client.game.graphics.SpriteInfo;
+import com.topperbibb.hacktcnj2021.client.game.tiles.TileTags;
 
 public class TestObject implements RigidBoardObject{
 
@@ -22,7 +24,17 @@ public class TestObject implements RigidBoardObject{
 
     @Override
     public boolean move(int directionX, int directionY) {
-        return false;
+        int temp_x = x + directionY;
+        int temp_y = y + directionX;
+        if(Board.board[temp_x][temp_y].hasTag(TileTags.WALKABLE)) {
+            Board.board[x][y].setObject(null);
+            x = temp_x;
+            y = temp_y;
+            Board.board[x][y].setObject(this);
+            return true;
+        }else{
+            return false;
+        }
     }
 
     public int getX() {
