@@ -3,21 +3,16 @@ package com.topperbibb.hacktcnj2021.client;
 import com.topperbibb.hacktcnj2021.client.game.graphics.SpriteInfo;
 import com.topperbibb.hacktcnj2021.client.game.graphics.SpriteRenderer;
 import com.topperbibb.hacktcnj2021.client.game.graphics.Spritesheet;
+import com.topperbibb.hacktcnj2021.shared.PlayerLeavePacket;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
-        Spritesheet sheet = new Spritesheet("/tiles.png");
-        SpriteInfo topLeftInfo = new SpriteInfo(sheet, 16, 96, 48);
-        Image img = new SpriteRenderer().renderSprite(topLeftInfo);
-        JFrame frame = new JFrame();
-        JPanel panel = new JPanel(new BorderLayout());
-        panel.add(new JLabel(new ImageIcon(img)), BorderLayout.CENTER);
-        frame.add(panel);
-        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        frame.pack();
-        frame.setVisible(true);
+        User u = new User();
+        new Client("https://hacktcnj-2021.herokuapp.com/", 3000, u).connect();
     }
 }
