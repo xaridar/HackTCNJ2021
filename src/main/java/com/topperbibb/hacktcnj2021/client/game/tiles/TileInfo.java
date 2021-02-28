@@ -1,5 +1,7 @@
 package com.topperbibb.hacktcnj2021.client.game.tiles;
 
+import com.topperbibb.hacktcnj2021.client.game.graphics.SpriteInfo;
+
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
@@ -14,26 +16,26 @@ public class TileInfo {
         }
     }
 
-    String sprite;
+    SpriteInfo sprite;
     TileDescriptor descriptor;
     ArrayList<TileTags> tags = new ArrayList<>();
 
-    public TileInfo(String sprite, TileDescriptor descriptor, ArrayList<TileTags> tags) {
+    public TileInfo(SpriteInfo sprite, TileDescriptor descriptor, ArrayList<TileTags> tags) {
         this.sprite = sprite;
         this.descriptor = descriptor;
         this.tags = tags;
     }
 
-    public TileInfo(String sprite, TileDescriptor descriptor) {
+    public TileInfo(SpriteInfo sprite, TileDescriptor descriptor) {
         this.sprite = sprite;
         this.descriptor = descriptor;
     }
 
-    public String getSprite() {
+    public SpriteInfo getSprite() {
         return sprite;
     }
 
-    public void setSprite(String sprite) {
+    public void setSprite(SpriteInfo sprite) {
         this.sprite = sprite;
     }
 
@@ -47,7 +49,7 @@ public class TileInfo {
 
     public void removeSpawnPoint() {
         this.descriptor = TileDescriptor.NONE;
-        sprite = "_";
+        sprite = new SpriteInfo(16, 0, 0);
     }
 
     public void setEndPoint() {

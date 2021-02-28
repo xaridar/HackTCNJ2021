@@ -1,10 +1,18 @@
 package com.topperbibb.hacktcnj2021.client.game.objects;
 
+import com.topperbibb.hacktcnj2021.client.game.graphics.SpriteInfo;
+
 /**
  * An interface for non-static objects
  */
 public interface BoardObject {
-    public String getSprite();
+    public SpriteInfo getSprite();
 
-    public void setSprite(String sprite);
+    public void setSprite(SpriteInfo sprite);
+
+    public int getX();
+
+    public int getY();
+
+    public void setPos(int x, int y);
 }
