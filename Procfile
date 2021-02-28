@@ -1,1 +1,1 @@
-web: java -jar out/artifacts/HackTCNJ2021_jar/HackTCNJ2021.jar
+web: java -jar build/libs/HackTCNJ2021.jar
