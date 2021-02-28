@@ -1,5 +1,6 @@
 package com.topperbibb.hacktcnj2021.client;
 
+import com.topperbibb.hacktcnj2021.client.game.Board;
 import com.topperbibb.hacktcnj2021.shared.*;
 
 public class ClientEventListener {
@@ -27,6 +28,11 @@ public class ClientEventListener {
             client.user.id = ((ConnectPacket) p).id;
             client.user.host = ((ConnectPacket) p).host;
             System.out.format("Your ID is: %d%s\n", ((ConnectPacket) p).id, ((ConnectPacket) p).host ? " (You are the host)" : "");
+        } else if (p instanceof StateChangePacket) {
+            Board.setSpawn(((StateChangePacket) p).changes.newSpawn);
+            for (StateChangePacket.Change change : ((StateChangePacket) p).changes.changes) {
+                Board.moveObj(change.oldTile, change.newTile);
+            }
         }
     }
 }

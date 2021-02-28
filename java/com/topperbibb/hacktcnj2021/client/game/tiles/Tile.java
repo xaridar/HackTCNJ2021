@@ -50,4 +50,12 @@ public class Tile {
     public boolean hasTag(TileTags tag) {
         return info.tags.contains(tag);
     }
+
+    public int getX() {
+        return x;
+    }
+
+    public int getY() {
+        return y;
+    }
 }

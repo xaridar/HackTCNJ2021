@@ -49,4 +49,8 @@ public class Room {
         connection.close();
         checkForStart();
     }
+
+    public boolean hasId(int id) {
+        return RoomManager.getAllConnections(this).stream().anyMatch(conn -> conn.id == id);
+    }
 }

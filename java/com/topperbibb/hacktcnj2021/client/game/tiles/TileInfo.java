@@ -40,6 +40,11 @@ public class TileInfo {
         sprite = "o";
     }
 
+    public void removeSpawnPoint() {
+        this.descriptor = TileDescriptor.NONE;
+        sprite = "_";
+    }
+
     public void setEndPoint() {
         this.descriptor = TileDescriptor.END_POINT;
         sprite = "d";

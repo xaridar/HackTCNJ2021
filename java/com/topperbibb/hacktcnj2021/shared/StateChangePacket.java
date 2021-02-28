@@ -10,9 +10,15 @@ import java.util.List;
 public class StateChangePacket extends Packet {
 
     public int id;
+    public ChangeList changes;
 
     public StateChangePacket(int id) {
         this.id = id;
+    }
+
+    public StateChangePacket(int id, ChangeList changes) {
+        this.id = id;
+        this.changes = changes;
     }
 
     @Override
@@ -20,40 +26,43 @@ public class StateChangePacket extends Packet {
         ByteArrayOutputStream boardState = new ByteArrayOutputStream();
         Tile[][] board = Board.board;
         Tile[][] oldBoard = Board.lastBoard;
-
-        ChangeList changes = Board.findChanges(oldBoard, board);
-
+        ChangeList changes = this.changes;
+        if (changes == null) {
+            changes = Board.findChanges(oldBoard, board);
+        }
+        boardState.write(changes.newSpawn.getX());
+        boardState.write(changes.newSpawn.getY());
+        boardState.write(changes.changes.size());
+        for (Change ch : changes.changes) {
+            boardState.write(ch.oldTile.getX());
+            boardState.write(ch.oldTile.getY());
+            boardState.write(ch.newTile.getX());
+            boardState.write(ch.newTile.getY());
+        }
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
+        out.write(boardState.size() + 2);
+        out.write(getTypeInt());
+        out.write(id);
+        out.writeBytes(boardState.toByteArray());
         return out;
     }
 
     public static class Change {
-        Tile oldTile;
-        Tile newTile;
-        BoardObject changed;
-        ChangeType type;
+        public Tile oldTile;
+        public Tile newTile;
 
-        public enum ChangeType {
-            MOVE, REMOVE, ADD,
-        }
-
-        public Change(ChangeType type, Tile oldTile, Tile newTile, BoardObject changed) {
-            this.type = type;
-            this.oldTile = oldTile;
+        public Change(Tile oldTile, Tile newTile) {
             this.newTile = newTile;
-            this.changed = changed;
         }
     }
 
     public static class ChangeList {
-        List<Change> changes;
-        Tile oldSpawn;
-        Tile newSpawn;
+        public List<Change> changes;
+        public Tile newSpawn;
 
-        public ChangeList(List<Change> changes, Tile oldSpawn, Tile newSpawn) {
+        public ChangeList(List<Change> changes, Tile newSpawn) {
             this.changes = changes;
-            this.oldSpawn = oldSpawn;
             this.newSpawn = newSpawn;
         }
     }

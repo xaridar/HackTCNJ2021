@@ -32,34 +32,31 @@ public class Board {
         return Arrays.stream(board).flatMap(Arrays::stream).filter(tile -> tile.getInfo().isSpawnPoint()).findFirst().orElse(null);
     }
 
+    public static void setSpawn(Tile spawn) {
+        getSpawnTile(board).getInfo().removeSpawnPoint();
+        spawn.getInfo().setSpawnPoint();
+    }
+
+    public static void moveObj(Tile fromTile, Tile toTile) {
+        BoardObject obj = fromTile.getObject();
+        fromTile.setObject(null);
+        toTile.setObject(obj);
+    }
+
     public static StateChangePacket.ChangeList findChanges(Tile[][] oldBoard, Tile[][] newBoard) {
         List<StateChangePacket.Change> changes = new ArrayList<>();
         for (int x = 0; x < oldBoard.length; x++) {
             for (int y = 0; y < oldBoard[x].length; y++) {
                 if (oldBoard[x][y].getObject() != newBoard[x][y].getObject()) {
-                    StateChangePacket.Change.ChangeType type = StateChangePacket.Change.ChangeType.MOVE;
-                    BoardObject object = null;
-                    Tile oldTile = null;
-                    Tile newTile = null;
                     if (newBoard[x][y].getObject() != null) {
                         BoardObject obj = newBoard[x][y].getObject();
-                        if (getTileForObject(obj, oldBoard) == null) {
-                            type = StateChangePacket.Change.ChangeType.ADD;
-                        } else {
-                            oldTile = getTileForObject(obj, oldBoard);
-                        }
-                        newTile = newBoard[x][y];
-                        object = obj;
-                        changes.add(new StateChangePacket.Change(type, oldTile, newTile, object));
-                    } else if (oldBoard[x][y].getObject() != null && getTileForObject(oldBoard[x][y].getObject(), newBoard) == null) {
-                        type = StateChangePacket.Change.ChangeType.REMOVE;
-                        oldTile = oldBoard[x][y];
-                        object = oldTile.getObject();
-                        changes.add(new StateChangePacket.Change(type, oldTile, newTile, object));
+                        Tile oldTile = getTileForObject(obj, oldBoard);
+                        Tile newTile = newBoard[x][y];
+                        changes.add(new StateChangePacket.Change(oldTile, newTile));
                     }
                 }
             }
         }
-        return new StateChangePacket.ChangeList(changes, getSpawnTile(oldBoard), getSpawnTile(newBoard));
+        return new StateChangePacket.ChangeList(changes, getSpawnTile(newBoard));
     }
 }

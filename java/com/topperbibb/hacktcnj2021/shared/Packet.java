@@ -1,6 +1,11 @@
 package com.topperbibb.hacktcnj2021.shared;
 
+import com.topperbibb.hacktcnj2021.client.game.Board;
+
 import java.io.*;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.List;
 
 public abstract class Packet {
     public static Packet from(byte[] in) throws IOException {
@@ -29,7 +34,19 @@ public abstract class Packet {
         } else if (packetType == EndPacket.class) {
             return new EndPacket();
         } else if (packetType == StateChangePacket.class) {
-
+            int id = inputStream.read();
+            int spawnX = inputStream.read();
+            int spawnY = inputStream.read();
+            int changeNum = inputStream.read();
+            List<StateChangePacket.Change> changes = new ArrayList<>();
+            for (int i = 0; i < changeNum; i++) {
+                int oldX = inputStream.read();
+                int oldY = inputStream.read();
+                int newX = inputStream.read();
+                int newY = inputStream.read();
+                changes.add(new StateChangePacket.Change(Board.board[oldX][oldY], Board.board[newX][newY]));
+            }
+            return new StateChangePacket(id, new StateChangePacket.ChangeList(changes, Board.board[spawnX][spawnY]));
         }
         return null;
     }
