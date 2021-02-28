@@ -5,27 +5,29 @@ import com.topperbibb.hacktcnj2021.client.game.Engine;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.io.InputStream;
 
 public class Spritesheet {
 
     public int width;
     public int height;
 
-    public int size;
-
-    public int sizeSprites;
-
     public int[] pixels;
 
-    public Spritesheet(String path, int size) {
-        this.size = size;
+    public Spritesheet(String path) {
 
         BufferedImage image;
 
         try {
-            image = ImageIO.read(Engine.class.getResourceAsStream(path));
+            InputStream stream = Engine.class.getResourceAsStream(path);
+            if (stream != null) {
+                image = ImageIO.read(stream);
+            } else {
+                throw new IOException();
+            }
         } catch (IOException e) {
-            throw new Error(e);
+            System.out.println("Spritesheet not found");
+            return;
         }
 
         this.width = image.getWidth();
@@ -33,7 +35,6 @@ public class Spritesheet {
         this.pixels = new int[this.width * this.height];
 
         assert (this.width == this.height);
-        this.sizeSprites = this.width / this.size;
 
         pixels = image.getRGB(
                 0, 0, image.getWidth(), image.getHeight(),
