@@ -45,7 +45,7 @@ public class TileInfo {
     }
 
     public void removeSpawnPoint() {
-        this.descriptor = TileDescriptor.NO_SPAWN;
+        this.descriptor = TileDescriptor.CAN_SPAWN;
         sprite = SpriteInfo.sprites.get("Basic_ground");
     }
 

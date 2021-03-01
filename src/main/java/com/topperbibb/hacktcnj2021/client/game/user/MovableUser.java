@@ -141,7 +141,7 @@ public class MovableUser extends NetUser implements Player {
     }
 
     public void die() {
-        this.x = Board.getSpawnTile(Board.board).getX();
-        this.y = Board.getSpawnTile(Board.board).getY();
+        this.x = Board.getSpawnTile(Board.board).getY();
+        this.y = Board.getSpawnTile(Board.board).getX();
     }
 }

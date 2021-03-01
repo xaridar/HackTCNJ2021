@@ -37,9 +37,15 @@ public class ClientEventListener {
             if (((StateChangePacket) p).id != client.user.id) {
                 Board.setSpawnNet(Board.board[((StateChangePacket) p).changes.spawnX][((StateChangePacket) p).changes.spawnY]);
                 List<StateChangePacket.Change> changes = ((StateChangePacket) p).changes.changes;
+                Tile[][] staticOldBoard = new Tile[Board.board.length][Board.board[0].length];
+                for (int x = 0; x < staticOldBoard.length; x++) {
+                    for (int y = 0; y < staticOldBoard.length; y++) {
+                        staticOldBoard[x][y] = Board.board[x][y].copyKeepObj();
+                    }
+                }
                 for (int i = changes.size() - 1; i >= 0; i--) {
                     StateChangePacket.Change change = changes.get(i);
-                    Board.moveObj(Board.board[change.oldTileX][change.oldTileY], Board.board[change.newTileX][change.newTileY]);
+                    Board.moveObj(staticOldBoard[change.oldTileX][change.oldTileY], Board.board[change.newTileX][change.newTileY]);
                 }
 
             }
