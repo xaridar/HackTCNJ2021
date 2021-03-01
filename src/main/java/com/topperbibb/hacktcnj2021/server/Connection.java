@@ -12,6 +12,7 @@ import java.net.Socket;
 import java.net.SocketException;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class Connection implements Runnable {
 
@@ -24,6 +25,7 @@ public class Connection implements Runnable {
     private DataInputStream in;
     private DataOutputStream out;
     private ServerEventListener listener;
+
 
     public boolean lookingForPong;
     public Thread pingThread;
@@ -73,6 +75,7 @@ public class Connection implements Runnable {
 
     public void sendPacket(Packet p) {
         try {
+            System.out.println("Sent packet");
             out.write(p.toByteArray().toByteArray());
         } catch (SocketException ignored) {
         } catch (IOException e) {
@@ -121,6 +124,7 @@ public class Connection implements Runnable {
             in.close();
             out.close();
             System.out.format("Disconnected from client at ip %s\n", socket.getInetAddress());
+            IDManager.addAvailableId(id);
         } catch (IOException e) {
             e.printStackTrace();
         }

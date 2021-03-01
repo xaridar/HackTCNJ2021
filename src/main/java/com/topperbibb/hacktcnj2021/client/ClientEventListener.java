@@ -39,7 +39,7 @@ public class ClientEventListener {
                 List<StateChangePacket.Change> changes = ((StateChangePacket) p).changes.changes;
                 Tile[][] staticOldBoard = new Tile[Board.board.length][Board.board[0].length];
                 for (int x = 0; x < staticOldBoard.length; x++) {
-                    for (int y = 0; y < staticOldBoard.length; y++) {
+                    for (int y = 0; y < staticOldBoard[x].length; y++) {
                         staticOldBoard[x][y] = Board.board[x][y].copyKeepObj();
                     }
                 }

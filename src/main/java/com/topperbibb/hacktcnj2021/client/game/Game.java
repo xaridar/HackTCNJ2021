@@ -6,7 +6,7 @@ import com.topperbibb.hacktcnj2021.client.game.user.NetUser;
 
 public class Game {
     public static void main(String[] args) {
-        createSinglePlayer();
+        createMultiplayer();
     }
 
     private static void createSinglePlayer() {

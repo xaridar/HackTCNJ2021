@@ -106,7 +106,16 @@ public class Engine implements KeyListener, MouseListener {
         playerSprites.put(MovableUser.PlayerSprite.DOWN, SpriteInfo.sprites.get("Player_down_1"));
         playerSprites.put(MovableUser.PlayerSprite.DOWN2, SpriteInfo.sprites.get("Player_down_2"));
         u.setSprites(playerSprites);
-        currLevel = new TestLevel(u, new StaticUser());
+        StaticUser staticUser = new StaticUser();
+        loadOrder = new Level[]{
+                new Tutorial(u, staticUser),
+                new Wall(u, staticUser),
+                new KeyShowcase(u, staticUser),
+                new TestLevel(u, staticUser)
+        };
+        currLevel = loadOrder[loadIndex];
+        Board.board = currLevel.getLevel();
+        Board.setEndTile(currLevel.getEndTile());
         u.setPos(Board.getSpawnTile(Board.board).getX(), Board.getSpawnTile(Board.board).getY());
         Board.getSpawnTile(Board.board).setObject(u);
         localUser = u;
@@ -338,6 +347,7 @@ public class Engine implements KeyListener, MouseListener {
                 renderPlayer(currLevel.getMovableUser(), MovableUser.PlayerSprite.RIGHT);
                 renderObjects();
                 renderSpawn();
+                renderEnd();
                 System.out.println(Board.getSpawnTile().getY() + ", " + Board.getSpawnTile().getX());
                 System.out.println(user.getY() + ", " + user.getX());
                 System.out.println("You win!");
@@ -345,7 +355,7 @@ public class Engine implements KeyListener, MouseListener {
         }
         if(e.getKeyChar() == 'r') {
             currLevel = loadOrder[loadIndex];
-            currLevel.getMovableUser().die();
+            currLevel.getMovableUser().setPos(currLevel.startSpawnY, currLevel.startSpawnX);
             Board.setSpawn(currLevel.startSpawnX, currLevel.startSpawnY);
 
             renderStaticTiles();

@@ -42,7 +42,7 @@ public class Tutorial extends Level{
         map.put( "_", new Tile(new TileInfo(SpriteInfo.sprites.get("Basic_ground"), TileInfo.TileDescriptor.CAN_SPAWN, new ArrayList<>(Collections.singletonList(TileTags.WALKABLE)))));
         map.put( "#", new Tile(new TileInfo(SpriteInfo.sprites.get("Wall"), TileInfo.TileDescriptor.NO_SPAWN, new ArrayList<>(Collections.emptyList()))) );
         map.put( "o", new Tile(new TileInfo(SpriteInfo.sprites.get("Basic_ground"), TileInfo.TileDescriptor.SPAWN_POINT, new ArrayList<>(Collections.singletonList(TileTags.WALKABLE)))));
-        map.put( "d", new Tile(new TileInfo(SpriteInfo.sprites.get("End"), TileInfo.TileDescriptor.END_POINT, new ArrayList<>(Collections.singletonList(TileTags.WALKABLE)))));
+        map.put( "d", new Tile(new TileInfo(SpriteInfo.sprites.get("Basic_ground"), TileInfo.TileDescriptor.END_POINT, new ArrayList<>(Collections.singletonList(TileTags.WALKABLE)))));
         return map;
     }
 }
