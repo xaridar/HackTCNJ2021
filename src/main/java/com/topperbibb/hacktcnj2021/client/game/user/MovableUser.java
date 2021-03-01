@@ -143,6 +143,11 @@ public class MovableUser extends NetUser implements Player {
     }
 
     public void die() {
+        if (Board.getSpawnTile().getObject() != null) {
+            System.out.println("Spawn covered; resetting level");
+            Engine.INSTANCE.getCurrLevel().reset();
+            return;
+        }
         System.out.println("died");
         System.out.println(Engine.INSTANCE.getCurrLevel().getKeys());
         System.out.println(Engine.loadOrder[Engine.loadIndex]);
