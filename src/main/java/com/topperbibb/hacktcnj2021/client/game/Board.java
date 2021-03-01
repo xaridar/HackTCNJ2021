@@ -45,6 +45,10 @@ public class Board {
         return spawnTile;
     }
 
+    public static Tile getEndTile(Tile[][] board) {
+        return Arrays.stream(board).flatMap(Arrays::stream).filter(tile -> tile.getInfo().isEndPoint()).findFirst().orElse(null);
+    }
+
     public static void setSpawn(int x, int y) {
         System.out.println(x + ", " + y);
         getSpawnTile(board).getInfo().removeSpawnPoint();
@@ -73,7 +77,7 @@ public class Board {
 
     public static void moveObj(Tile fromTile, Tile toTile) {
         BoardObject obj = fromTile.getObject();
-        fromTile.setObject(null);
+        board[fromTile.getX()][fromTile.getY()].setObject(null);
         toTile.setObject(obj);
         obj.setPos(toTile.getX(), toTile.getY());
         Engine.INSTANCE.renderObjects();

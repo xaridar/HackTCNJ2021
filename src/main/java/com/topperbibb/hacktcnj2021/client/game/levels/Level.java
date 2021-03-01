@@ -18,6 +18,8 @@ public abstract class Level {
     StaticUser staticUser;
     ArrayList<Key> keys = new ArrayList<>();
     int levelCountdown = -1;
+    public int startSpawnX;
+    public int startSpawnY;
     Tile spawnTile;
     Tile endTile;
 
@@ -42,6 +44,8 @@ public abstract class Level {
         }
 
         Board.board = level;
+        startSpawnX = Board.getSpawnTile(Board.board).getX();
+        startSpawnY = Board.getSpawnTile(Board.board).getY();
         Board.lastBoard = new Tile[Board.board.length][Board.board[0].length];
         for (int x = 0; x < Board.board.length; x++) {
             for (int y = 0; y < Board.board[0].length; y++) {

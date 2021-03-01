@@ -55,7 +55,7 @@ public class LevelRenderer extends JLayeredPane {
 
         for (int i = 0; i < Board.board.length; i++) {
             for (int j = 0; j < Board.board[i].length; j++) {
-                if (Board.board[i][j].getObject() != null) {
+                if (Board.board[i][j].getObject() != null  && !(Board.board[i][j].getObject() instanceof MovableUser)) {
                     JPanel panel = new JPanel(new BorderLayout());
                     SpriteInfo sprite = Board.board[i][j].getObject().getSprite();
                     int pixel;
@@ -81,6 +81,19 @@ public class LevelRenderer extends JLayeredPane {
 
     public BufferedImage renderSpawn() {
         SpriteInfo sprite = SpriteInfo.sprites.get("Spawn_point");
+        BufferedImage img = new BufferedImage(sprite.size, sprite.size, BufferedImage.TYPE_INT_ARGB);
+        int pixel;
+        for (int x = sprite.x, imgX = 0; x < sprite.size + sprite.x; x++, imgX++) {
+            for (int y = sprite.y, imgY = 0; y < sprite.size + sprite.y; y++, imgY++) {
+                pixel = sheet.pixels[y * sheet.width + x];
+                img.setRGB(imgX, imgY, pixel);
+            }
+        }
+        return img;
+    }
+
+    public BufferedImage renderEnd() {
+        SpriteInfo sprite = SpriteInfo.sprites.get("End");
         BufferedImage img = new BufferedImage(sprite.size, sprite.size, BufferedImage.TYPE_INT_ARGB);
         int pixel;
         for (int x = sprite.x, imgX = 0; x < sprite.size + sprite.x; x++, imgX++) {
