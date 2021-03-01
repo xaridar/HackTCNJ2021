@@ -16,7 +16,7 @@ import java.util.Map;
 
 public class MovableUser extends NetUser implements Player {
 
-    private PlayerSprite currentSprite;
+    private SpriteInfo currentSprite;
 
     public enum PlayerSprite {
         DOWN(0), UP(1), LEFT(2), RIGHT(3),
@@ -71,10 +71,7 @@ public class MovableUser extends NetUser implements Player {
             if (tile.getObject() != null && tile.getObject() instanceof RigidBoardObject) {
                 RigidBoardObject object = (RigidBoardObject) tile.getObject();
                 if (object.move(directionX, directionY)) {
-                    Board.board[y][x].setObject(null);
-                    x = temp_x;
-                    y = temp_y;
-                    Board.board[y][x].setObject(this);
+                    setPos(temp_x, temp_y);
                     Engine.INSTANCE.applyChanges();
                     return true;
                 } else {
@@ -84,10 +81,7 @@ public class MovableUser extends NetUser implements Player {
                 System.out.println("true");
                 ((Key) tile.getObject()).collect();
             }
-            Board.board[y][x].setObject(null);
-            x = temp_x;
-            y = temp_y;
-            Board.board[y][x].setObject(this);
+            setPos(temp_x, temp_y);
             Engine.INSTANCE.applyChanges();
             return true;
         } else {
@@ -97,7 +91,12 @@ public class MovableUser extends NetUser implements Player {
 
     @Override
     public SpriteInfo getSprite() {
-        return sprites.get(PlayerSprite.RIGHT);
+        return currentSprite;
+    }
+
+    @Override
+    public void setSprite(SpriteInfo sprite) {
+        this.currentSprite = sprite;
     }
 
     public SpriteInfo getSprite(PlayerSprite spriteEnum) {
@@ -112,14 +111,6 @@ public class MovableUser extends NetUser implements Player {
         this.sprites = sprites;
     }
 
-    public void setCurrentSprite(PlayerSprite which) {
-        this.currentSprite = which;
-    }
-
-    public PlayerSprite getCurrentSprite() {
-        return currentSprite;
-    }
-
     @Override
     public int getX() {
         return x;
@@ -132,8 +123,10 @@ public class MovableUser extends NetUser implements Player {
 
     @Override
     public void setPos(int x, int y) {
+        Board.board[this.y][this.x].setObject(null);
         this.x = x;
         this.y = y;
+        Board.board[y][x].setObject(this);
     }
 
     @Override
@@ -158,7 +151,6 @@ public class MovableUser extends NetUser implements Player {
             Board.board[key.getX()][key.getY()].setObject(key);
         }
         System.out.println(Board.getSpawnTile().getY() + ", " + Board.getSpawnTile().getX());
-        this.x = Board.getSpawnTile().getY();
-        this.y = Board.getSpawnTile().getX();
+        Board.moveObj(Board.board[y][x], Board.getSpawnTile());
     }
 }

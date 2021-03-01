@@ -6,13 +6,15 @@ import com.topperbibb.hacktcnj2021.client.game.graphics.SpriteInfo;
  * An interface for non-static objects
  */
 public interface BoardObject {
-    public SpriteInfo getSprite();
+    SpriteInfo getSprite();
 
-    public int getX();
+    void setSprite(SpriteInfo sprite);
 
-    public int getY();
+    int getX();
 
-    public void setPos(int x, int y);
+    int getY();
 
-    public BoardObject copy();
+    void setPos(int x, int y);
+
+    BoardObject copy();
 }

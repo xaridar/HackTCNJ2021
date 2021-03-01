@@ -1,8 +1,8 @@
 package com.topperbibb.hacktcnj2021.client.game;
 
+import com.topperbibb.hacktcnj2021.client.game.graphics.SpriteManager;
 import com.topperbibb.hacktcnj2021.client.game.levels.*;
 import com.topperbibb.hacktcnj2021.client.UserManager;
-import com.topperbibb.hacktcnj2021.client.game.levels.*;
 import com.topperbibb.hacktcnj2021.client.game.tiles.Tile;
 import com.topperbibb.hacktcnj2021.client.game.tiles.TileInfo;
 import com.topperbibb.hacktcnj2021.client.game.user.MovableUser;
@@ -54,14 +54,14 @@ public class Engine implements KeyListener, MouseListener {
 
     public Engine(NetUser p) {
         Map<MovableUser.PlayerSprite, SpriteInfo> playerSprites = new HashMap<>();
-        playerSprites.put(MovableUser.PlayerSprite.RIGHT, SpriteInfo.sprites.get("Player_right_1"));
-        playerSprites.put(MovableUser.PlayerSprite.RIGHT2, SpriteInfo.sprites.get("Player_right_2"));
-        playerSprites.put(MovableUser.PlayerSprite.LEFT, SpriteInfo.sprites.get("Player_left_1"));
-        playerSprites.put(MovableUser.PlayerSprite.LEFT2, SpriteInfo.sprites.get("Player_left_2"));
-        playerSprites.put(MovableUser.PlayerSprite.UP, SpriteInfo.sprites.get("Player_up_1"));
-        playerSprites.put(MovableUser.PlayerSprite.UP2, SpriteInfo.sprites.get("Player_up_2"));
-        playerSprites.put(MovableUser.PlayerSprite.DOWN, SpriteInfo.sprites.get("Player_down_1"));
-        playerSprites.put(MovableUser.PlayerSprite.DOWN2, SpriteInfo.sprites.get("Player_down_2"));
+        playerSprites.put(MovableUser.PlayerSprite.RIGHT, SpriteManager.get("Player_right_1"));
+        playerSprites.put(MovableUser.PlayerSprite.RIGHT2, SpriteManager.get("Player_right_2"));
+        playerSprites.put(MovableUser.PlayerSprite.LEFT, SpriteManager.get("Player_left_1"));
+        playerSprites.put(MovableUser.PlayerSprite.LEFT2, SpriteManager.get("Player_left_2"));
+        playerSprites.put(MovableUser.PlayerSprite.UP, SpriteManager.get("Player_up_1"));
+        playerSprites.put(MovableUser.PlayerSprite.UP2, SpriteManager.get("Player_up_2"));
+        playerSprites.put(MovableUser.PlayerSprite.DOWN, SpriteManager.get("Player_down_1"));
+        playerSprites.put(MovableUser.PlayerSprite.DOWN2, SpriteManager.get("Player_down_2"));
         NetUser other = UserManager.users.stream().filter(user -> user != p).collect(Collectors.toList()).get(0);
         MovableUser movable;
         StaticUser staticUser;
@@ -80,11 +80,13 @@ public class Engine implements KeyListener, MouseListener {
                 new TestLevel(movable, staticUser)
         };
         currLevel = loadOrder[loadIndex];
+        Board.setSpawn(currLevel.startSpawnX, currLevel.startSpawnY);
         Board.board = currLevel.getLevel();
         Board.setEndTile(currLevel.getEndTile());
         movable.setPos(Board.getSpawnTile(Board.board).getX(), Board.getSpawnTile(Board.board).getY());
         Board.getSpawnTile(Board.board).setObject(movable);
         localUser = p;
+        movable.setSprite(movable.getSprite(MovableUser.PlayerSprite.RIGHT));
         spritesheet = new Spritesheet("/tiles.png");
         Board.lastBoard = new Tile[Board.board.length][Board.board[0].length];
         for (int x = 0; x < Board.board.length; x++) {
@@ -97,14 +99,14 @@ public class Engine implements KeyListener, MouseListener {
     public Engine(MovableUser u, boolean b) {
         singlePlayer = b;
         Map<MovableUser.PlayerSprite, SpriteInfo> playerSprites = new HashMap<>();
-        playerSprites.put(MovableUser.PlayerSprite.RIGHT, SpriteInfo.sprites.get("Player_right_1"));
-        playerSprites.put(MovableUser.PlayerSprite.RIGHT2, SpriteInfo.sprites.get("Player_right_2"));
-        playerSprites.put(MovableUser.PlayerSprite.LEFT, SpriteInfo.sprites.get("Player_left_1"));
-        playerSprites.put(MovableUser.PlayerSprite.LEFT2, SpriteInfo.sprites.get("Player_left_2"));
-        playerSprites.put(MovableUser.PlayerSprite.UP, SpriteInfo.sprites.get("Player_up_1"));
-        playerSprites.put(MovableUser.PlayerSprite.UP2, SpriteInfo.sprites.get("Player_up_2"));
-        playerSprites.put(MovableUser.PlayerSprite.DOWN, SpriteInfo.sprites.get("Player_down_1"));
-        playerSprites.put(MovableUser.PlayerSprite.DOWN2, SpriteInfo.sprites.get("Player_down_2"));
+        playerSprites.put(MovableUser.PlayerSprite.RIGHT, SpriteManager.get("Player_right_1"));
+        playerSprites.put(MovableUser.PlayerSprite.RIGHT2, SpriteManager.get("Player_right_2"));
+        playerSprites.put(MovableUser.PlayerSprite.LEFT, SpriteManager.get("Player_left_1"));
+        playerSprites.put(MovableUser.PlayerSprite.LEFT2, SpriteManager.get("Player_left_2"));
+        playerSprites.put(MovableUser.PlayerSprite.UP, SpriteManager.get("Player_up_1"));
+        playerSprites.put(MovableUser.PlayerSprite.UP2, SpriteManager.get("Player_up_2"));
+        playerSprites.put(MovableUser.PlayerSprite.DOWN, SpriteManager.get("Player_down_1"));
+        playerSprites.put(MovableUser.PlayerSprite.DOWN2, SpriteManager.get("Player_down_2"));
         u.setSprites(playerSprites);
         StaticUser staticUser = new StaticUser();
         loadOrder = new Level[]{
@@ -114,11 +116,13 @@ public class Engine implements KeyListener, MouseListener {
                 new TestLevel(u, staticUser)
         };
         currLevel = loadOrder[loadIndex];
+        Board.setSpawn(currLevel.startSpawnX, currLevel.startSpawnY);
         Board.board = currLevel.getLevel();
         Board.setEndTile(currLevel.getEndTile());
         u.setPos(Board.getSpawnTile(Board.board).getX(), Board.getSpawnTile(Board.board).getY());
         Board.getSpawnTile(Board.board).setObject(u);
         localUser = u;
+        u.setSprite(u.getSprite(MovableUser.PlayerSprite.RIGHT));
         spritesheet = new Spritesheet("/tiles.png");
         Board.lastBoard = new Tile[Board.board.length][Board.board[0].length];
         for (int x = 0; x < Board.board.length; x++) {
@@ -134,7 +138,7 @@ public class Engine implements KeyListener, MouseListener {
         INSTANCE = engine;
         engine.createRenderWindow();
         engine.renderStaticTiles();
-        engine.renderPlayer(engine.currLevel.getMovableUser(), MovableUser.PlayerSprite.RIGHT);
+        engine.renderPlayer(engine.currLevel.getMovableUser());
         engine.renderSpawn();
         engine.renderEnd();
         engine.renderObjects();
@@ -148,7 +152,7 @@ public class Engine implements KeyListener, MouseListener {
         engine.renderStaticTiles();
         engine.renderSpawn();
         engine.renderEnd();
-        engine.renderPlayer(engine.currLevel.getMovableUser(), MovableUser.PlayerSprite.RIGHT);
+        engine.renderPlayer(engine.currLevel.getMovableUser());
         engine.renderObjects();
     }
 
@@ -200,8 +204,8 @@ public class Engine implements KeyListener, MouseListener {
         window.pack();
     }
 
-    public void renderPlayer(MovableUser player, MovableUser.PlayerSprite direction) {
-        Image img = renderer.renderPlayer(player, 16, 16, direction);
+    public void renderPlayer(MovableUser player) {
+        Image img = renderer.renderPlayer(player, 16, 16);
         img = img.getScaledInstance(16 * 4, 16 * 4, Image.SCALE_DEFAULT);
 //        playerPanel.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Color.BLACK));
 //        playerPanel.setBackground(new Color(0, 0, 0, 0));
@@ -278,7 +282,8 @@ public class Engine implements KeyListener, MouseListener {
                     if (keyPressed + keyTimeout <= System.currentTimeMillis()) {
                         if (user.move(0, -1)) {
                             MovableUser.PlayerSprite dir = lastDir == MovableUser.PlayerSprite.UP ? MovableUser.PlayerSprite.UP2 : MovableUser.PlayerSprite.UP;
-                            renderPlayer(user, dir);
+                            user.setSprite(user.getSprite(dir));
+                            renderPlayer(user);
                             renderObjects();
                             lastDir = dir;
                             currLevel.incrementCountdown();
@@ -291,7 +296,8 @@ public class Engine implements KeyListener, MouseListener {
                     if (keyPressed + keyTimeout <= System.currentTimeMillis()) {
                         if (user.move(0, 1)) {
                             MovableUser.PlayerSprite dir = lastDir == MovableUser.PlayerSprite.DOWN ? MovableUser.PlayerSprite.DOWN2 : MovableUser.PlayerSprite.DOWN;
-                            renderPlayer(user, dir);
+                            user.setSprite(user.getSprite(dir));
+                            renderPlayer(user);
                             renderObjects();
                             lastDir = dir;
                             currLevel.incrementCountdown();
@@ -304,7 +310,8 @@ public class Engine implements KeyListener, MouseListener {
                     if (keyPressed + keyTimeout <= System.currentTimeMillis()) {
                         if (user.move(-1, 0)) {
                             MovableUser.PlayerSprite dir = lastDir == MovableUser.PlayerSprite.LEFT ? MovableUser.PlayerSprite.LEFT2 : MovableUser.PlayerSprite.LEFT;
-                            renderPlayer(user, dir);
+                            user.setSprite(user.getSprite(dir));
+                            renderPlayer(user);
                             renderObjects();
                             lastDir = dir;
                             currLevel.incrementCountdown();
@@ -317,7 +324,8 @@ public class Engine implements KeyListener, MouseListener {
                     if (keyPressed + keyTimeout <= System.currentTimeMillis()) {
                         if (user.move(1, 0)) {
                             MovableUser.PlayerSprite dir = lastDir == MovableUser.PlayerSprite.RIGHT ? MovableUser.PlayerSprite.RIGHT2 : MovableUser.PlayerSprite.RIGHT;
-                            renderPlayer(user, dir);
+                            user.setSprite(user.getSprite(dir));
+                            renderPlayer(user);
                             renderObjects();
                             lastDir = dir;
                             currLevel.incrementCountdown();
@@ -328,7 +336,8 @@ public class Engine implements KeyListener, MouseListener {
                 case 'Q':
                 case 'q':
                     user.die();
-                    renderPlayer(user, MovableUser.PlayerSprite.RIGHT);
+                    user.setSprite(user.getSprite(MovableUser.PlayerSprite.RIGHT));
+                    renderPlayer(user);
                     renderObjects();
                     keyPressed = System.currentTimeMillis();
                     break;
@@ -341,13 +350,14 @@ public class Engine implements KeyListener, MouseListener {
                 Board.board = currLevel.getLevel();
                 Board.setSpawn(currLevel.getSpawnTile());
                 Board.setEndTile(currLevel.getEndTile());
-                currLevel.getMovableUser().setPos(Board.getSpawnTile(Board.board).getY(), Board.getSpawnTile(Board.board).getX());
                 currLevel.getMovableUser().setPos(Board.getSpawnTile().getY(), Board.getSpawnTile().getX());
                 renderStaticTiles();
-                renderPlayer(currLevel.getMovableUser(), MovableUser.PlayerSprite.RIGHT);
+                user.setSprite(user.getSprite(MovableUser.PlayerSprite.RIGHT));
+                renderPlayer(currLevel.getMovableUser());
                 renderObjects();
                 renderSpawn();
                 renderEnd();
+                applyChanges();
                 System.out.println(Board.getSpawnTile().getY() + ", " + Board.getSpawnTile().getX());
                 System.out.println(user.getY() + ", " + user.getX());
                 System.out.println("You win!");
@@ -355,13 +365,13 @@ public class Engine implements KeyListener, MouseListener {
         }
         if(e.getKeyChar() == 'r') {
             currLevel = loadOrder[loadIndex];
-            currLevel.getMovableUser().setPos(currLevel.startSpawnY, currLevel.startSpawnX);
-            Board.setSpawn(currLevel.startSpawnX, currLevel.startSpawnY);
+            currLevel.reset();
 
+            currLevel.getMovableUser().setSprite(currLevel.getMovableUser().getSprite(MovableUser.PlayerSprite.RIGHT));
             renderStaticTiles();
             renderSpawn();
             renderEnd();
-            renderPlayer(currLevel.getMovableUser(), MovableUser.PlayerSprite.RIGHT);
+            renderPlayer(currLevel.getMovableUser());
             renderObjects();
         }
     }

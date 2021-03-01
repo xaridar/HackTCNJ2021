@@ -1,6 +1,7 @@
 package com.topperbibb.hacktcnj2021.client.game;
 
 import com.topperbibb.hacktcnj2021.client.game.graphics.SpriteInfo;
+import com.topperbibb.hacktcnj2021.client.game.graphics.SpriteManager;
 import com.topperbibb.hacktcnj2021.client.game.objects.BoardObject;
 import com.topperbibb.hacktcnj2021.client.game.tiles.Tile;
 import com.topperbibb.hacktcnj2021.client.game.tiles.TileInfo;
@@ -22,7 +23,7 @@ public class Board {
         Tile[][] tempBoard = new Tile[arrayBoard.length][arrayBoard[0].length];
         for(int x = 0; x < tempBoard.length; x++) {
             for(int y = 0; y < tempBoard[x].length; y++) {
-                tempBoard[x][y] = map.getOrDefault(arrayBoard[x][y], new Tile(x, y, new TileInfo(new SpriteInfo(16, 0, 0), TileInfo.TileDescriptor.NO_SPAWN))).copy();
+                tempBoard[x][y] = map.getOrDefault(arrayBoard[x][y], new Tile(x, y, new TileInfo(SpriteManager.get("Basic_ground"), TileInfo.TileDescriptor.NO_SPAWN))).copy();
                 tempBoard[x][y].setPos(x, y);
                 if(tempBoard[x][y].getObject() != null) {
                     tempBoard[x][y].getObject().setPos(x, y);
@@ -52,6 +53,7 @@ public class Board {
     public static void setSpawn(int x, int y) {
         System.out.println(x + ", " + y);
         getSpawnTile(board).getInfo().removeSpawnPoint();
+        spawnTile = board[x][y];
         board[x][y].getInfo().setSpawnPoint();
     }
 
@@ -79,11 +81,12 @@ public class Board {
         BoardObject obj = fromTile.getObject();
         board[fromTile.getX()][fromTile.getY()].setObject(null);
         toTile.setObject(obj);
-        obj.setPos(toTile.getX(), toTile.getY());
-        Engine.INSTANCE.renderObjects();
         if (obj instanceof MovableUser) {
             obj.setPos(toTile.getY(), toTile.getX());
-            Engine.INSTANCE.renderPlayer(((MovableUser) obj), MovableUser.PlayerSprite.RIGHT);
+            Engine.INSTANCE.renderPlayer((MovableUser) obj);
+        } else {
+            obj.setPos(toTile.getX(), toTile.getY());
+            Engine.INSTANCE.renderObjects();
         }
     }
 

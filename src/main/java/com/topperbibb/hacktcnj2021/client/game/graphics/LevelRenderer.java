@@ -1,7 +1,6 @@
 package com.topperbibb.hacktcnj2021.client.game.graphics;
 
 import com.topperbibb.hacktcnj2021.client.game.Engine;
-import com.topperbibb.hacktcnj2021.client.game.objects.Key;
 import com.topperbibb.hacktcnj2021.client.game.user.MovableUser;
 import com.topperbibb.hacktcnj2021.client.game.Board;
 
@@ -19,11 +18,11 @@ public class LevelRenderer extends JLayeredPane {
     }
 
     public BufferedImage renderStatic() {
-        BufferedImage img = new BufferedImage(Board.board[0].length * SpriteInfo.defaultSpriteSize, Board.board.length * SpriteInfo.defaultSpriteSize, BufferedImage.TYPE_INT_ARGB);
+        BufferedImage img = new BufferedImage(Board.board[0].length * SpriteManager.defaultSpriteSize, Board.board.length * SpriteManager.defaultSpriteSize, BufferedImage.TYPE_INT_ARGB);
         SpriteInfo sprite;
         int pixel;
-        for (int i = 0, xo = 0; i < Board.board.length; i++, xo += SpriteInfo.defaultSpriteSize) {
-            for (int j = 0, yo = 0; j < Board.board[i].length; j++, yo += SpriteInfo.defaultSpriteSize) {
+        for (int i = 0, xo = 0; i < Board.board.length; i++, xo += SpriteManager.defaultSpriteSize) {
+            for (int j = 0, yo = 0; j < Board.board[i].length; j++, yo += SpriteManager.defaultSpriteSize) {
                 sprite = Board.board[i][j].getSprite();
                 for (int x = sprite.x, imgX = 0; x < sprite.size + sprite.x; x++, imgX++) {
                     for (int y = sprite.y, imgY = 0; y < sprite.size + sprite.y; y++, imgY++) {
@@ -36,9 +35,9 @@ public class LevelRenderer extends JLayeredPane {
         return img;
     }
 
-    public BufferedImage renderPlayer(MovableUser player, int width, int height, MovableUser.PlayerSprite spriteEnum) {
+    public BufferedImage renderPlayer(MovableUser player, int width, int height) {
         BufferedImage img = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-        SpriteInfo sprite = player.getSprite(spriteEnum);
+        SpriteInfo sprite = player.getSprite();
         int pixel;
         for (int x = sprite.x, imgX = 0; x < sprite.size + sprite.x; x++, imgX++) {
             for (int y = sprite.y, imgY = 0; y < sprite.size + sprite.y; y++, imgY++) {
@@ -46,7 +45,6 @@ public class LevelRenderer extends JLayeredPane {
                 img.setRGB(sprite.flipX() ? sprite.size - 1 - imgX : imgX, sprite.flipY() ? sprite.size - 1 - imgY : imgY, pixel);
             }
         }
-        player.setCurrentSprite(spriteEnum);
         return img;
     }
 
@@ -80,7 +78,7 @@ public class LevelRenderer extends JLayeredPane {
     }
 
     public BufferedImage renderSpawn() {
-        SpriteInfo sprite = SpriteInfo.sprites.get("Spawn_point");
+        SpriteInfo sprite = SpriteManager.get("Spawn_point");
         BufferedImage img = new BufferedImage(sprite.size, sprite.size, BufferedImage.TYPE_INT_ARGB);
         int pixel;
         for (int x = sprite.x, imgX = 0; x < sprite.size + sprite.x; x++, imgX++) {
@@ -93,7 +91,7 @@ public class LevelRenderer extends JLayeredPane {
     }
 
     public BufferedImage renderEnd() {
-        SpriteInfo sprite = SpriteInfo.sprites.get("End");
+        SpriteInfo sprite = SpriteManager.get("End");
         BufferedImage img = new BufferedImage(sprite.size, sprite.size, BufferedImage.TYPE_INT_ARGB);
         int pixel;
         for (int x = sprite.x, imgX = 0; x < sprite.size + sprite.x; x++, imgX++) {

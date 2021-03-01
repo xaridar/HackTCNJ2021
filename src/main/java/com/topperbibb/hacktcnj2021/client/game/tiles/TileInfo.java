@@ -1,8 +1,8 @@
 package com.topperbibb.hacktcnj2021.client.game.tiles;
 
 import com.topperbibb.hacktcnj2021.client.game.graphics.SpriteInfo;
+import com.topperbibb.hacktcnj2021.client.game.graphics.SpriteManager;
 
-import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,7 +46,6 @@ public class TileInfo {
 
     public void removeSpawnPoint() {
         this.descriptor = TileDescriptor.CAN_SPAWN;
-        sprite = SpriteInfo.sprites.get("Basic_ground");
     }
 
     public boolean isEndPoint() {

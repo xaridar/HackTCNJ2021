@@ -1,5 +1,6 @@
 package com.topperbibb.hacktcnj2021.client.game.levels;
 
+import com.topperbibb.hacktcnj2021.client.game.Engine;
 import com.topperbibb.hacktcnj2021.client.game.objects.Key;
 import com.topperbibb.hacktcnj2021.client.game.user.MovableUser;
 import com.topperbibb.hacktcnj2021.client.game.Board;
@@ -43,16 +44,16 @@ public abstract class Level {
             }
         }
 
-        Board.board = level;
-        startSpawnX = Board.getSpawnTile(Board.board).getX();
-        startSpawnY = Board.getSpawnTile(Board.board).getY();
-        Board.lastBoard = new Tile[Board.board.length][Board.board[0].length];
+        Board.board = new Tile[level.length][level[0].length];
+        Board.lastBoard = new Tile[level.length][level[0].length];
         for (int x = 0; x < Board.board.length; x++) {
             for (int y = 0; y < Board.board[0].length; y++) {
-                Board.lastBoard[x][y] = Board.board[x][y].copyKeepObj();
+                Board.board[x][y] = level[x][y].copy();
+                Board.lastBoard[x][y] = level[x][y].copy();
             }
         }
-        movableUser.setPos(Board.getSpawnTile(Board.board).getY(), Board.getSpawnTile(Board.board).getX());
+        startSpawnX = Board.getSpawnTile(Board.board).getX();
+        startSpawnY = Board.getSpawnTile(Board.board).getY();
 
     }
 
@@ -119,5 +120,24 @@ public abstract class Level {
 
     public Tile getEndTile() {
         return endTile;
+    }
+
+    public void reset() {
+        getMovableUser().setPos(startSpawnY, startSpawnX);
+        level = Board.loadBoard(setLevel(), mapObjects());
+        Board.board = new Tile[level.length][level[0].length];
+        Board.lastBoard = new Tile[level.length][level[0].length];
+        for (int x = 0; x < Board.board.length; x++) {
+            for (int y = 0; y < Board.board[0].length; y++) {
+                Board.board[x][y] = level[x][y].copyKeepObj();
+                Board.lastBoard[x][y] = level[x][y].copyKeepObj();
+            }
+        }
+        Board.setSpawn(startSpawnX, startSpawnY);
+        spawnTile = Board.board[startSpawnX][startSpawnY];
+        for (Key key : Engine.INSTANCE.getCurrLevel().getKeys()) {
+            System.out.println("keys replaced");
+            Board.board[key.getX()][key.getY()].setObject(key);
+        }
     }
 }

@@ -1,21 +1,19 @@
 package com.topperbibb.hacktcnj2021.client.game.graphics;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 public class SpriteInfo {
     public int size, x, y;
     FlipEnum flipType = FlipEnum.NONE;
+    String key;
 
-    public SpriteInfo(int size, int x, int y) {
+    public SpriteInfo(int size, int x, int y, String key) {
+        this.key = key;
         this.size = size;
         this.x = x;
         this.y = y;
     }
 
-    public SpriteInfo(int size, int x, int y, FlipEnum flipType) {
+    public SpriteInfo(int size, int x, int y, FlipEnum flipType, String key) {
+        this.key = key;
         this.size = size;
         this.x = x;
         this.y = y;
@@ -23,7 +21,7 @@ public class SpriteInfo {
     }
 
     public SpriteInfo flipped(FlipEnum flipType) {
-        return new SpriteInfo(size, x, y, this.flipType.flipped(flipType));
+        return new SpriteInfo(size, x, y, this.flipType.flipped(flipType), key + "_flipped_" + flipType.name().toLowerCase());
     }
 
     public boolean flipX() {
@@ -34,7 +32,4 @@ public class SpriteInfo {
         return flipType.flipY();
     }
 
-    public static Map<String, SpriteInfo> sprites = new HashMap<>();
-
-    public static int defaultSpriteSize;
 }

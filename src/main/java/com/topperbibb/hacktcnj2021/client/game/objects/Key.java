@@ -30,6 +30,11 @@ public class Key implements BoardObject {
     }
 
     @Override
+    public void setSprite(SpriteInfo sprite) {
+        this.sprite = sprite;
+    }
+
+    @Override
     public int getX() {
         return x;
     }

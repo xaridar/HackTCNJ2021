@@ -10,6 +10,6 @@ import com.topperbibb.hacktcnj2021.client.game.objects.BoardObject;
  */
 public interface RigidBoardObject extends BoardObject {
 
-    public boolean move(int directionX, int directionY);
+    boolean move(int directionX, int directionY);
 
 }
