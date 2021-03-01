@@ -42,9 +42,14 @@ public abstract class Level {
         }
 
         Board.board = level;
-        Board.lastBoard = level;
-
+        Board.lastBoard = new Tile[Board.board.length][Board.board[0].length];
+        for (int x = 0; x < Board.board.length; x++) {
+            for (int y = 0; y < Board.board[0].length; y++) {
+                Board.lastBoard[x][y] = Board.board[x][y].copyKeepObj();
+            }
+        }
         movableUser.setPos(Board.getSpawnTile(Board.board).getY(), Board.getSpawnTile(Board.board).getX());
+
     }
 
     public abstract String[][] setLevel();

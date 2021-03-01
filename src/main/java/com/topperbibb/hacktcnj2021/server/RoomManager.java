@@ -15,6 +15,7 @@ public class RoomManager {
     }
 
     public static void addRoom(Room room) {
+        if (rooms.containsKey(room)) return;
         rooms.put(room, new ArrayList<>());
         availableRooms.add(room);
     }

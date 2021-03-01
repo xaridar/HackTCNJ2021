@@ -1,13 +1,18 @@
 package com.topperbibb.hacktcnj2021.client.game;
 
 import com.topperbibb.hacktcnj2021.client.game.levels.*;
+import com.topperbibb.hacktcnj2021.client.UserManager;
+import com.topperbibb.hacktcnj2021.client.game.tiles.Tile;
 import com.topperbibb.hacktcnj2021.client.game.tiles.TileInfo;
 import com.topperbibb.hacktcnj2021.client.game.user.MovableUser;
 import com.topperbibb.hacktcnj2021.client.game.graphics.LevelRenderer;
 import com.topperbibb.hacktcnj2021.client.game.graphics.SpriteInfo;
 import com.topperbibb.hacktcnj2021.client.game.graphics.Spritesheet;
+import com.topperbibb.hacktcnj2021.client.game.levels.Level;
+import com.topperbibb.hacktcnj2021.client.game.levels.TestLevel;
 import com.topperbibb.hacktcnj2021.client.game.user.NetUser;
 import com.topperbibb.hacktcnj2021.client.game.user.StaticUser;
+import com.topperbibb.hacktcnj2021.shared.StateChangePacket;
 
 import javax.swing.*;
 import java.awt.*;
@@ -19,6 +24,7 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class Engine implements KeyListener, MouseListener {
 
@@ -43,17 +49,9 @@ public class Engine implements KeyListener, MouseListener {
     private MovableUser.PlayerSprite lastDir;
 
 
-    private static Engine INSTANCE;
+    public static Engine INSTANCE;
 
-    public static Engine getInstance() {
-        if (INSTANCE == null) {
-            INSTANCE = new Engine();
-        }
-
-        return INSTANCE;
-    }
-
-    public Engine() {
+    public Engine(NetUser p) {
         Map<MovableUser.PlayerSprite, SpriteInfo> playerSprites = new HashMap<>();
         playerSprites.put(MovableUser.PlayerSprite.RIGHT, SpriteInfo.sprites.get("Player_right_1"));
         playerSprites.put(MovableUser.PlayerSprite.RIGHT2, SpriteInfo.sprites.get("Player_right_2"));
@@ -63,26 +61,42 @@ public class Engine implements KeyListener, MouseListener {
         playerSprites.put(MovableUser.PlayerSprite.UP2, SpriteInfo.sprites.get("Player_up_2"));
         playerSprites.put(MovableUser.PlayerSprite.DOWN, SpriteInfo.sprites.get("Player_down_1"));
         playerSprites.put(MovableUser.PlayerSprite.DOWN2, SpriteInfo.sprites.get("Player_down_2"));
-//        currLevel = new TestLevel(new MovableUser(1, 1, playerSprites), new StaticUser());
-        MovableUser movableUser= new MovableUser(playerSprites);
-        StaticUser staticUser = new StaticUser();
+        NetUser other = UserManager.users.stream().filter(user -> user != p).collect(Collectors.toList()).get(0);
+        MovableUser movable;
+        StaticUser staticUser;
+        if (p instanceof MovableUser) {
+            movable = (MovableUser) p;
+            staticUser = other.asStatic();
+        } else {
+            movable = other.asMovable();
+            staticUser = (StaticUser) p;
+        }
+        movable.setSprites(playerSprites);
         loadOrder = new Level[]{
-                new Tutorial(movableUser, staticUser),
-                new Wall(movableUser, staticUser),
-                new KeyShowcase(movableUser, staticUser),
-                new TestLevel(movableUser, staticUser)
+                new Tutorial(movable, staticUser),
+                new Wall(movable, staticUser),
+                new KeyShowcase(movable, staticUser),
+                new TestLevel(movable, staticUser)
         };
         currLevel = loadOrder[loadIndex];
         Board.board = currLevel.getLevel();
         Board.setEndTile(currLevel.getEndTile());
-        currLevel.getMovableUser().setPos(Board.getSpawnTile(Board.board).getY(), Board.getSpawnTile(Board.board).getX());
-        localUser = currLevel.getMovableUser();
+        movable.setPos(Board.getSpawnTile(Board.board).getX(), Board.getSpawnTile(Board.board).getY());
+        Board.getSpawnTile(Board.board).setObject(movable);
+        localUser = p;
         spritesheet = new Spritesheet("/tiles.png");
+        Board.lastBoard = new Tile[Board.board.length][Board.board[0].length];
+        for (int x = 0; x < Board.board.length; x++) {
+            for (int y = 0; y < Board.board[0].length; y++) {
+                Board.lastBoard[x][y] = Board.board[x][y].copyKeepObj();
+            }
+        }
     }
 
-    public static void main(String[] args) {
+    public static void startEngine(NetUser self) {
         Config.readSprites();
-        Engine engine = new Engine();
+        Engine engine = new Engine(self);
+        INSTANCE = engine;
         engine.createRenderWindow();
         engine.renderStaticTiles();
         engine.renderPlayer(engine.currLevel.getMovableUser(), MovableUser.PlayerSprite.RIGHT);
@@ -288,15 +302,14 @@ public class Engine implements KeyListener, MouseListener {
 
     @Override
     public void mouseReleased(MouseEvent e) {
-//        if(localUser instanceof StaticUser) {
+        if(localUser instanceof StaticUser) {
             int x = e.getX()/64;
             int y = e.getY()/64;
             if (Board.board[y][x].getInfo().getDescriptor() == TileInfo.TileDescriptor.CAN_SPAWN) {
-                System.out.println(y + ", " + x);
                 Board.setSpawn(Board.board[y][x]);
                 renderSpawn();
             }
-//        }
+        }
     }
 
     @Override
@@ -307,5 +320,9 @@ public class Engine implements KeyListener, MouseListener {
     @Override
     public void mouseExited(MouseEvent e) {
 
+    }
+
+    public void applyChanges() {
+        localUser.sendPacket(new StateChangePacket(localUser.id));
     }
 }

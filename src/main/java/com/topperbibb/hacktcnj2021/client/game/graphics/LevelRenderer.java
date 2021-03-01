@@ -46,6 +46,7 @@ public class LevelRenderer extends JLayeredPane {
                 img.setRGB(sprite.flipX() ? sprite.size - 1 - imgX : imgX, sprite.flipY() ? sprite.size - 1 - imgY : imgY, pixel);
             }
         }
+        player.setCurrentSprite(spriteEnum);
         return img;
     }
 

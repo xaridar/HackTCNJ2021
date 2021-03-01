@@ -36,7 +36,7 @@ public class Room {
         StartPacket.PlayerType playerType = random.nextInt() == 1 ? StartPacket.PlayerType.OVERSEER : StartPacket.PlayerType.MOVER;
         List<Connection> connectionSet = RoomManager.getAllConnections(this);
         connectionSet.get(0).sendPacket(new StartPacket(playerType));
-        connectionSet.get(0).sendPacket(new StartPacket(playerType == StartPacket.PlayerType.OVERSEER ? StartPacket.PlayerType.MOVER : StartPacket.PlayerType.OVERSEER));
+        connectionSet.get(1).sendPacket(new StartPacket(playerType == StartPacket.PlayerType.OVERSEER ? StartPacket.PlayerType.MOVER : StartPacket.PlayerType.OVERSEER));
     }
 
     public void sendPlayerLeave(Connection connection) {

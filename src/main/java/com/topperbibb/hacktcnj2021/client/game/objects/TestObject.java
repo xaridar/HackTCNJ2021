@@ -1,6 +1,7 @@
 package com.topperbibb.hacktcnj2021.client.game.objects;
 
 import com.topperbibb.hacktcnj2021.client.game.Board;
+import com.topperbibb.hacktcnj2021.client.game.Engine;
 import com.topperbibb.hacktcnj2021.client.game.graphics.SpriteInfo;
 import com.topperbibb.hacktcnj2021.client.game.tiles.Tile;
 import com.topperbibb.hacktcnj2021.client.game.tiles.TileInfo;
@@ -38,10 +39,8 @@ public class TestObject implements RigidBoardObject{
                 Board.board[x][y].getInfo().setDescriptor(TileInfo.TileDescriptor.NO_SPAWN);
                 return true;
             }
-            return false;
-        }else{
-            return false;
         }
+        return false;
     }
 
     public int getX() {
