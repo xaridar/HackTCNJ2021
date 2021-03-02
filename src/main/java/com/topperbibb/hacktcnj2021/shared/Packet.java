@@ -1,6 +1,8 @@
 package com.topperbibb.hacktcnj2021.shared;
 
 import com.topperbibb.hacktcnj2021.client.game.Board;
+import com.topperbibb.hacktcnj2021.client.game.graphics.SpriteInfo;
+import com.topperbibb.hacktcnj2021.client.game.graphics.SpriteManager;
 import com.topperbibb.hacktcnj2021.client.game.user.MovableUser;
 
 import java.io.*;
@@ -46,9 +48,13 @@ public abstract class Packet {
                 int oldY = inputStream.read();
                 int newX = inputStream.read();
                 int newY = inputStream.read();
-                changes.add(new StateChangePacket.Change(oldX, oldY, newX, newY));
+                String spriteName = new String(inputStream.readAllBytes());
+                changes.add(new StateChangePacket.Change(oldX, oldY, newX, newY, spriteName));
             }
             return new StateChangePacket(id, new StateChangePacket.ChangeList(changes, spawnX, spawnY));
+        } else if (packetType == LevelSelectPacket.class) {
+            int idx = inputStream.read();
+            return new LevelSelectPacket(idx);
         }
         return null;
     }
@@ -68,11 +74,12 @@ public abstract class Packet {
         PONG(4, PongPacket.class),
         START(5, StartPacket.class),
         END(7, EndPacket.class),
-        STATE_CHANGE(8, StateChangePacket.class);
+        STATE_CHANGE(8, StateChangePacket.class),
+        LEVEL_SELECT(9, LevelSelectPacket.class);
 
         public int i;
         public Class<? extends Packet> cls;
-        private PacketType(int i, Class<? extends Packet> cls) {
+        PacketType(int i, Class<? extends Packet> cls) {
             this.i = i;
             this.cls = cls;
         }

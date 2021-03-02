@@ -20,6 +20,9 @@ public class ServerEventListener {
                 return;
             }
             room.sendToAll(p);
+        } else if (p instanceof LevelSelectPacket) {
+            if (!connection.host) return;
+            room.sendToAll(p);
         }
     }
 }

@@ -3,7 +3,7 @@ package com.topperbibb.hacktcnj2021.client.game.graphics;
 public class SpriteInfo {
     public int size, x, y;
     FlipEnum flipType = FlipEnum.NONE;
-    String key;
+    public String key;
 
     public SpriteInfo(int size, int x, int y, String key) {
         this.key = key;

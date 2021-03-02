@@ -42,6 +42,7 @@ public class MovableUser extends NetUser implements Player {
     public int y;
     Map<PlayerSprite, SpriteInfo> sprites;
     boolean isOverseer;
+    private MovableUser.PlayerSprite lastDir;
 
     public MovableUser() {
 
@@ -67,6 +68,7 @@ public class MovableUser extends NetUser implements Player {
         int temp_x = x + directionX;
         int temp_y = y + directionY;
         Tile tile = Board.board[temp_y][temp_x];
+        setNextSprite(directionX, directionY);
         if (tile.hasTag(TileTags.WALKABLE)) {
             if (tile.getObject() != null && tile.getObject() instanceof RigidBoardObject) {
                 RigidBoardObject object = (RigidBoardObject) tile.getObject();
@@ -144,6 +146,7 @@ public class MovableUser extends NetUser implements Player {
 
     public void die() {
         if (Board.getSpawnTile().getObject() != null) {
+            System.out.println(Board.getSpawnTile().getObject().getSprite().key);
             System.out.println("Spawn covered; resetting level");
             Engine.INSTANCE.getCurrLevel().reset();
             return;
@@ -156,6 +159,13 @@ public class MovableUser extends NetUser implements Player {
             Board.board[key.getX()][key.getY()].setObject(key);
         }
         System.out.println(Board.getSpawnTile().getY() + ", " + Board.getSpawnTile().getX());
-        Board.moveObj(Board.board[y][x], Board.getSpawnTile());
+        Board.moveObj(Board.board[y][x], Board.getSpawnTile(), getSprite(PlayerSprite.RIGHT));
+        Engine.INSTANCE.applyChanges();
+    }
+
+    public void setNextSprite(int dirX, int dirY) {
+        MovableUser.PlayerSprite dir = dirX < 0 ? (lastDir == PlayerSprite.LEFT ? PlayerSprite.LEFT2 : PlayerSprite.LEFT) : dirX > 0 ? (lastDir == PlayerSprite.RIGHT ? PlayerSprite.RIGHT2 : PlayerSprite.RIGHT) : dirY < 0 ? (lastDir == PlayerSprite.UP ? PlayerSprite.UP2 : PlayerSprite.UP) : (lastDir == PlayerSprite.DOWN ? PlayerSprite.DOWN2 : PlayerSprite.DOWN);
+        setSprite(getSprite(dir));
+        lastDir = dir;
     }
 }

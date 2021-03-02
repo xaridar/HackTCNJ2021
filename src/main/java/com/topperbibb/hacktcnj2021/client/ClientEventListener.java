@@ -2,6 +2,8 @@ package com.topperbibb.hacktcnj2021.client;
 
 import com.topperbibb.hacktcnj2021.client.game.Board;
 import com.topperbibb.hacktcnj2021.client.game.Engine;
+import com.topperbibb.hacktcnj2021.client.game.graphics.SpriteInfo;
+import com.topperbibb.hacktcnj2021.client.game.graphics.SpriteManager;
 import com.topperbibb.hacktcnj2021.client.game.tiles.Tile;
 import com.topperbibb.hacktcnj2021.client.game.user.NetUser;
 import com.topperbibb.hacktcnj2021.shared.*;
@@ -45,7 +47,7 @@ public class ClientEventListener {
                 }
                 for (int i = changes.size() - 1; i >= 0; i--) {
                     StateChangePacket.Change change = changes.get(i);
-                    Board.moveObj(staticOldBoard[change.oldTileX][change.oldTileY], Board.board[change.newTileX][change.newTileY]);
+                    Board.moveObj(staticOldBoard[change.oldTileX][change.oldTileY], Board.board[change.newTileX][change.newTileY], SpriteManager.get(change.spriteName));
                 }
 
             }
@@ -69,6 +71,9 @@ public class ClientEventListener {
             System.out.println("The game has ended!");
             client.close();
             System.exit(0);
+        } else if (p instanceof LevelSelectPacket) {
+            System.out.println("Level: " + ((LevelSelectPacket) p).levelIndex + 1);
+            Engine.INSTANCE.setLevel(((LevelSelectPacket) p).levelIndex);
         }
     }
 }

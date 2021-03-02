@@ -126,11 +126,9 @@ public abstract class Level {
         getMovableUser().setPos(startSpawnY, startSpawnX);
         level = Board.loadBoard(setLevel(), mapObjects());
         Board.board = new Tile[level.length][level[0].length];
-        Board.lastBoard = new Tile[level.length][level[0].length];
         for (int x = 0; x < Board.board.length; x++) {
             for (int y = 0; y < Board.board[0].length; y++) {
                 Board.board[x][y] = level[x][y].copyKeepObj();
-                Board.lastBoard[x][y] = level[x][y].copyKeepObj();
             }
         }
         Board.setSpawn(startSpawnX, startSpawnY);
@@ -139,5 +137,7 @@ public abstract class Level {
             System.out.println("keys replaced");
             Board.board[key.getX()][key.getY()].setObject(key);
         }
+        Board.board[startSpawnX][startSpawnY].setObject(getMovableUser());
+        Engine.INSTANCE.applyChanges();
     }
 }

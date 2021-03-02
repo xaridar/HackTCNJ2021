@@ -1,12 +1,14 @@
 package com.topperbibb.hacktcnj2021.shared;
 
 import com.topperbibb.hacktcnj2021.client.game.Board;
+import com.topperbibb.hacktcnj2021.client.game.graphics.SpriteInfo;
 import com.topperbibb.hacktcnj2021.client.game.objects.BoardObject;
 import com.topperbibb.hacktcnj2021.client.game.objects.Player;
 import com.topperbibb.hacktcnj2021.client.game.tiles.Tile;
 import com.topperbibb.hacktcnj2021.client.game.user.MovableUser;
 
 import java.io.ByteArrayOutputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 public class StateChangePacket extends Packet {
@@ -40,6 +42,7 @@ public class StateChangePacket extends Packet {
             boardState.write(ch.oldTileY);
             boardState.write(ch.newTileX);
             boardState.write(ch.newTileY);
+            boardState.writeBytes(ch.spriteName.getBytes(StandardCharsets.UTF_8));
         }
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -55,12 +58,22 @@ public class StateChangePacket extends Packet {
         public int oldTileY;
         public int newTileX;
         public int newTileY;
+        public String spriteName;
 
-        public Change(int oldTileX, int oldTileY, int newTileX, int newTileY) {
+        public Change(int oldTileX, int oldTileY, int newTileX, int newTileY, SpriteInfo sprite) {
             this.oldTileX = oldTileX;
             this.oldTileY = oldTileY;
             this.newTileX = newTileX;
             this.newTileY = newTileY;
+            this.spriteName = sprite.key;
+        }
+
+        public Change(int oldTileX, int oldTileY, int newTileX, int newTileY, String sprite) {
+            this.oldTileX = oldTileX;
+            this.oldTileY = oldTileY;
+            this.newTileX = newTileX;
+            this.newTileY = newTileY;
+            this.spriteName = sprite;
         }
     }
 

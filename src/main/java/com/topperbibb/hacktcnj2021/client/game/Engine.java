@@ -11,6 +11,7 @@ import com.topperbibb.hacktcnj2021.client.game.graphics.SpriteInfo;
 import com.topperbibb.hacktcnj2021.client.game.graphics.Spritesheet;
 import com.topperbibb.hacktcnj2021.client.game.user.NetUser;
 import com.topperbibb.hacktcnj2021.client.game.user.StaticUser;
+import com.topperbibb.hacktcnj2021.shared.LevelSelectPacket;
 import com.topperbibb.hacktcnj2021.shared.StateChangePacket;
 
 import javax.swing.*;
@@ -47,7 +48,6 @@ public class Engine implements KeyListener, MouseListener {
     private ArrayList<JPanel> objectPanels;
     public static final long keyTimeout = 300;
     private long keyPressed;
-    private MovableUser.PlayerSprite lastDir;
 
 
     public static Engine INSTANCE;
@@ -281,13 +281,10 @@ public class Engine implements KeyListener, MouseListener {
                 case 'w':
                     if (keyPressed + keyTimeout <= System.currentTimeMillis()) {
                         if (user.move(0, -1)) {
-                            MovableUser.PlayerSprite dir = lastDir == MovableUser.PlayerSprite.UP ? MovableUser.PlayerSprite.UP2 : MovableUser.PlayerSprite.UP;
-                            user.setSprite(user.getSprite(dir));
-                            renderPlayer(user);
-                            renderObjects();
-                            lastDir = dir;
                             currLevel.incrementCountdown();
                         }
+                        renderObjects();
+                        renderPlayer(user);
                         keyPressed = System.currentTimeMillis();
                     }
                     break;
@@ -295,13 +292,10 @@ public class Engine implements KeyListener, MouseListener {
                 case 's':
                     if (keyPressed + keyTimeout <= System.currentTimeMillis()) {
                         if (user.move(0, 1)) {
-                            MovableUser.PlayerSprite dir = lastDir == MovableUser.PlayerSprite.DOWN ? MovableUser.PlayerSprite.DOWN2 : MovableUser.PlayerSprite.DOWN;
-                            user.setSprite(user.getSprite(dir));
-                            renderPlayer(user);
-                            renderObjects();
-                            lastDir = dir;
                             currLevel.incrementCountdown();
                         }
+                        renderObjects();
+                        renderPlayer(user);
                         keyPressed = System.currentTimeMillis();
                     }
                     break;
@@ -309,13 +303,10 @@ public class Engine implements KeyListener, MouseListener {
                 case 'a':
                     if (keyPressed + keyTimeout <= System.currentTimeMillis()) {
                         if (user.move(-1, 0)) {
-                            MovableUser.PlayerSprite dir = lastDir == MovableUser.PlayerSprite.LEFT ? MovableUser.PlayerSprite.LEFT2 : MovableUser.PlayerSprite.LEFT;
-                            user.setSprite(user.getSprite(dir));
-                            renderPlayer(user);
-                            renderObjects();
-                            lastDir = dir;
                             currLevel.incrementCountdown();
                         }
+                        renderObjects();
+                        renderPlayer(user);
                         keyPressed = System.currentTimeMillis();
                     }
                     break;
@@ -323,51 +314,32 @@ public class Engine implements KeyListener, MouseListener {
                 case 'd':
                     if (keyPressed + keyTimeout <= System.currentTimeMillis()) {
                         if (user.move(1, 0)) {
-                            MovableUser.PlayerSprite dir = lastDir == MovableUser.PlayerSprite.RIGHT ? MovableUser.PlayerSprite.RIGHT2 : MovableUser.PlayerSprite.RIGHT;
-                            user.setSprite(user.getSprite(dir));
-                            renderPlayer(user);
-                            renderObjects();
-                            lastDir = dir;
                             currLevel.incrementCountdown();
                         }
+                        renderObjects();
+                        renderPlayer(user);
                         keyPressed = System.currentTimeMillis();
                     }
                     break;
                 case 'Q':
                 case 'q':
                     user.die();
-                    user.setSprite(user.getSprite(MovableUser.PlayerSprite.RIGHT));
                     renderPlayer(user);
                     renderObjects();
                     keyPressed = System.currentTimeMillis();
                     break;
             }
-            if(Board.board[user.getY()][user.getX()].getInfo().isEndPoint() && currLevel.isWinnable()) {
-
-                loadIndex++;
-                currLevel = loadOrder[loadIndex];
-
-                Board.board = currLevel.getLevel();
-                Board.setSpawn(currLevel.getSpawnTile());
-                Board.setEndTile(currLevel.getEndTile());
-                currLevel.getMovableUser().setPos(Board.getSpawnTile().getY(), Board.getSpawnTile().getX());
-                renderStaticTiles();
-                user.setSprite(user.getSprite(MovableUser.PlayerSprite.RIGHT));
-                renderPlayer(currLevel.getMovableUser());
-                renderObjects();
-                renderSpawn();
-                renderEnd();
-                applyChanges();
-                System.out.println(Board.getSpawnTile().getY() + ", " + Board.getSpawnTile().getX());
-                System.out.println(user.getY() + ", " + user.getX());
-                System.out.println("You win!");
+        }
+        if(Board.board[currLevel.getMovableUser().getY()][currLevel.getMovableUser().getX()].getInfo().isEndPoint() && currLevel.isWinnable()) {
+            if (localUser.host) {
+                localUser.sendPacket(new LevelSelectPacket(loadIndex + 1));
             }
         }
         if(e.getKeyChar() == 'r') {
             currLevel = loadOrder[loadIndex];
+            currLevel.getMovableUser().setSprite(currLevel.getMovableUser().getSprite(MovableUser.PlayerSprite.RIGHT));
             currLevel.reset();
 
-            currLevel.getMovableUser().setSprite(currLevel.getMovableUser().getSprite(MovableUser.PlayerSprite.RIGHT));
             renderStaticTiles();
             renderSpawn();
             renderEnd();
@@ -415,5 +387,25 @@ public class Engine implements KeyListener, MouseListener {
     public void applyChanges() {
         if (!singlePlayer)
             localUser.sendPacket(new StateChangePacket(localUser.id));
+    }
+
+    public void setLevel(int levelIndex) {
+        loadIndex = levelIndex;
+        currLevel = loadOrder[loadIndex];
+
+        Board.board = currLevel.getLevel();
+        Board.lastBoard = currLevel.getLevel();
+        Board.setSpawn(currLevel.getSpawnTile());
+        Board.setEndTile(currLevel.getEndTile());
+        currLevel.getMovableUser().setPos(Board.getSpawnTile().getY(), Board.getSpawnTile().getX());
+        renderStaticTiles();
+        currLevel.getMovableUser().setSprite(currLevel.getMovableUser().getSprite(MovableUser.PlayerSprite.RIGHT));
+        renderPlayer(currLevel.getMovableUser());
+        renderObjects();
+        renderSpawn();
+        renderEnd();
+        System.out.println(Board.getSpawnTile().getY() + ", " + Board.getSpawnTile().getX());
+        System.out.println(currLevel.getMovableUser().getY() + ", " + currLevel.getMovableUser().getX());
+        System.out.println("You win!");
     }
 }

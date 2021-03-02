@@ -77,10 +77,11 @@ public class Board {
         Board.endTile = endTile;
     }
 
-    public static void moveObj(Tile fromTile, Tile toTile) {
+    public static void moveObj(Tile fromTile, Tile toTile, SpriteInfo sprite) {
         BoardObject obj = fromTile.getObject();
         board[fromTile.getX()][fromTile.getY()].setObject(null);
         toTile.setObject(obj);
+        obj.setSprite(sprite);
         if (obj instanceof MovableUser) {
             obj.setPos(toTile.getY(), toTile.getX());
             Engine.INSTANCE.renderPlayer((MovableUser) obj);
@@ -99,11 +100,7 @@ public class Board {
                         BoardObject obj = newBoard[x][y].getObject();
                         Tile oldTile = getTileForObject(obj, oldBoard);
                         Tile newTile = newBoard[x][y];
-                        if (obj instanceof MovableUser) {
-                            changes.add(new StateChangePacket.Change(oldTile.getX(), oldTile.getY(), newTile.getX(), newTile.getY()));
-                        } else {
-                            changes.add(new StateChangePacket.Change(oldTile.getX(), oldTile.getY(), newTile.getX(), newTile.getY()));
-                        }
+                        changes.add(new StateChangePacket.Change(oldTile.getX(), oldTile.getY(), newTile.getX(), newTile.getY(), obj.getSprite()));
                     }
                 }
             }
