@@ -14,22 +14,43 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+/**
+ * Handles a single connection to a client
+ */
 public class Connection implements Runnable {
 
+    // This connection's unique id
     public final int id;
+
+    // A boolean representing whether the client associated with this connection is the host
     public boolean host;
 
+    // A websocket for client-server communication
     private final Socket socket;
+
+    // The Room that holds this Connection
     private Room room;
 
+    // An InputStream hodlding all data sent from the connected client
     private DataInputStream in;
+
+    // An OutputStream, which is connected to the client and can send it messages
     private DataOutputStream out;
+
+    // A ServerEventListener instance for handling Packets
     private ServerEventListener listener;
 
 
+    // A boolean representing whether this connection is waiting for its associated client to send back a PING message
     public boolean lookingForPong;
+
+    // A separate Thread which handles sending PONG messages
     public Thread pingThread;
 
+    /**
+     * Initializes a new Connection from a Socket
+     * @param socket a Socket connected to a client
+     */
     public Connection(Socket socket) {
         this.socket = socket;
         System.out.format("Connected to client at ip %s\n", socket.getInetAddress());
@@ -43,6 +64,10 @@ public class Connection implements Runnable {
         }
     }
 
+    /**
+     * Joins a given Room
+     * @param room the Room to join
+     */
     public void joinRoom(Room room) {
         this.room = room;
         host = RoomManager.getAllConnections(room).stream().noneMatch(conn -> conn.host);
@@ -57,6 +82,10 @@ public class Connection implements Runnable {
         resetPing();
     }
 
+    /**
+     * Override from {@link Runnable}
+     * Waits for input from {@link #in}, and sends all received data to the connected {@link ServerEventListener}
+     */
     @Override
     public void run() {
         try {
@@ -73,6 +102,10 @@ public class Connection implements Runnable {
         }
     }
 
+    /**
+     * Sends a Packet to the connected client
+     * @param p the Packet to send
+     */
     public void sendPacket(Packet p) {
         try {
             System.out.println("Sent packet");
@@ -83,6 +116,9 @@ public class Connection implements Runnable {
         }
     }
 
+    /**
+     * Restarts the PING/PONG Thread for ensuring consistent connection to clients
+     */
     public void resetPing() {
         if (pingThread != null) {
             pingThread.stop();
@@ -115,6 +151,9 @@ public class Connection implements Runnable {
 
     }
 
+    /**
+     * Closes the connection
+     */
     public void close() {
         if (pingThread != null) {
             pingThread.stop();

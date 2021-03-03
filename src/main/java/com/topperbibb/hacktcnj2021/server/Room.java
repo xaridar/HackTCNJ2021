@@ -1,25 +1,34 @@
 package com.topperbibb.hacktcnj2021.server;
 
+import com.topperbibb.hacktcnj2021.shared.EndPacket;
 import com.topperbibb.hacktcnj2021.shared.Packet;
 import com.topperbibb.hacktcnj2021.shared.PlayerLeavePacket;
 import com.topperbibb.hacktcnj2021.shared.StartPacket;
-import com.topperbibb.hacktcnj2021.shared.EndPacket;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import java.util.Set;
 import java.util.stream.Collectors;
 
+/**
+ * Represents a networked lobby
+ */
 public class Room {
 
+    // True is the Room is currently in a game
     public boolean playing = false;
-    public boolean hasOverseer = false;
 
+    /**
+     * Sends a packet to all clients connected to the Room
+     * @param p the Packet to send
+     */
     public void sendToAll(Packet p) {
         RoomManager.getAllConnections(this).forEach(conn -> conn.sendPacket(p));
     }
 
+    /**
+     * Determines whether the lobby can start/continue a game, and sends the appropriate Packet
+     */
     public void checkForStart() {
         if (RoomManager.canPlay(this)) {
             sendStart();
@@ -31,6 +40,9 @@ public class Room {
         }
     }
 
+    /**
+     * Determines a mover and overseer for the game, then send packets to both clients sharing this information
+     */
     private void sendStart() {
         Random random = new Random();
         StartPacket.PlayerType playerType = random.nextInt() == 1 ? StartPacket.PlayerType.OVERSEER : StartPacket.PlayerType.MOVER;
@@ -39,6 +51,10 @@ public class Room {
         connectionSet.get(1).sendPacket(new StartPacket(playerType == StartPacket.PlayerType.OVERSEER ? StartPacket.PlayerType.MOVER : StartPacket.PlayerType.OVERSEER));
     }
 
+    /**
+     * Sends all clients a {@link PlayerLeavePacket} informing all players that another player left
+     * @param connection the Connection that is disconnecting
+     */
     public void sendPlayerLeave(Connection connection) {
         List<Connection> conns = RoomManager.getAllConnections(this);
         final Connection[] host = {conns.stream().filter(conn -> conn.host).collect(Collectors.toList()).get(0)};
@@ -60,6 +76,11 @@ public class Room {
         checkForStart();
     }
 
+    /**
+     * Determines whether this Room contains any Connections with a given connection id
+     * @param id the id to search for among Connections
+     * @return true if any associated Connection has {@code id}, false otherwise
+     */
     public boolean hasId(int id) {
         return RoomManager.getAllConnections(this).stream().anyMatch(conn -> conn.id == id);
     }

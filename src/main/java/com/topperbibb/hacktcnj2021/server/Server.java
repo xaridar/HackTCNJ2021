@@ -3,19 +3,27 @@ package com.topperbibb.hacktcnj2021.server;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.HashSet;
-import java.util.Set;
 
+/**
+ * Contains the code for a websocket server, given a port number. Receives new clients on a separate thread, and spins up new threads for each {@link Connection}.
+ */
 public class Server implements Runnable {
 
+    // The desired socket port
     private final int port;
-    private ServerSocket serverSocket;
-    private boolean running = false;
-    public Set<Room> rooms;
 
+    // Holds all connected sockets
+    private ServerSocket serverSocket;
+
+    // Determines whether the server is accepting clients
+    private boolean running = false;
+
+    /**
+     * Initializes a new Server and starts a websocket server.
+     * @param port the desired socket port for the server to listen on.
+     */
     public Server(int port) {
         this.port = port;
-        rooms = new HashSet<>();
         try {
             this.serverSocket = new ServerSocket(port);
         } catch (IOException e) {
@@ -23,10 +31,17 @@ public class Server implements Runnable {
         }
     }
 
+    /**
+     * Starts the server
+     */
     public void start() {
         new Thread(this).start();
     }
 
+    /**
+     * Override from {@link Runnable}
+     * Waits for new connections on a new thread, then initializes each one as they connect.
+     */
     @Override
     public void run() {
         running = true;
@@ -42,6 +57,10 @@ public class Server implements Runnable {
         shutdown();
     }
 
+    /**
+     * Initializes a socket by creating a {@link Connection}, assigning it to a room, and starting its Thread.
+     * @param socket a socket spit out by the ServerSocket
+     */
     public void initSocket(Socket socket) {
         Room room = RoomManager.getNewRoomForConnection();
         RoomManager.addRoom(room);
@@ -51,6 +70,9 @@ public class Server implements Runnable {
         new Thread(connection).start();
     }
 
+    /**
+     * Shuts down the server when the socket closes or errors.
+     */
     public void shutdown() {
         running = false;
         try {

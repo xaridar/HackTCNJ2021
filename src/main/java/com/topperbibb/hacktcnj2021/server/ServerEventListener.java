@@ -2,7 +2,17 @@ package com.topperbibb.hacktcnj2021.server;
 
 import com.topperbibb.hacktcnj2021.shared.*;
 
+/**
+ * Manages incoming {@link Packet}s for Connections by routing them correctly
+ */
 public class ServerEventListener {
+
+    /**
+     * Accepts and deals with a new Packet
+     * @param p a received Packet
+     * @param connection the connection that received said Packet
+     * @param room the room of the received Packet
+     */
     public void received(Packet p, Connection connection, Room room) {
         if (p instanceof PlayerJoinPacket) {
             room.sendToAll(p);
