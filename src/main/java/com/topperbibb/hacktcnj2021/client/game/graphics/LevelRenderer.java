@@ -67,7 +67,12 @@ public class LevelRenderer extends JLayeredPane {
                     Image scaledImage = img.getScaledInstance((int) (sprite.pixelScale * sprite.width), (int) (sprite.pixelScale * sprite.height), Image.SCALE_DEFAULT);
                     panel.setBackground(new Color(0, 0, 0, 0));
                     panel.add(new JLabel(new ImageIcon(scaledImage)));
-                    panel.setBounds((int) ((SpriteManager.tileSize * SpriteManager.pixelScale * j + (SpriteManager.tileSize/sprite.width) * sprite.pixelScale) + ((SpriteManager.tileSize * SpriteManager.pixelScale - sprite.pixelScale * sprite.width) / 2)), (int) ((SpriteManager.tileSize * SpriteManager.pixelScale * i + (SpriteManager.tileSize/sprite.height) * sprite.pixelScale) + ((SpriteManager.tileSize * SpriteManager.pixelScale - sprite.height * sprite.pixelScale) / 2)), (int) (sprite.width * sprite.pixelScale), (int) (sprite.height * sprite.pixelScale));
+                    panel.setBounds(
+                            (int) (SpriteManager.tileSize * SpriteManager.pixelScale * j + ((SpriteManager.tileSize * SpriteManager.pixelScale - sprite.pixelScale * sprite.width) / 2)),
+                            (int) (SpriteManager.tileSize * SpriteManager.pixelScale * i + ((SpriteManager.tileSize * SpriteManager.pixelScale - sprite.pixelScale * sprite.height) / 2)),
+                            (int) (sprite.width * sprite.pixelScale),
+                            (int) (sprite.height * sprite.pixelScale)
+                    );
                     out.add(panel);
                 }
 
