@@ -1,8 +1,7 @@
 package com.topperbibb.hacktcnj2021.client.game.graphics;
 
-import com.topperbibb.hacktcnj2021.client.game.Engine;
-import com.topperbibb.hacktcnj2021.client.game.user.MovableUser;
 import com.topperbibb.hacktcnj2021.client.game.Board;
+import com.topperbibb.hacktcnj2021.client.game.user.MovableUser;
 
 import javax.swing.*;
 import java.awt.*;
@@ -10,7 +9,6 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
 public class LevelRenderer extends JLayeredPane {
-
 
     public LevelRenderer() {
     }

@@ -63,6 +63,7 @@ public class MovableUser extends NetUser implements Player {
                     Engine.INSTANCE.applyChanges();
                     return true;
                 } else {
+                    Engine.INSTANCE.applyChanges();
                     return false;
                 }
             } else if (tile.getObject() != null && tile.getObject() instanceof Key) {
@@ -73,6 +74,7 @@ public class MovableUser extends NetUser implements Player {
             Engine.INSTANCE.applyChanges();
             return true;
         } else {
+            Engine.INSTANCE.applyChanges();
             return false;
         }
     }

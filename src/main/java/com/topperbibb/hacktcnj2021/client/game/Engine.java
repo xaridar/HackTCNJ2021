@@ -191,7 +191,6 @@ public class Engine implements KeyListener, MouseListener {
 
     public void renderPlayer(MovableUser player) {
         Image img = renderer.renderPlayer(player);
-        //img = img.getScaledInstance((int) (SpriteManager.tileSize * SpriteManager.pixelScale), (int) (SpriteManager.tileSize * SpriteManager.pixelScale), Image.SCALE_DEFAULT);
         img = img.getScaledInstance(
                 Math.min((int) (SpriteManager.tileSize * SpriteManager.pixelScale),(int) (player.getSprite().width * player.getSprite().pixelScale)),
                 Math.min((int) (SpriteManager.tileSize * SpriteManager.pixelScale),(int) (player.getSprite().height * player.getSprite().pixelScale)),
@@ -224,7 +223,6 @@ public class Engine implements KeyListener, MouseListener {
 
         for (JPanel object : objectPanels) {
             renderer.add(object, JLayeredPane.MODAL_LAYER);
-//            object.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Color.BLACK));
             object.setBackground(new Color(0, 0, 0, 0));
         }
 
