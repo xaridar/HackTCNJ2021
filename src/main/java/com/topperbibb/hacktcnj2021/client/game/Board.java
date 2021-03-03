@@ -102,6 +102,10 @@ public class Board {
                         Tile newTile = newBoard[x][y];
                         changes.add(new StateChangePacket.Change(oldTile.getX(), oldTile.getY(), newTile.getX(), newTile.getY(), obj.getSprite()));
                     }
+                } else if (newBoard[x][y].getObject() != null && newBoard[x][y].getObject() == oldBoard[x][y].getObject()) {
+                    if (newBoard[x][y].getObject().getSprite() != oldBoard[x][y].getObject().getSprite()) {
+                        changes.add(new StateChangePacket.Change(x, y, x, y, newBoard[x][y].getObject().getSprite()));
+                    }
                 }
             }
         }
