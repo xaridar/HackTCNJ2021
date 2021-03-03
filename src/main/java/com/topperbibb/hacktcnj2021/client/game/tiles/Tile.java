@@ -83,10 +83,10 @@ public class Tile {
     }
 
     public Tile copy() {
-        return new Tile(x, y, new TileInfo(SpriteManager.get(info.sprite.key), info.descriptor, info.tags), object != null ? object.copy() : null);
+        return new Tile(x, y, new TileInfo(SpriteManager.get(info.sprite.key), info.descriptor, info.tags, info.isSpawn), object != null ? object.copy() : null);
     }
 
     public Tile copyKeepObj() {
-        return new Tile(x, y, new TileInfo(info.sprite, info.descriptor, info.tags), object);
+        return new Tile(x, y, new TileInfo(info.sprite, info.descriptor, info.tags, info.isSpawn), object);
     }
 }

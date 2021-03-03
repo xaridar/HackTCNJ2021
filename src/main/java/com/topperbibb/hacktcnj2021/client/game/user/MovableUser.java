@@ -28,8 +28,7 @@ public class MovableUser extends NetUser implements Player {
     public int x;
     public int y;
     Map<PlayerSprite, String> sprites;
-    boolean isOverseer;
-    private MovableUser.PlayerSprite lastDir;
+
     public MovableUser() {
 
     }
@@ -114,10 +113,6 @@ public class MovableUser extends NetUser implements Player {
         return SpriteManager.get(sprites.get(spriteEnum));
     }
 
-    public void setSprite(PlayerSprite which, String sprite) {
-        sprites.put(which, sprite);
-    }
-
     public void setSprites(Map<PlayerSprite, String> sprites) {
         this.sprites = sprites;
     }
@@ -145,14 +140,6 @@ public class MovableUser extends NetUser implements Player {
         return new MovableUser(x, y, sprites);
     }
 
-    public boolean isOverseer() {
-        return isOverseer;
-    }
-
-    public void setOverseer(boolean overseer) {
-        isOverseer = overseer;
-    }
-
     public void die() {
         if (Board.getSpawnTile().getObject() != null && Board.getSpawnTile().getObject() != this) {
             System.out.println("Spawn covered; resetting level");
@@ -171,6 +158,5 @@ public class MovableUser extends NetUser implements Player {
     public void setNextSprite(int dirX, int dirY) {
         MovableUser.PlayerSprite dir = dirX < 0 ? PlayerSprite.LEFT : dirX > 0 ? PlayerSprite.RIGHT : dirY < 0 ? PlayerSprite.UP : PlayerSprite.DOWN;
         setSprite(getSprite(dir));
-        lastDir = dir;
     }
 }

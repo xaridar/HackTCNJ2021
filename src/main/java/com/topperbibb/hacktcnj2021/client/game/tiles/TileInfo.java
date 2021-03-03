@@ -4,15 +4,17 @@ import com.topperbibb.hacktcnj2021.client.game.graphics.SpriteInfo;
 import com.topperbibb.hacktcnj2021.client.game.graphics.SpriteManager;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 public class TileInfo {
 
 
     public enum TileDescriptor {
-        SPAWN_POINT, END_POINT, CAN_SPAWN, NO_SPAWN,
+        END_POINT, CAN_SPAWN, NO_SPAWN,
     }
 
+    boolean isSpawn;
     SpriteInfo sprite;
     TileDescriptor descriptor;
     ArrayList<TileTags> tags = new ArrayList<>();
@@ -28,6 +30,13 @@ public class TileInfo {
         this.descriptor = descriptor;
     }
 
+    public TileInfo(SpriteInfo sprite, TileDescriptor descriptor, ArrayList<TileTags> tags, boolean isSpawn) {
+        this.isSpawn = isSpawn;
+        this.sprite = sprite;
+        this.descriptor = descriptor;
+        this.tags = tags;
+    }
+
     public SpriteInfo getSprite() {
         return sprite;
     }
@@ -37,15 +46,15 @@ public class TileInfo {
     }
 
     public boolean isSpawnPoint() {
-        return descriptor == TileDescriptor.SPAWN_POINT;
+        return isSpawn;
     }
 
     public void setSpawnPoint() {
-        this.descriptor = TileDescriptor.SPAWN_POINT;
+        this.isSpawn = true;
     }
 
     public void removeSpawnPoint() {
-        this.descriptor = TileDescriptor.CAN_SPAWN;
+        this.isSpawn = false;
     }
 
     public boolean isEndPoint() {

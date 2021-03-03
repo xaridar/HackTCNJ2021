@@ -232,7 +232,6 @@ public class Engine {
         playerPanel.removeAll();
         ImageIcon ii = new ImageIcon(img);
         JLabel image = new JLabel(ii);
-        System.out.println(ii.getIconWidth());
         image.setBounds(
                 (int) ((SpriteManager.tileSize * SpriteManager.pixelScale - player.getSprite().width * player.getSprite().pixelScale) / 2),
                 (int) ((SpriteManager.tileSize * SpriteManager.pixelScale - player.getSprite().height * player.getSprite().pixelScale) / 2),
@@ -342,8 +341,6 @@ public class Engine {
         renderObjects();
         renderSpawn();
         renderEnd();
-        System.out.println(Board.getSpawnTile().getY() + ", " + Board.getSpawnTile().getX());
-        System.out.println(currLevel.getMovableUser().getY() + ", " + currLevel.getMovableUser().getX());
         System.out.println("You win!");
     }
 
