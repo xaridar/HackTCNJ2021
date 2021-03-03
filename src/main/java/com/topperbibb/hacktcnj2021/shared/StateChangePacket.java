@@ -11,6 +11,10 @@ import java.io.ByteArrayOutputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
+/**
+ * Represents some sort of Board state change in the game
+ * This Packet holds a list of changes made, as well as the id of the sending player
+ */
 public class StateChangePacket extends Packet {
 
     public int id;
@@ -53,6 +57,9 @@ public class StateChangePacket extends Packet {
         return out;
     }
 
+    /**
+     * Represents some sort of change in the game board, and includes information about the old and new tile for a moving object, as well as its sprite
+     */
     public static class Change {
         public int oldTileX;
         public int oldTileY;
@@ -77,6 +84,9 @@ public class StateChangePacket extends Packet {
         }
     }
 
+    /**
+     * Represents an entire list of changes, as well as information about the spawn point at a given state
+     */
     public static class ChangeList {
         public List<Change> changes;
         public int spawnX, spawnY;

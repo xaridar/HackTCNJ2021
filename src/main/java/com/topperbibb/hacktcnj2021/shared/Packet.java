@@ -1,20 +1,24 @@
 package com.topperbibb.hacktcnj2021.shared;
 
-import com.topperbibb.hacktcnj2021.client.game.Board;
-import com.topperbibb.hacktcnj2021.client.game.graphics.SpriteInfo;
-import com.topperbibb.hacktcnj2021.client.game.graphics.SpriteManager;
-import com.topperbibb.hacktcnj2021.client.game.user.MovableUser;
-
-import java.io.*;
-import java.lang.reflect.Array;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Represents a single piece of data passed between the server and client
+ */
 public abstract class Packet {
-    public static Packet from(byte[] in) throws IOException {
+
+    /**
+     * Statically parses a byte array into its associated Packet type
+     * @param in The byte array to parse
+     * @return a new Packet containing the correct type and data based on {@code in}
+     */
+    public static Packet from(byte[] in)  {
         int len = in.length;
         int type = in[0];
-        ByteArrayInputStream inputStream =new ByteArrayInputStream(in, 1, len - 1);
+        ByteArrayInputStream inputStream = new ByteArrayInputStream(in, 1, len - 1);
         Class<? extends Packet> packetType = PacketType.classFromInt(type);
         if (packetType == ConnectPacket.class) {
             int id = inputStream.read();
@@ -59,12 +63,23 @@ public abstract class Packet {
         return null;
     }
 
+    /**
+     * Abstract method representing how to serialize a Packet
+     * @return the Packet serialized as a ByteArrayOutputStream
+     */
     public abstract ByteArrayOutputStream toByteArray();
 
+    /**
+     * Returns the specific integer descriptor associated with a Packet's type
+     * @return the int associated with a Packet type
+     */
     protected int getTypeInt() {
         return PacketType.getTypeIntFromClass(this);
     }
 
+    /**
+     * Holds information for Packet types
+     */
     public enum PacketType {
 
         CONNECT(0, ConnectPacket.class),
@@ -84,15 +99,11 @@ public abstract class Packet {
             this.cls = cls;
         }
 
-        public static PacketType typeFromInt(int i) {
-            for (PacketType type : values()) {
-                if (type.i == i) {
-                    return type;
-                }
-            }
-            return null;
-        }
-
+        /**
+         * Finds the Packet Class associated with a given int
+         * @param i the int to search for in all enum values
+         * @return the Packet Class associated with {@code i}, or null if no PacketType includes the given int
+         */
         public static Class<? extends Packet> classFromInt(int i) {
             for (PacketType type : values()) {
                 if (type.i == i) {
@@ -102,6 +113,11 @@ public abstract class Packet {
             return null;
         }
 
+        /**
+         * Returns {@link #i} for a given Packet's class
+         * @param p the Packet to find {@link #i} for
+         * @return the type int associated with a given Packet type
+         */
         public static int getTypeIntFromClass(Packet p) {
             Class<? extends Packet> cls = p.getClass();
             for (PacketType type : values()) {

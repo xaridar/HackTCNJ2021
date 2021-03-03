@@ -2,6 +2,10 @@ package com.topperbibb.hacktcnj2021.shared;
 
 import java.io.ByteArrayOutputStream;
 
+/**
+ * Represents the selection of a game level
+ * This Packet holds the index of the chosen level
+ */
 public class LevelSelectPacket extends Packet {
 
     public int levelIndex;

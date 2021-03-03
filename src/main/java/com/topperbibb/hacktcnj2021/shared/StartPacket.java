@@ -2,6 +2,10 @@ package com.topperbibb.hacktcnj2021.shared;
 
 import java.io.ByteArrayOutputStream;
 
+/**
+ * Represents a game starting for a given room
+ * This Packet is different for every player it is sent to: it includes the player's game role
+ */
 public class StartPacket extends Packet {
 
     public enum PlayerType {

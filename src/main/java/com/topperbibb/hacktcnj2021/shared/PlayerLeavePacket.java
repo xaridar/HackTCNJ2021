@@ -2,6 +2,10 @@ package com.topperbibb.hacktcnj2021.shared;
 
 import java.io.ByteArrayOutputStream;
 
+/**
+ * Represents a client leaving a Room
+ * This Packet holds the id of the leaving user, and a boolean representing whether the receiving client is the room's new host
+ */
 public class PlayerLeavePacket extends Packet {
 
     public int id;

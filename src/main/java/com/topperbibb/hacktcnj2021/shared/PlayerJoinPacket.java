@@ -2,6 +2,10 @@ package com.topperbibb.hacktcnj2021.shared;
 
 import java.io.ByteArrayOutputStream;
 
+/**
+ * Represents a client joining a Room
+ * This Packet holds the id of the joining user, and a boolean representing whether they are the host of the Room they have been assigned to
+ */
 public class PlayerJoinPacket extends Packet {
 
     public int id;
