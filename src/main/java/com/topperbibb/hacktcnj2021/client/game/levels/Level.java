@@ -123,6 +123,7 @@ public abstract class Level {
     }
 
     public void reset() {
+        getMovableUser().setSprite(getMovableUser().getSprite(MovableUser.PlayerSprite.RIGHT));
         getMovableUser().setPos(startSpawnY, startSpawnX);
         level = Board.loadBoard(setLevel(), mapObjects());
         Board.board = new Tile[level.length][level[0].length];
@@ -138,6 +139,7 @@ public abstract class Level {
             Board.board[key.getX()][key.getY()].setObject(key);
         }
         Board.board[startSpawnX][startSpawnY].setObject(getMovableUser());
+        Engine.INSTANCE.renderSpawn();
         Engine.INSTANCE.applyChanges();
     }
 }

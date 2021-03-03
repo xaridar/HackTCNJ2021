@@ -26,7 +26,8 @@ public class Spritesheet {
                 throw new IOException();
             }
         } catch (IOException e) {
-            System.out.println("Spritesheet not found");
+            System.out.println("Spritesheet not found: " + path);
+            System.exit(0);
             return;
         }
 

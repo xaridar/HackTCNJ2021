@@ -1,0 +1,105 @@
+{
+  "spriteSheetPath": "/maybe.png",
+  "tileSize": 32,
+  "pixelScale": 2,
+  "sprites": {
+    "Basic_ground": {
+      "tiled": true,
+      "randomized": true,
+      "sprites": [
+        {
+          "sideLength": 32,
+          "x": 224,
+          "y": 160
+        }
+      ]
+    },
+    "Player_down": {
+      "sprites": [
+        {
+          "sideLength": 32,
+          "x": 32,
+          "y": 256
+        },
+        {
+          "sideLength": 32,
+          "x": 64,
+          "y": 256
+        }
+      ]
+    },
+    "Player_left": {
+      "sprites": [
+        {
+          "sideLength": 32,
+          "x": 32,
+          "y": 288
+        },
+        {
+          "sideLength": 32,
+          "x": 64,
+          "y": 288
+        }
+      ]
+    },
+    "Player_right": {
+      "sprites": [
+        {
+          "sideLength": 32,
+          "x": 32,
+          "y": 320
+        },
+        {
+          "sideLength": 32,
+          "x": 64,
+          "y": 320
+        }
+      ]
+    },
+    "Player_up": {
+      "sprites": [
+        {
+          "sideLength": 32,
+          "x": 32,
+          "y": 352
+        },
+        {
+          "sideLength": 32,
+          "x": 64,
+          "y": 352
+        }
+      ]
+    },
+    "Wall": {
+      "randomized": true,
+      "sprites": [
+        {
+          "sideLength": 32,
+          "x": 256,
+          "y": 192
+        }
+      ]
+    },
+    "Spawn_point": {
+      "sideLength": 32,
+      "x": 320,
+      "y": 256
+    },
+    "End": {
+      "sideLength": 32,
+      "x": 320,
+      "y": 224
+    },
+    "Key": {
+      "x": 320,
+      "y": 288,
+      "sideLength": 32,
+      "pixelScale": 1
+    },
+    "Crate": {
+      "sideLength": 32,
+      "x": 128,
+      "y": 96
+    }
+  }
+}

@@ -45,7 +45,7 @@ public class KeyShowcase extends Level{
         map.put( "#", new Tile(new TileInfo(SpriteManager.get("Wall"), TileInfo.TileDescriptor.NO_SPAWN, new ArrayList<>(Collections.emptyList()))) );
         map.put( "o", new Tile(new TileInfo(SpriteManager.get("Basic_ground"), TileInfo.TileDescriptor.SPAWN_POINT, new ArrayList<>(Collections.singletonList(TileTags.WALKABLE)))));
         map.put( "d", new Tile(new TileInfo(SpriteManager.get("Basic_ground"), TileInfo.TileDescriptor.END_POINT, new ArrayList<>(Collections.singletonList(TileTags.WALKABLE)))));
-        map.put( "k", new Tile(new TileInfo(SpriteManager.get("Basic_ground"), TileInfo.TileDescriptor.CAN_SPAWN, new ArrayList<>(Collections.singletonList(TileTags.WALKABLE))), new Key(SpriteManager.get("Key"))));
+        map.put( "k", new Tile(new TileInfo(SpriteManager.get("Basic_ground"), TileInfo.TileDescriptor.NO_SPAWN, new ArrayList<>(Collections.singletonList(TileTags.WALKABLE))), new Key(SpriteManager.get("Key"))));
         return map;
     }
 }

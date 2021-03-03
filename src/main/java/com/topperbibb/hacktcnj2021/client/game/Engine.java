@@ -8,7 +8,6 @@ import com.topperbibb.hacktcnj2021.client.game.tiles.TileInfo;
 import com.topperbibb.hacktcnj2021.client.game.user.MovableUser;
 import com.topperbibb.hacktcnj2021.client.game.graphics.LevelRenderer;
 import com.topperbibb.hacktcnj2021.client.game.graphics.SpriteInfo;
-import com.topperbibb.hacktcnj2021.client.game.graphics.Spritesheet;
 import com.topperbibb.hacktcnj2021.client.game.user.NetUser;
 import com.topperbibb.hacktcnj2021.client.game.user.StaticUser;
 import com.topperbibb.hacktcnj2021.shared.LevelSelectPacket;
@@ -28,17 +27,13 @@ import java.util.stream.Collectors;
 
 public class Engine implements KeyListener, MouseListener {
 
-    private NetUser localUser;
-
-    public static final int PIXEL_SCALE = 4;
-    public static final int TILE_SIZE = 16;
+    private final NetUser localUser;
 
     public static Level[] loadOrder;
 
     public static int loadIndex = 0;
     private boolean singlePlayer = false;
     private Level currLevel;
-    private Spritesheet spritesheet;
     private LevelRenderer renderer;
     private JFrame window;
     private JPanel levelPanel;
@@ -53,15 +48,11 @@ public class Engine implements KeyListener, MouseListener {
     public static Engine INSTANCE;
 
     public Engine(NetUser p) {
-        Map<MovableUser.PlayerSprite, SpriteInfo> playerSprites = new HashMap<>();
-        playerSprites.put(MovableUser.PlayerSprite.RIGHT, SpriteManager.get("Player_right_1"));
-        playerSprites.put(MovableUser.PlayerSprite.RIGHT2, SpriteManager.get("Player_right_2"));
-        playerSprites.put(MovableUser.PlayerSprite.LEFT, SpriteManager.get("Player_left_1"));
-        playerSprites.put(MovableUser.PlayerSprite.LEFT2, SpriteManager.get("Player_left_2"));
-        playerSprites.put(MovableUser.PlayerSprite.UP, SpriteManager.get("Player_up_1"));
-        playerSprites.put(MovableUser.PlayerSprite.UP2, SpriteManager.get("Player_up_2"));
-        playerSprites.put(MovableUser.PlayerSprite.DOWN, SpriteManager.get("Player_down_1"));
-        playerSprites.put(MovableUser.PlayerSprite.DOWN2, SpriteManager.get("Player_down_2"));
+        Map<MovableUser.PlayerSprite, String> playerSprites = new HashMap<>();
+        playerSprites.put(MovableUser.PlayerSprite.RIGHT, "Player_right");
+        playerSprites.put(MovableUser.PlayerSprite.LEFT, "Player_left");
+        playerSprites.put(MovableUser.PlayerSprite.UP, "Player_up");
+        playerSprites.put(MovableUser.PlayerSprite.DOWN, "Player_down");
         NetUser other = UserManager.users.stream().filter(user -> user != p).collect(Collectors.toList()).get(0);
         MovableUser movable;
         StaticUser staticUser;
@@ -87,7 +78,6 @@ public class Engine implements KeyListener, MouseListener {
         Board.getSpawnTile(Board.board).setObject(movable);
         localUser = p;
         movable.setSprite(movable.getSprite(MovableUser.PlayerSprite.RIGHT));
-        spritesheet = new Spritesheet("/tiles.png");
         Board.lastBoard = new Tile[Board.board.length][Board.board[0].length];
         for (int x = 0; x < Board.board.length; x++) {
             for (int y = 0; y < Board.board[0].length; y++) {
@@ -98,15 +88,11 @@ public class Engine implements KeyListener, MouseListener {
 
     public Engine(MovableUser u, boolean b) {
         singlePlayer = b;
-        Map<MovableUser.PlayerSprite, SpriteInfo> playerSprites = new HashMap<>();
-        playerSprites.put(MovableUser.PlayerSprite.RIGHT, SpriteManager.get("Player_right_1"));
-        playerSprites.put(MovableUser.PlayerSprite.RIGHT2, SpriteManager.get("Player_right_2"));
-        playerSprites.put(MovableUser.PlayerSprite.LEFT, SpriteManager.get("Player_left_1"));
-        playerSprites.put(MovableUser.PlayerSprite.LEFT2, SpriteManager.get("Player_left_2"));
-        playerSprites.put(MovableUser.PlayerSprite.UP, SpriteManager.get("Player_up_1"));
-        playerSprites.put(MovableUser.PlayerSprite.UP2, SpriteManager.get("Player_up_2"));
-        playerSprites.put(MovableUser.PlayerSprite.DOWN, SpriteManager.get("Player_down_1"));
-        playerSprites.put(MovableUser.PlayerSprite.DOWN2, SpriteManager.get("Player_down_2"));
+        Map<MovableUser.PlayerSprite, String> playerSprites = new HashMap<>();
+        playerSprites.put(MovableUser.PlayerSprite.RIGHT, "Player_right");
+        playerSprites.put(MovableUser.PlayerSprite.LEFT, "Player_left");
+        playerSprites.put(MovableUser.PlayerSprite.UP, "Player_up");
+        playerSprites.put(MovableUser.PlayerSprite.DOWN, "Player_down");
         u.setSprites(playerSprites);
         StaticUser staticUser = new StaticUser();
         loadOrder = new Level[]{
@@ -123,7 +109,6 @@ public class Engine implements KeyListener, MouseListener {
         Board.getSpawnTile(Board.board).setObject(u);
         localUser = u;
         u.setSprite(u.getSprite(MovableUser.PlayerSprite.RIGHT));
-        spritesheet = new Spritesheet("/tiles.png");
         Board.lastBoard = new Tile[Board.board.length][Board.board[0].length];
         for (int x = 0; x < Board.board.length; x++) {
             for (int y = 0; y < Board.board[0].length; y++) {
@@ -158,30 +143,30 @@ public class Engine implements KeyListener, MouseListener {
 
     public void createRenderWindow() {
         window = new JFrame();
-        window.setPreferredSize(new Dimension(Board.board[0].length * 16 * 4 + 16, Board.board.length * 16 * 4 + 38));
+        window.setPreferredSize(new Dimension((int) (Board.board[0].length * SpriteManager.tileSize * SpriteManager.pixelScale) + 16, (int) (Board.board.length * SpriteManager.tileSize * SpriteManager.pixelScale)+ 38));
         window.setLayout(new BorderLayout());
-        renderer = new LevelRenderer(spritesheet);
+        renderer = new LevelRenderer();
         window.add(renderer, BorderLayout.CENTER);
-        renderer.setBounds(0, 0, Board.board[0].length * 16 * 4, Board.board.length * 16 * 4);
+        renderer.setBounds(0, 0, (int) (Board.board[0].length * SpriteManager.tileSize * SpriteManager.pixelScale), (int) (Board.board.length * SpriteManager.tileSize * SpriteManager.pixelScale));
 
         levelPanel = new JPanel(new BorderLayout());
         levelPanel.setBackground(new Color(0, 0, 0, 0));
-        levelPanel.setBounds(0, 0, Board.board[0].length * 16 * 4, Board.board.length * 16 * 4);
+        levelPanel.setBounds(0, 0, (int) (Board.board[0].length * SpriteManager.tileSize * SpriteManager.pixelScale), (int) (Board.board.length * SpriteManager.tileSize * SpriteManager.pixelScale));
         renderer.add(levelPanel, JLayeredPane.DEFAULT_LAYER);
 
         playerPanel = new JPanel(new BorderLayout());
         playerPanel.setBackground(new Color(0, 0, 0, 0));
-        playerPanel.setBounds(0, 0, 16, 16);
+        playerPanel.setBounds(0, 0, SpriteManager.tileSize, SpriteManager.tileSize);
         renderer.add(playerPanel, JLayeredPane.DRAG_LAYER);
 
         spawnPanel = new JPanel(new BorderLayout());
         spawnPanel.setBackground(new Color(0, 0, 0, 0));
-        spawnPanel.setBounds(16 * 4 * Board.getSpawnTile(Board.board).getX(), 16 * 4 * Board.getSpawnTile(Board.board).getY(), 16, 16);
+        spawnPanel.setBounds((int) (SpriteManager.tileSize * SpriteManager.pixelScale * Board.getSpawnTile(Board.board).getX()), (int) (SpriteManager.tileSize * SpriteManager.pixelScale * Board.getSpawnTile(Board.board).getY()), SpriteManager.tileSize, SpriteManager.tileSize);
         renderer.add(spawnPanel, JLayeredPane.PALETTE_LAYER);
 
         endPanel = new JPanel(new BorderLayout());
         endPanel.setBackground(new Color(0, 0, 0, 0));
-        endPanel.setBounds(16 * 4 * Board.getEndTile(Board.board).getX(), 16 * 4 * Board.getEndTile(Board.board).getY(), 16, 16);
+        endPanel.setBounds((int) (SpriteManager.tileSize * SpriteManager.pixelScale * Board.getEndTile(Board.board).getX()), (int) (SpriteManager.tileSize * SpriteManager.pixelScale * Board.getEndTile(Board.board).getY()), SpriteManager.tileSize, SpriteManager.tileSize);
         renderer.add(endPanel, JLayeredPane.PALETTE_LAYER);
 
         renderer.addKeyListener(this);
@@ -195,7 +180,7 @@ public class Engine implements KeyListener, MouseListener {
 
     public void renderStaticTiles() {
         BufferedImage image = renderer.renderStatic();
-        Image img = image.getScaledInstance(image.getWidth() * Engine.PIXEL_SCALE, image.getHeight() * PIXEL_SCALE, Image.SCALE_DEFAULT);
+        Image img = image.getScaledInstance((int) (image.getWidth() * SpriteManager.pixelScale), (int) (image.getHeight() * SpriteManager.pixelScale), Image.SCALE_DEFAULT);
         levelPanel.removeAll();
         levelPanel.add(new JLabel(new ImageIcon(img)));
         renderer.remove(levelPanel);
@@ -205,13 +190,15 @@ public class Engine implements KeyListener, MouseListener {
     }
 
     public void renderPlayer(MovableUser player) {
-        Image img = renderer.renderPlayer(player, 16, 16);
-        img = img.getScaledInstance(16 * 4, 16 * 4, Image.SCALE_DEFAULT);
+        Image img = renderer.renderPlayer(player);
+        img = img.getScaledInstance((int) (SpriteManager.tileSize * SpriteManager.pixelScale), (int) (SpriteManager.tileSize * SpriteManager.pixelScale), Image.SCALE_DEFAULT);
 //        playerPanel.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Color.BLACK));
 //        playerPanel.setBackground(new Color(0, 0, 0, 0));
         playerPanel.removeAll();
-        playerPanel.add(new JLabel(new ImageIcon(img)));
-        playerPanel.setBounds(4 * 16 * player.x, 4 * 16 * player.y, 16 * 4, 16 * 4);
+        JLabel image = new JLabel(new ImageIcon(img));
+        image.setBounds((int) ((SpriteManager.tileSize * SpriteManager.pixelScale - currLevel.getMovableUser().getSprite().width * currLevel.getMovableUser().getSprite().pixelScale) / 2), (int) ((SpriteManager.tileSize * SpriteManager.pixelScale - currLevel.getMovableUser().getSprite().height * currLevel.getMovableUser().getSprite().pixelScale) / 2), currLevel.getMovableUser().getSprite().width, currLevel.getMovableUser().getSprite().height);
+        playerPanel.add(image);
+        playerPanel.setBounds((int) (SpriteManager.pixelScale * SpriteManager.tileSize * player.x), (int) (SpriteManager.pixelScale * SpriteManager.tileSize * player.y), (int) (SpriteManager.tileSize * SpriteManager.pixelScale), (int) (SpriteManager.tileSize * SpriteManager.pixelScale));
         window.revalidate();
         window.pack();
     }
@@ -244,10 +231,13 @@ public class Engine implements KeyListener, MouseListener {
 
     public void renderSpawn() {
         BufferedImage image = renderer.renderSpawn();
-        Image img = image.getScaledInstance(image.getWidth() * PIXEL_SCALE, image.getHeight() * PIXEL_SCALE, Image.SCALE_DEFAULT);
+        Image img = image.getScaledInstance((int) (image.getWidth() * SpriteManager.pixelScale), (int) (image.getHeight() * SpriteManager.pixelScale), Image.SCALE_DEFAULT);
         spawnPanel.removeAll();
-        spawnPanel.add(new JLabel(new ImageIcon(img)));
-        spawnPanel.setBounds(PIXEL_SCALE * image.getHeight() * Board.getSpawnTile(Board.board).getY(), PIXEL_SCALE * image.getHeight() * Board.getSpawnTile(Board.board).getX(), image.getHeight() * PIXEL_SCALE, image.getWidth() * PIXEL_SCALE);
+        JLabel label = new JLabel(new ImageIcon(img));
+        SpriteInfo sprite = SpriteManager.get("Spawn_point");
+        label.setBounds((int) ((SpriteManager.tileSize * SpriteManager.pixelScale - sprite.width * sprite.pixelScale) / 2), (int) ((SpriteManager.tileSize * SpriteManager.pixelScale - sprite.height * sprite.pixelScale) / 2), (int) (sprite.width * sprite.pixelScale), (int) (sprite.height * sprite.pixelScale));
+        spawnPanel.add(label);
+        spawnPanel.setBounds((int) (SpriteManager.pixelScale * SpriteManager.tileSize * Board.getSpawnTile(Board.board).getY()), (int) (SpriteManager.pixelScale * SpriteManager.tileSize * Board.getSpawnTile(Board.board).getX()), (int) (image.getHeight() * SpriteManager.pixelScale), (int) (image.getWidth() * SpriteManager.pixelScale));
 
         window.revalidate();
         window.pack();
@@ -255,10 +245,13 @@ public class Engine implements KeyListener, MouseListener {
 
     public void renderEnd() {
         BufferedImage image = renderer.renderEnd();
-        Image img = image.getScaledInstance(image.getWidth() * PIXEL_SCALE, image.getHeight() * PIXEL_SCALE, Image.SCALE_DEFAULT);
+        Image img = image.getScaledInstance((int) (image.getWidth() * SpriteManager.pixelScale), (int) (image.getHeight() * SpriteManager.pixelScale), Image.SCALE_DEFAULT);
         endPanel.removeAll();
-        endPanel.add(new JLabel(new ImageIcon(img)));
-        endPanel.setBounds(PIXEL_SCALE * image.getHeight() * Board.getEndTile(Board.board).getY(), PIXEL_SCALE * image.getHeight() * Board.getEndTile(Board.board).getX(), image.getHeight() * PIXEL_SCALE, image.getWidth() * PIXEL_SCALE);
+        JLabel label = new JLabel(new ImageIcon(img));
+        SpriteInfo sprite = SpriteManager.get("End");
+        label.setBounds((int) ((SpriteManager.tileSize * SpriteManager.pixelScale - sprite.width * sprite.pixelScale) / 2), (int) ((SpriteManager.tileSize * SpriteManager.pixelScale - sprite.height * sprite.pixelScale) / 2), (int) (sprite.width * sprite.pixelScale), (int) (sprite.height * sprite.pixelScale));
+        endPanel.add(label);
+        endPanel.setBounds((int) (SpriteManager.pixelScale * SpriteManager.tileSize * Board.getEndTile(Board.board).getY()), (int) (SpriteManager.pixelScale * SpriteManager.tileSize * Board.getEndTile(Board.board).getX()), (int) (image.getHeight() * SpriteManager.pixelScale), (int) (image.getWidth() * SpriteManager.pixelScale));
 
         window.revalidate();
         window.pack();
@@ -333,11 +326,12 @@ public class Engine implements KeyListener, MouseListener {
         if(Board.board[currLevel.getMovableUser().getY()][currLevel.getMovableUser().getX()].getInfo().isEndPoint() && currLevel.isWinnable()) {
             if (localUser.host) {
                 localUser.sendPacket(new LevelSelectPacket(loadIndex + 1));
+            } else if (singlePlayer) {
+                setLevel(loadIndex + 1);
             }
         }
         if(e.getKeyChar() == 'r') {
             currLevel = loadOrder[loadIndex];
-            currLevel.getMovableUser().setSprite(currLevel.getMovableUser().getSprite(MovableUser.PlayerSprite.RIGHT));
             currLevel.reset();
 
             renderStaticTiles();
@@ -365,8 +359,8 @@ public class Engine implements KeyListener, MouseListener {
     @Override
     public void mouseReleased(MouseEvent e) {
         if(localUser instanceof StaticUser || singlePlayer) {
-            int x = e.getX()/64;
-            int y = e.getY()/64;
+            int x = e.getX()/(int) (SpriteManager.pixelScale * SpriteManager.tileSize);
+            int y = e.getY()/(int) (SpriteManager.pixelScale * SpriteManager.tileSize);
             if (Board.board[y][x].getInfo().getDescriptor() == TileInfo.TileDescriptor.CAN_SPAWN) {
                 Board.setSpawn(Board.board[y][x]);
                 renderSpawn();

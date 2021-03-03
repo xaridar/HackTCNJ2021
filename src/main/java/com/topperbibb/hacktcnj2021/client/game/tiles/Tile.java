@@ -1,6 +1,7 @@
 package com.topperbibb.hacktcnj2021.client.game.tiles;
 
 import com.topperbibb.hacktcnj2021.client.game.graphics.SpriteInfo;
+import com.topperbibb.hacktcnj2021.client.game.graphics.SpriteManager;
 import com.topperbibb.hacktcnj2021.client.game.objects.BoardObject;
 
 public class Tile {
@@ -82,7 +83,7 @@ public class Tile {
     }
 
     public Tile copy() {
-        return new Tile(x, y, new TileInfo(info.sprite, info.descriptor, info.tags), object != null ? object.copy() : null);
+        return new Tile(x, y, new TileInfo(SpriteManager.get(info.sprite.key), info.descriptor, info.tags), object != null ? object.copy() : null);
     }
 
     public Tile copyKeepObj() {

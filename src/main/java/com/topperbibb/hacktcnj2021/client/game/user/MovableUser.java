@@ -4,6 +4,7 @@ import com.topperbibb.hacktcnj2021.client.Client;
 import com.topperbibb.hacktcnj2021.client.game.Board;
 import com.topperbibb.hacktcnj2021.client.game.Engine;
 import com.topperbibb.hacktcnj2021.client.game.graphics.SpriteInfo;
+import com.topperbibb.hacktcnj2021.client.game.graphics.SpriteManager;
 import com.topperbibb.hacktcnj2021.client.game.graphics.Spritesheet;
 import com.topperbibb.hacktcnj2021.client.game.objects.BoardObject;
 import com.topperbibb.hacktcnj2021.client.game.objects.Key;
@@ -19,28 +20,13 @@ public class MovableUser extends NetUser implements Player {
     private SpriteInfo currentSprite;
 
     public enum PlayerSprite {
-        DOWN(0), UP(1), LEFT(2), RIGHT(3),
-        DOWN2(4), UP2(5), LEFT2(6), RIGHT2(7);
-
-        public int i;
-        PlayerSprite(int i) {
-            this.i = i;
-        }
-
-        public static PlayerSprite fromInt(int i) {
-            for (PlayerSprite val : values()) {
-                if (val.i == i) {
-                    return val;
-                }
-            }
-            return null;
-        }
+        DOWN, UP, LEFT, RIGHT,
     }
 
     // game variables
     public int x;
     public int y;
-    Map<PlayerSprite, SpriteInfo> sprites;
+    Map<PlayerSprite, String> sprites;
     boolean isOverseer;
     private MovableUser.PlayerSprite lastDir;
 
@@ -48,13 +34,13 @@ public class MovableUser extends NetUser implements Player {
 
     }
 
-    public MovableUser(Map<PlayerSprite, SpriteInfo> sprites) {
+    public MovableUser(Map<PlayerSprite, String> sprites) {
         this.x = 0;
         this.y = 0;
         this.sprites = sprites;
     }
 
-    public MovableUser(int x, int y, Map<PlayerSprite, SpriteInfo> sprites) {
+    public MovableUser(int x, int y, Map<PlayerSprite, String> sprites) {
         this.x = x;
         this.y = y;
         this.sprites = sprites;
@@ -102,14 +88,14 @@ public class MovableUser extends NetUser implements Player {
     }
 
     public SpriteInfo getSprite(PlayerSprite spriteEnum) {
-        return sprites.get(spriteEnum);
+        return SpriteManager.get(sprites.get(spriteEnum));
     }
 
-    public void setSprite(PlayerSprite which, SpriteInfo sprite) {
+    public void setSprite(PlayerSprite which, String sprite) {
         sprites.put(which, sprite);
     }
 
-    public void setSprites(Map<PlayerSprite, SpriteInfo> sprites) {
+    public void setSprites(Map<PlayerSprite, String> sprites) {
         this.sprites = sprites;
     }
 
@@ -164,7 +150,7 @@ public class MovableUser extends NetUser implements Player {
     }
 
     public void setNextSprite(int dirX, int dirY) {
-        MovableUser.PlayerSprite dir = dirX < 0 ? (lastDir == PlayerSprite.LEFT ? PlayerSprite.LEFT2 : PlayerSprite.LEFT) : dirX > 0 ? (lastDir == PlayerSprite.RIGHT ? PlayerSprite.RIGHT2 : PlayerSprite.RIGHT) : dirY < 0 ? (lastDir == PlayerSprite.UP ? PlayerSprite.UP2 : PlayerSprite.UP) : (lastDir == PlayerSprite.DOWN ? PlayerSprite.DOWN2 : PlayerSprite.DOWN);
+        MovableUser.PlayerSprite dir = dirX < 0 ? PlayerSprite.LEFT : dirX > 0 ? PlayerSprite.RIGHT : dirY < 0 ? PlayerSprite.UP : PlayerSprite.DOWN;
         setSprite(getSprite(dir));
         lastDir = dir;
     }

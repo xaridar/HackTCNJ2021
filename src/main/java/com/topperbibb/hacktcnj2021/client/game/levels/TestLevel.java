@@ -46,7 +46,7 @@ public class TestLevel extends Level{
         map.put( "o", new Tile(new TileInfo(SpriteManager.get("Basic_ground"), TileInfo.TileDescriptor.SPAWN_POINT, new ArrayList<>(Collections.singletonList(TileTags.WALKABLE)))));
         map.put( "d", new Tile(new TileInfo(SpriteManager.get("Basic_ground"), TileInfo.TileDescriptor.END_POINT, new ArrayList<>(Collections.singletonList(TileTags.WALKABLE)))));
         map.put( "t", new Tile(new TileInfo(SpriteManager.get("Basic_ground"), TileInfo.TileDescriptor.NO_SPAWN, new ArrayList<>(Collections.singletonList(TileTags.WALKABLE))), new TestObject(SpriteManager.get("Crate"))));
-        map.put( "k", new Tile(new TileInfo(SpriteManager.get("Basic_ground"), TileInfo.TileDescriptor.CAN_SPAWN, new ArrayList<>(Collections.singletonList(TileTags.WALKABLE))), new Key(SpriteManager.get("Key"))));
+        map.put( "k", new Tile(new TileInfo(SpriteManager.get("Basic_ground"), TileInfo.TileDescriptor.NO_SPAWN, new ArrayList<>(Collections.singletonList(TileTags.WALKABLE))), new Key(SpriteManager.get("Key"))));
         return map;
     }
 }
