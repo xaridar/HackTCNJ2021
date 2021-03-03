@@ -2,10 +2,7 @@ package com.topperbibb.hacktcnj2021.shared;
 
 import com.topperbibb.hacktcnj2021.client.game.Board;
 import com.topperbibb.hacktcnj2021.client.game.graphics.SpriteInfo;
-import com.topperbibb.hacktcnj2021.client.game.objects.BoardObject;
-import com.topperbibb.hacktcnj2021.client.game.objects.Player;
 import com.topperbibb.hacktcnj2021.client.game.tiles.Tile;
-import com.topperbibb.hacktcnj2021.client.game.user.MovableUser;
 
 import java.io.ByteArrayOutputStream;
 import java.nio.charset.StandardCharsets;

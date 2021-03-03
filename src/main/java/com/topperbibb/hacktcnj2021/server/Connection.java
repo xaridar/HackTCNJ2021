@@ -10,9 +10,9 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 import java.net.SocketException;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 /**
  * Handles a single connection to a client
@@ -25,13 +25,13 @@ public class Connection implements Runnable {
     // A boolean representing whether the client associated with this connection is the host
     public boolean host;
 
-    // A websocket for client-server communication
-    private final Socket socket;
+    // A socket for client-server communication
+    private Socket socket;
 
     // The Room that holds this Connection
     private Room room;
 
-    // An InputStream hodlding all data sent from the connected client
+    // An InputStream holding all data sent from the connected client
     private DataInputStream in;
 
     // An OutputStream, which is connected to the client and can send it messages
@@ -45,7 +45,31 @@ public class Connection implements Runnable {
     public boolean lookingForPong;
 
     // A separate Thread which handles sending PONG messages
-    public Thread pingThread;
+    public Runnable pingThread = () -> {
+
+        try {
+            Thread.sleep(10000);
+        } catch (InterruptedException e) {
+            return;
+        }
+        lookingForPong = true;
+        sendPacket(new PingPacket());
+        System.out.println("PING sent!");
+
+        try {
+            Thread.sleep(10000);
+        } catch (InterruptedException e) {
+            return;
+        }
+        if (socket.isClosed()) return;
+        lookingForPong = false;
+        room.sendPlayerLeave(Connection.this);
+    };
+
+    // An ExecutorService managing the pingThread
+    private ExecutorService exec = Executors.newFixedThreadPool(1);
+
+    private Future<?> threadFuture;
 
     /**
      * Initializes a new Connection from a Socket
@@ -120,44 +144,22 @@ public class Connection implements Runnable {
      * Restarts the PING/PONG Thread for ensuring consistent connection to clients
      */
     public void resetPing() {
-        if (pingThread != null) {
-            pingThread.stop();
+        if (threadFuture != null && !threadFuture.isDone()) {
+            exec.shutdownNow();
+            exec = Executors.newFixedThreadPool(1);
         }
         if (socket.isClosed()) return;
 
         lookingForPong = false;
-        pingThread = new Thread(() -> {
 
-            try {
-                Thread.sleep(10000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            lookingForPong = true;
-            sendPacket(new PingPacket());
-            System.out.println("PING sent!");
-
-            try {
-                Thread.sleep(10000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            if (socket.isClosed()) return;
-            lookingForPong = false;
-            room.sendPlayerLeave(Connection.this);
-            pingThread.stop();
-        });
-        pingThread.start();
-
+        threadFuture = exec.submit(pingThread);
     }
 
     /**
      * Closes the connection
      */
     public void close() {
-        if (pingThread != null) {
-            pingThread.stop();
-        }
+        exec.shutdownNow();
         try {
             socket.close();
             in.close();

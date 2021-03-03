@@ -5,7 +5,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 /**
- * Contains the code for a websocket server, given a port number. Receives new clients on a separate thread, and spins up new threads for each {@link Connection}.
+ * Contains the code for a socket server, given a port number. Receives new clients on a separate thread, and spins up new threads for each {@link Connection}.
  */
 public class Server implements Runnable {
 
@@ -19,7 +19,7 @@ public class Server implements Runnable {
     private boolean running = false;
 
     /**
-     * Initializes a new Server and starts a websocket server.
+     * Initializes a new Server and starts a socket server.
      * @param port the desired socket port for the server to listen on.
      */
     public Server(int port) {

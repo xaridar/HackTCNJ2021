@@ -56,19 +56,19 @@ public class Room {
      * @param connection the Connection that is disconnecting
      */
     public void sendPlayerLeave(Connection connection) {
-        List<Connection> conns = RoomManager.getAllConnections(this);
-        final Connection[] host = {conns.stream().filter(conn -> conn.host).collect(Collectors.toList()).get(0)};
+        List<Connection> connections = RoomManager.getAllConnections(this);
+        final Connection[] host = {connections.stream().filter(conn -> conn.host).collect(Collectors.toList()).get(0)};
         if (connection.host) {
-            List<Connection> connsToChooseFrom = new ArrayList<>(conns);
-            connsToChooseFrom.remove(connection);
-            if (connsToChooseFrom.size() == 0) {
+            List<Connection> connectionsToChooseFrom = new ArrayList<>(connections);
+            connectionsToChooseFrom.remove(connection);
+            if (connectionsToChooseFrom.size() == 0) {
                 connection.close();
                 RoomManager.removeRoom(this);
                 return;
             }
-            host[0] = connsToChooseFrom.get(0);
+            host[0] = connectionsToChooseFrom.get(0);
         }
-        conns.stream().filter(conn -> conn != host[0]).forEach(c -> c.sendPacket(new PlayerLeavePacket(connection.id, false)));
+        connections.stream().filter(conn -> conn != host[0]).forEach(c -> c.sendPacket(new PlayerLeavePacket(connection.id, false)));
         host[0].sendPacket(new PlayerLeavePacket(connection.id, true));
 
         RoomManager.removeConnection(this, connection);
