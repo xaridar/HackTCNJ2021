@@ -24,8 +24,8 @@ public class LevelRenderer extends JLayeredPane {
                 sprite = Board.board[i][j].getSprite();
                 for (int x = sprite.x, imgX = 0; x < sprite.width + sprite.x; x++, imgX++) {
                     for (int y = sprite.y, imgY = 0; y < sprite.height + sprite.y; y++, imgY++) {
-                        if ((imgX == 0 || imgY == 0 || imgX == sprite.width - 1 || imgY == sprite.height - 1) && sprite.key.equals("Basic_ground")) {
-                            pixel = 0xFF000000 | ((0) & 0x00FF0000) | ((0) & 0x0000FF00) | (0);
+                        if ((imgX == 0 || imgY == 0 || imgX == sprite.width - 1 || imgY == sprite.height - 1) && sprite.key.equals("Basic_ground") && SpriteManager.tileBorders) {
+                            pixel = 0xFF000000;
                         } else pixel = sprite.spritesheet.pixels[(y) * sprite.spritesheet.width + (x)];
                         img.setRGB((sprite.flipX() ? (sprite.width - 1 - imgX) + yo - ((SpriteManager.tileSize - sprite.width) / 2) : imgX + yo + ((SpriteManager.tileSize - sprite.width) / 2)), (sprite.flipY() ? (sprite.height - 1 - imgY) + xo - ((SpriteManager.tileSize - sprite.width) / 2) : imgY + xo + ((SpriteManager.tileSize - sprite.height) / 2)), pixel);
                     }
@@ -67,7 +67,12 @@ public class LevelRenderer extends JLayeredPane {
                     Image scaledImage = img.getScaledInstance((int) (sprite.pixelScale * sprite.width), (int) (sprite.pixelScale * sprite.height), Image.SCALE_DEFAULT);
                     panel.setBackground(new Color(0, 0, 0, 0));
                     panel.add(new JLabel(new ImageIcon(scaledImage)));
-                    panel.setBounds((int) ((SpriteManager.tileSize * SpriteManager.pixelScale * j + (SpriteManager.tileSize/sprite.width) * sprite.pixelScale) + ((SpriteManager.tileSize * SpriteManager.pixelScale - sprite.pixelScale * sprite.width) / 2)), (int) ((SpriteManager.tileSize * SpriteManager.pixelScale * i + (SpriteManager.tileSize/sprite.height) * sprite.pixelScale) + ((SpriteManager.tileSize * SpriteManager.pixelScale - sprite.height * sprite.pixelScale) / 2)), (int) (sprite.width * sprite.pixelScale), (int) (sprite.height * sprite.pixelScale));
+                    panel.setBounds(
+                            (int) (SpriteManager.tileSize * SpriteManager.pixelScale * j + ((SpriteManager.tileSize * SpriteManager.pixelScale - sprite.pixelScale * sprite.width) / 2)),
+                            (int) (SpriteManager.tileSize * SpriteManager.pixelScale * i + ((SpriteManager.tileSize * SpriteManager.pixelScale - sprite.pixelScale * sprite.height) / 2)),
+                            (int) (sprite.width * sprite.pixelScale),
+                            (int) (sprite.height * sprite.pixelScale)
+                    );
                     out.add(panel);
                 }
 

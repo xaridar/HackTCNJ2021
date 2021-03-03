@@ -4,7 +4,6 @@
   "pixelScale": 2,
   "sprites": {
     "Basic_ground": {
-      "tiled": true,
       "randomized": true,
       "sprites": [
         {

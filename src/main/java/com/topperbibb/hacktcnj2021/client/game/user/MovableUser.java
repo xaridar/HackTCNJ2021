@@ -131,20 +131,16 @@ public class MovableUser extends NetUser implements Player {
     }
 
     public void die() {
-        if (Board.getSpawnTile().getObject() != null) {
-            System.out.println(Board.getSpawnTile().getObject().getSprite().key);
+        if (Board.getSpawnTile().getObject() != null && Board.getSpawnTile().getObject() != this) {
             System.out.println("Spawn covered; resetting level");
             Engine.INSTANCE.getCurrLevel().reset();
             return;
         }
         System.out.println("died");
-        System.out.println(Engine.INSTANCE.getCurrLevel().getKeys());
-        System.out.println(Engine.loadOrder[Engine.loadIndex]);
         for (Key key : Engine.INSTANCE.getCurrLevel().getKeys()) {
             System.out.println("keys replaced");
             Board.board[key.getX()][key.getY()].setObject(key);
         }
-        System.out.println(Board.getSpawnTile().getY() + ", " + Board.getSpawnTile().getX());
         Board.moveObj(Board.board[y][x], Board.getSpawnTile(), getSprite(PlayerSprite.RIGHT));
         Engine.INSTANCE.applyChanges();
     }

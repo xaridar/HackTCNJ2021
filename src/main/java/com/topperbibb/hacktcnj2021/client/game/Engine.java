@@ -101,7 +101,7 @@ public class Engine implements KeyListener, MouseListener {
                 new KeyShowcase(u, staticUser),
                 new TestLevel(u, staticUser)
         };
-        currLevel = loadOrder[loadIndex];
+        currLevel = loadOrder[3];
         Board.setSpawn(currLevel.startSpawnX, currLevel.startSpawnY);
         Board.board = currLevel.getLevel();
         Board.setEndTile(currLevel.getEndTile());
@@ -157,7 +157,7 @@ public class Engine implements KeyListener, MouseListener {
         playerPanel = new JPanel(new BorderLayout());
         playerPanel.setBackground(new Color(0, 0, 0, 0));
         playerPanel.setBounds(0, 0, SpriteManager.tileSize, SpriteManager.tileSize);
-        renderer.add(playerPanel, JLayeredPane.DRAG_LAYER);
+        renderer.add(playerPanel, JLayeredPane.MODAL_LAYER);
 
         spawnPanel = new JPanel(new BorderLayout());
         spawnPanel.setBackground(new Color(0, 0, 0, 0));
@@ -191,12 +191,22 @@ public class Engine implements KeyListener, MouseListener {
 
     public void renderPlayer(MovableUser player) {
         Image img = renderer.renderPlayer(player);
-        img = img.getScaledInstance((int) (SpriteManager.tileSize * SpriteManager.pixelScale), (int) (SpriteManager.tileSize * SpriteManager.pixelScale), Image.SCALE_DEFAULT);
-//        playerPanel.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Color.BLACK));
-//        playerPanel.setBackground(new Color(0, 0, 0, 0));
+        //img = img.getScaledInstance((int) (SpriteManager.tileSize * SpriteManager.pixelScale), (int) (SpriteManager.tileSize * SpriteManager.pixelScale), Image.SCALE_DEFAULT);
+        img = img.getScaledInstance(
+                Math.min((int) (SpriteManager.tileSize * SpriteManager.pixelScale),(int) (player.getSprite().width * player.getSprite().pixelScale)),
+                Math.min((int) (SpriteManager.tileSize * SpriteManager.pixelScale),(int) (player.getSprite().height * player.getSprite().pixelScale)),
+                Image.SCALE_DEFAULT
+        );
         playerPanel.removeAll();
-        JLabel image = new JLabel(new ImageIcon(img));
-        image.setBounds((int) ((SpriteManager.tileSize * SpriteManager.pixelScale - currLevel.getMovableUser().getSprite().width * currLevel.getMovableUser().getSprite().pixelScale) / 2), (int) ((SpriteManager.tileSize * SpriteManager.pixelScale - currLevel.getMovableUser().getSprite().height * currLevel.getMovableUser().getSprite().pixelScale) / 2), currLevel.getMovableUser().getSprite().width, currLevel.getMovableUser().getSprite().height);
+        ImageIcon ii = new ImageIcon(img);
+        JLabel image = new JLabel(ii);
+        System.out.println(ii.getIconWidth());
+        image.setBounds(
+                (int) ((SpriteManager.tileSize * SpriteManager.pixelScale - player.getSprite().width * player.getSprite().pixelScale) / 2),
+                (int) ((SpriteManager.tileSize * SpriteManager.pixelScale - player.getSprite().height * player.getSprite().pixelScale) / 2),
+                player.getSprite().width,
+                player.getSprite().height
+        );
         playerPanel.add(image);
         playerPanel.setBounds((int) (SpriteManager.pixelScale * SpriteManager.tileSize * player.x), (int) (SpriteManager.pixelScale * SpriteManager.tileSize * player.y), (int) (SpriteManager.tileSize * SpriteManager.pixelScale), (int) (SpriteManager.tileSize * SpriteManager.pixelScale));
         window.revalidate();
