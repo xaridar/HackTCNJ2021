@@ -1,6 +1,7 @@
 package com.topperbibb.hacktcnj2021.client.game;
 
 import com.topperbibb.hacktcnj2021.client.game.graphics.*;
+import com.topperbibb.hacktcnj2021.client.game.util.Triplet;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
@@ -9,12 +10,20 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Handles initial configuration
+ */
 public class Config {
+
+    /**
+     * Reads information from config.json, if it exists, and parses out Sprites into the game for use in-game
+     * If any errors occur, or if any sprites are not specified, default sprites from defaulttiles.png
+     */
     public static void readSprites() {
         SpriteJson sprites;
         try {
-            JSONTokener tokener = new JSONTokener(Engine.class.getResourceAsStream("/config.json"));
-            JSONObject object = new JSONObject(tokener);
+            JSONTokener tokenizer = new JSONTokener(Engine.class.getResourceAsStream("/config.json"));
+            JSONObject object = new JSONObject(tokenizer);
             sprites = new SpriteJson();
             if (!object.isEmpty()) {
                 sprites = SpriteJson.createSpriteJson(object);
@@ -31,20 +40,20 @@ public class Config {
             sprites = null;
         }
 
-        Spritesheet defaultSpritesheet = new Spritesheet("/defaulttiles.png");
+        Spritesheet defaultSpriteSheet = new Spritesheet("/defaulttiles.png");
 
-        SpriteManager.addSpriteDefault(new SpriteSet(Arrays.asList(new SpriteInfo(16, 16, 32, 88, "Player_right", defaultSpritesheet), new SpriteInfo(16, 16, 48, 88, "Player_right", defaultSpritesheet)), "Player_right"));
-        SpriteManager.addSpriteDefault(new SpriteSet(Arrays.asList(new SpriteInfo(16, 16, 32, 88, FlipEnum.X,"Player_left", defaultSpritesheet), new SpriteInfo(16, 16, 48, 88, FlipEnum.X,"Player_left", defaultSpritesheet)), "Player_left"));
-        SpriteManager.addSpriteDefault(new SpriteSet(Arrays.asList(new SpriteInfo(16, 16, 16, 88, "Player_up", defaultSpritesheet), new SpriteInfo(16, 16, 16, 88, FlipEnum.X, "Player_up", defaultSpritesheet)), "Player_up"));
-        SpriteManager.addSpriteDefault(new SpriteSet(Arrays.asList(new SpriteInfo(16, 16, 0, 88, "Player_down", defaultSpritesheet), new SpriteInfo(16, 16, 0, 88, FlipEnum.X,"Player_down", defaultSpritesheet)), "Player_down"));
+        SpriteManager.addSpriteDefault(new SpriteSet(Arrays.asList(new SpriteInfo(16, 16, 32, 88, "Player_right", defaultSpriteSheet), new SpriteInfo(16, 16, 48, 88, "Player_right", defaultSpriteSheet)), "Player_right"));
+        SpriteManager.addSpriteDefault(new SpriteSet(Arrays.asList(new SpriteInfo(16, 16, 32, 88, FlipEnum.X,"Player_left", defaultSpriteSheet), new SpriteInfo(16, 16, 48, 88, FlipEnum.X,"Player_left", defaultSpriteSheet)), "Player_left"));
+        SpriteManager.addSpriteDefault(new SpriteSet(Arrays.asList(new SpriteInfo(16, 16, 16, 88, "Player_up", defaultSpriteSheet), new SpriteInfo(16, 16, 16, 88, FlipEnum.X, "Player_up", defaultSpriteSheet)), "Player_up"));
+        SpriteManager.addSpriteDefault(new SpriteSet(Arrays.asList(new SpriteInfo(16, 16, 0, 88, "Player_down", defaultSpriteSheet), new SpriteInfo(16, 16, 0, 88, FlipEnum.X,"Player_down", defaultSpriteSheet)), "Player_down"));
 
-        SpriteManager.addSpriteDefault(new SpriteInfo(16, 16, 0, 0, "Basic_ground", defaultSpritesheet));
-        SpriteManager.addSpriteDefault(new SpriteInfo(16, 16, 128, 0, "Wall", defaultSpritesheet));
-        SpriteManager.addSpriteDefault(new SpriteInfo(16, 16, 96, 48, "End", defaultSpritesheet));
-        SpriteManager.addSpriteDefault(new SpriteInfo(16, 16, 80, 48, "Crate", defaultSpritesheet));
-        SpriteManager.addSpriteDefault(new SpriteInfo(8, 8, 56, 56, "Key", defaultSpritesheet));
+        SpriteManager.addSpriteDefault(new SpriteInfo(16, 16, 0, 0, "Basic_ground", defaultSpriteSheet));
+        SpriteManager.addSpriteDefault(new SpriteInfo(16, 16, 128, 0, "Wall", defaultSpriteSheet));
+        SpriteManager.addSpriteDefault(new SpriteInfo(16, 16, 96, 48, "End", defaultSpriteSheet));
+        SpriteManager.addSpriteDefault(new SpriteInfo(16, 16, 80, 48, "Crate", defaultSpriteSheet));
+        SpriteManager.addSpriteDefault(new SpriteInfo(8, 8, 56, 56, "Key", defaultSpriteSheet));
 
-        SpriteManager.addSpriteDefault(new SpriteInfo(16, 16, 128, 24, "Spawn_point", defaultSpritesheet));
+        SpriteManager.addSpriteDefault(new SpriteInfo(16, 16, 128, 24, "Spawn_point", defaultSpriteSheet));
 
         if (sprites != null) {
             SpriteManager.tileSize = sprites.tileSize;

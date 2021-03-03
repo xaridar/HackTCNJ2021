@@ -2,7 +2,6 @@ package com.topperbibb.hacktcnj2021.client;
 
 import com.topperbibb.hacktcnj2021.client.game.Board;
 import com.topperbibb.hacktcnj2021.client.game.Engine;
-import com.topperbibb.hacktcnj2021.client.game.graphics.SpriteInfo;
 import com.topperbibb.hacktcnj2021.client.game.graphics.SpriteManager;
 import com.topperbibb.hacktcnj2021.client.game.tiles.Tile;
 import com.topperbibb.hacktcnj2021.client.game.user.NetUser;
@@ -47,12 +46,11 @@ public class ClientEventListener {
             }
             System.out.format("Player %d joined!%s\n", ((PlayerJoinPacket) p).id, ((PlayerJoinPacket) p).host ? " (host)" : "");
         } else if (p instanceof PlayerLeavePacket) {
-            NetUser user;
             if (((PlayerLeavePacket) p).id == client.user.id) {
-                user = UserManager.removeUser(client.user.id);
+                UserManager.removeUser(client.user.id);
                 client.close();
             } else {
-                user = UserManager.removeUser(((PlayerLeavePacket) p).id);
+                UserManager.removeUser(((PlayerLeavePacket) p).id);
             }
             System.out.format("Player %d left!%s\n", ((PlayerLeavePacket) p).id, ((PlayerLeavePacket) p).receiverIsNewHost ? " (You are now the host!)" : "");
         } else if (p instanceof StateChangePacket) {

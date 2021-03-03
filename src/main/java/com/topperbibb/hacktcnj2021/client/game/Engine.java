@@ -1,52 +1,62 @@
 package com.topperbibb.hacktcnj2021.client.game;
 
-import com.topperbibb.hacktcnj2021.client.game.graphics.SpriteManager;
-import com.topperbibb.hacktcnj2021.client.game.levels.*;
 import com.topperbibb.hacktcnj2021.client.UserManager;
-import com.topperbibb.hacktcnj2021.client.game.tiles.Tile;
-import com.topperbibb.hacktcnj2021.client.game.tiles.TileInfo;
-import com.topperbibb.hacktcnj2021.client.game.user.MovableUser;
 import com.topperbibb.hacktcnj2021.client.game.graphics.LevelRenderer;
 import com.topperbibb.hacktcnj2021.client.game.graphics.SpriteInfo;
+import com.topperbibb.hacktcnj2021.client.game.graphics.SpriteManager;
+import com.topperbibb.hacktcnj2021.client.game.levels.*;
+import com.topperbibb.hacktcnj2021.client.game.tiles.Tile;
+import com.topperbibb.hacktcnj2021.client.game.user.MovableUser;
 import com.topperbibb.hacktcnj2021.client.game.user.NetUser;
 import com.topperbibb.hacktcnj2021.client.game.user.StaticUser;
-import com.topperbibb.hacktcnj2021.shared.LevelSelectPacket;
+import com.topperbibb.hacktcnj2021.client.game.util.PlayerKeyListener;
+import com.topperbibb.hacktcnj2021.client.game.util.PlayerMouseListener;
 import com.topperbibb.hacktcnj2021.shared.StateChangePacket;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class Engine implements KeyListener, MouseListener {
+/**
+ * Runs a game and manages all game actions and variables
+ */
+public class Engine {
 
-    private final NetUser localUser;
+    // The local user of this client
+    public final NetUser localUser;
 
+    // A list of Levels in order for level progression
     public static Level[] loadOrder;
 
+    // The index of the current Level in loadOrder
     public static int loadIndex = 0;
-    private boolean singlePlayer = false;
+    // A boolean representing whether the game is being played locally
+    public boolean singlePlayer = false;
+    // The current Level
     private Level currLevel;
+    // The LevelRenderer, which displays the GUI for the game
     private LevelRenderer renderer;
+
+    // Main components for the Swing GUI
     private JFrame window;
     private JPanel levelPanel;
     private JPanel playerPanel;
     private JPanel spawnPanel;
     private JPanel endPanel;
     private ArrayList<JPanel> objectPanels;
-    public static final long keyTimeout = 300;
-    private long keyPressed;
 
 
+    // Holds the current Engine (for singleton use)
     public static Engine INSTANCE;
 
+    /**
+     * Creates a multiplayer Engine from the local player
+     * @param p the local NetUser, set before this instance is created
+     */
     public Engine(NetUser p) {
         Map<MovableUser.PlayerSprite, String> playerSprites = new HashMap<>();
         playerSprites.put(MovableUser.PlayerSprite.RIGHT, "Player_right");
@@ -86,6 +96,11 @@ public class Engine implements KeyListener, MouseListener {
         }
     }
 
+    /**
+     * Creates a single player Engine from the local player
+     * @param u a MovableUser instance to be used as the player
+     * @param b a boolean representing whether this Engine should be single player (always called with true)
+     */
     public Engine(MovableUser u, boolean b) {
         singlePlayer = b;
         Map<MovableUser.PlayerSprite, String> playerSprites = new HashMap<>();
@@ -101,7 +116,7 @@ public class Engine implements KeyListener, MouseListener {
                 new KeyShowcase(u, staticUser),
                 new TestLevel(u, staticUser)
         };
-        currLevel = loadOrder[3];
+        currLevel = loadOrder[loadIndex];
         Board.setSpawn(currLevel.startSpawnX, currLevel.startSpawnY);
         Board.board = currLevel.getLevel();
         Board.setEndTile(currLevel.getEndTile());
@@ -117,6 +132,10 @@ public class Engine implements KeyListener, MouseListener {
         }
     }
 
+    /**
+     * Starts a new multiplayer Engine instance and starts the game
+     * @param self the local user of the game
+     */
     public static void startEngine(NetUser self) {
         Config.readSprites();
         Engine engine = new Engine(self);
@@ -129,7 +148,11 @@ public class Engine implements KeyListener, MouseListener {
         engine.renderObjects();
     }
 
-    public static void startSingleplayerEngine(MovableUser u) {
+    /**
+     * Creates a new single player Engine instance and starts a game
+     * @param u a MovableUser to use as the player
+     */
+    public static void startSinglePlayerEngine(MovableUser u) {
         Config.readSprites();
         Engine engine = new Engine(u, true);
         INSTANCE = engine;
@@ -141,6 +164,9 @@ public class Engine implements KeyListener, MouseListener {
         engine.renderObjects();
     }
 
+    /**
+     * Instantiates {@link #window} and all of its panels for GUI
+     */
     public void createRenderWindow() {
         window = new JFrame();
         window.setPreferredSize(new Dimension((int) (Board.board[0].length * SpriteManager.tileSize * SpriteManager.pixelScale) + 16, (int) (Board.board.length * SpriteManager.tileSize * SpriteManager.pixelScale)+ 38));
@@ -169,8 +195,8 @@ public class Engine implements KeyListener, MouseListener {
         endPanel.setBounds((int) (SpriteManager.tileSize * SpriteManager.pixelScale * Board.getEndTile(Board.board).getX()), (int) (SpriteManager.tileSize * SpriteManager.pixelScale * Board.getEndTile(Board.board).getY()), SpriteManager.tileSize, SpriteManager.tileSize);
         renderer.add(endPanel, JLayeredPane.PALETTE_LAYER);
 
-        renderer.addKeyListener(this);
-        renderer.addMouseListener(this);
+        renderer.addKeyListener(new PlayerKeyListener(this));
+        renderer.addMouseListener(new PlayerMouseListener(this));
         renderer.setFocusable(true);
         renderer.requestFocusInWindow();
         window.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -178,6 +204,9 @@ public class Engine implements KeyListener, MouseListener {
         window.setVisible(true);
     }
 
+    /**
+     * Renders static tiles, such as ground and walls
+     */
     public void renderStaticTiles() {
         BufferedImage image = renderer.renderStatic();
         Image img = image.getScaledInstance((int) (image.getWidth() * SpriteManager.pixelScale), (int) (image.getHeight() * SpriteManager.pixelScale), Image.SCALE_DEFAULT);
@@ -189,6 +218,10 @@ public class Engine implements KeyListener, MouseListener {
         window.pack();
     }
 
+    /**
+     * Renders a player on the window
+     * @param player the MovableUser to render
+     */
     public void renderPlayer(MovableUser player) {
         Image img = renderer.renderPlayer(player);
         img = img.getScaledInstance(
@@ -212,6 +245,9 @@ public class Engine implements KeyListener, MouseListener {
         window.pack();
     }
 
+    /**
+     * Render all non-player objects on the board
+     */
     public void renderObjects() {
         if (objectPanels != null) {
             for (JPanel object : objectPanels) {
@@ -237,6 +273,9 @@ public class Engine implements KeyListener, MouseListener {
         window.revalidate();
     }
 
+    /**
+     * Renders the spawn sprite on top of the appropriate tile
+     */
     public void renderSpawn() {
         SpriteInfo sprite = SpriteManager.get("Spawn_point");
         BufferedImage image = renderer.renderSpawn();
@@ -251,6 +290,9 @@ public class Engine implements KeyListener, MouseListener {
         window.pack();
     }
 
+    /**
+     * Renders the end sprite on top of the appropriate tile
+     */
     public void renderEnd() {
         SpriteInfo sprite = SpriteManager.get("End");
         BufferedImage image = renderer.renderEnd();
@@ -265,132 +307,26 @@ public class Engine implements KeyListener, MouseListener {
         window.pack();
     }
 
+    /**
+     * Returns {@link #currLevel}
+     * @return {@link #currLevel}
+     */
     public Level getCurrLevel() {
         return currLevel;
     }
 
-    @Override
-    public void keyTyped(KeyEvent e) {
-    }
-
-    @Override
-    public void keyPressed(KeyEvent e) {
-        if (localUser instanceof MovableUser) {
-            MovableUser user = currLevel.getMovableUser();
-            switch (e.getKeyChar()) {
-                case 'W':
-                case 'w':
-                    if (keyPressed + keyTimeout <= System.currentTimeMillis()) {
-                        if (user.move(0, -1)) {
-                            currLevel.incrementCountdown();
-                        }
-                        renderObjects();
-                        renderPlayer(user);
-                        keyPressed = System.currentTimeMillis();
-                    }
-                    break;
-                case 'S':
-                case 's':
-                    if (keyPressed + keyTimeout <= System.currentTimeMillis()) {
-                        if (user.move(0, 1)) {
-                            currLevel.incrementCountdown();
-                        }
-                        renderObjects();
-                        renderPlayer(user);
-                        keyPressed = System.currentTimeMillis();
-                    }
-                    break;
-                case 'A':
-                case 'a':
-                    if (keyPressed + keyTimeout <= System.currentTimeMillis()) {
-                        if (user.move(-1, 0)) {
-                            currLevel.incrementCountdown();
-                        }
-                        renderObjects();
-                        renderPlayer(user);
-                        keyPressed = System.currentTimeMillis();
-                    }
-                    break;
-                case 'D':
-                case 'd':
-                    if (keyPressed + keyTimeout <= System.currentTimeMillis()) {
-                        if (user.move(1, 0)) {
-                            currLevel.incrementCountdown();
-                        }
-                        renderObjects();
-                        renderPlayer(user);
-                        keyPressed = System.currentTimeMillis();
-                    }
-                    break;
-                case 'Q':
-                case 'q':
-                    user.die();
-                    renderPlayer(user);
-                    renderObjects();
-                    keyPressed = System.currentTimeMillis();
-                    break;
-            }
-        }
-        if(Board.board[currLevel.getMovableUser().getY()][currLevel.getMovableUser().getX()].getInfo().isEndPoint() && currLevel.isWinnable()) {
-            if (localUser.host) {
-                localUser.sendPacket(new LevelSelectPacket(loadIndex + 1));
-            } else if (singlePlayer) {
-                setLevel(loadIndex + 1);
-            }
-        }
-        if(e.getKeyChar() == 'r') {
-            currLevel = loadOrder[loadIndex];
-            currLevel.reset();
-
-            renderStaticTiles();
-            renderSpawn();
-            renderEnd();
-            renderPlayer(currLevel.getMovableUser());
-            renderObjects();
-        }
-    }
-
-    @Override
-    public void keyReleased(KeyEvent e) {
-        keyPressed = 0;
-    }
-
-    @Override
-    public void mouseClicked(MouseEvent e) {
-    }
-
-    @Override
-    public void mousePressed(MouseEvent e) {
-
-    }
-
-    @Override
-    public void mouseReleased(MouseEvent e) {
-        if(localUser instanceof StaticUser || singlePlayer) {
-            int x = e.getX()/(int) (SpriteManager.pixelScale * SpriteManager.tileSize);
-            int y = e.getY()/(int) (SpriteManager.pixelScale * SpriteManager.tileSize);
-            if (Board.board[y][x].getInfo().getDescriptor() == TileInfo.TileDescriptor.CAN_SPAWN) {
-                Board.setSpawn(Board.board[y][x]);
-                renderSpawn();
-            }
-        }
-    }
-
-    @Override
-    public void mouseEntered(MouseEvent e) {
-
-    }
-
-    @Override
-    public void mouseExited(MouseEvent e) {
-
-    }
-
+    /**
+     * Signifies some sort of change in the game, which sends a {@link StateChangePacket} to the server if the game is online
+     */
     public void applyChanges() {
         if (!singlePlayer)
             localUser.sendPacket(new StateChangePacket(localUser.id));
     }
 
+    /**
+     * Changes the current level based on an index
+     * @param levelIndex the index to set the level to
+     */
     public void setLevel(int levelIndex) {
         loadIndex = levelIndex;
         currLevel = loadOrder[loadIndex];
@@ -409,5 +345,9 @@ public class Engine implements KeyListener, MouseListener {
         System.out.println(Board.getSpawnTile().getY() + ", " + Board.getSpawnTile().getX());
         System.out.println(currLevel.getMovableUser().getY() + ", " + currLevel.getMovableUser().getX());
         System.out.println("You win!");
+    }
+
+    public void setCurrLevel(Level level) {
+        this.currLevel = level;
     }
 }

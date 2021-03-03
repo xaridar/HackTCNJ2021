@@ -1,15 +1,12 @@
 package com.topperbibb.hacktcnj2021.client.game.levels;
 
+import com.topperbibb.hacktcnj2021.client.game.Board;
 import com.topperbibb.hacktcnj2021.client.game.Engine;
 import com.topperbibb.hacktcnj2021.client.game.objects.Key;
-import com.topperbibb.hacktcnj2021.client.game.user.MovableUser;
-import com.topperbibb.hacktcnj2021.client.game.Board;
 import com.topperbibb.hacktcnj2021.client.game.tiles.Tile;
-import com.topperbibb.hacktcnj2021.client.game.user.NetUser;
+import com.topperbibb.hacktcnj2021.client.game.user.MovableUser;
 import com.topperbibb.hacktcnj2021.client.game.user.StaticUser;
-import com.topperbibb.hacktcnj2021.client.game.util.PlayerKeyEvent;
 
-import javax.swing.plaf.basic.BasicInternalFrameTitlePane;
 import java.util.ArrayList;
 import java.util.Map;
 

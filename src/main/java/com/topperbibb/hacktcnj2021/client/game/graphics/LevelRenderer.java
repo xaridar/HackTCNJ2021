@@ -10,6 +10,7 @@ import java.util.ArrayList;
 
 public class LevelRenderer extends JLayeredPane {
 
+
     public LevelRenderer() {
     }
 
@@ -22,8 +23,8 @@ public class LevelRenderer extends JLayeredPane {
                 sprite = Board.board[i][j].getSprite();
                 for (int x = sprite.x, imgX = 0; x < sprite.width + sprite.x; x++, imgX++) {
                     for (int y = sprite.y, imgY = 0; y < sprite.height + sprite.y; y++, imgY++) {
-                        if ((imgX == 0 || imgY == 0 || imgX == sprite.width - 1 || imgY == sprite.height - 1) && sprite.key.equals("Basic_ground")) {
-                            pixel = 0xFF0000;
+                        if ((imgX == 0 || imgY == 0 || imgX == sprite.width - 1 || imgY == sprite.height - 1) && sprite.key.equals("Basic_ground") && SpriteManager.tileBorders) {
+                            pixel = 0xFF000000;
                         } else pixel = sprite.spritesheet.pixels[(y) * sprite.spritesheet.width + (x)];
                         img.setRGB((sprite.flipX() ? (sprite.width - 1 - imgX) + yo - ((SpriteManager.tileSize - sprite.width) / 2) : imgX + yo + ((SpriteManager.tileSize - sprite.width) / 2)), (sprite.flipY() ? (sprite.height - 1 - imgY) + xo - ((SpriteManager.tileSize - sprite.width) / 2) : imgY + xo + ((SpriteManager.tileSize - sprite.height) / 2)), pixel);
                     }

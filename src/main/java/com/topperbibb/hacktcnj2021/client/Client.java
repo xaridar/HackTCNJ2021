@@ -44,7 +44,7 @@ public class Client implements Runnable {
      * Initialized with a hostname, port, and local {@link NetUser}
      * @param host the host address to connect to
      * @param port the socket port to connect to on the host
-     * @param user the local NetUser instance, which contains id andhost information, as well as game specifics
+     * @param user the local NetUser instance, which contains id and host information, as well as game specifics
      */
     public Client(String host, int port, NetUser user) {
         this.host = host;

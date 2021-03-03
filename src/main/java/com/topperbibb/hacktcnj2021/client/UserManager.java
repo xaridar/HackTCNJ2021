@@ -28,6 +28,7 @@ public class UserManager {
      * @param id the id of the NetUser to remove
      * @return the NetUser removed, or null if no user is found with id {@code id}
      */
+    @SuppressWarnings("UnusedReturnValue")
     public static NetUser removeUser(int id) {
         for (NetUser user : users) {
             if (user.id == id) {

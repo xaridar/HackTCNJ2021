@@ -9,7 +9,7 @@ import com.topperbibb.hacktcnj2021.client.game.user.NetUser;
  */
 public class Game {
     public static void main(String[] args) {
-         createMultiplayer();
+         createSinglePlayer();
     }
 
     /**
@@ -17,7 +17,7 @@ public class Game {
      */
     private static void createSinglePlayer() {
         MovableUser u = new MovableUser();
-        Engine.startSingleplayerEngine(u);
+        Engine.startSinglePlayerEngine(u);
     }
 
     /**

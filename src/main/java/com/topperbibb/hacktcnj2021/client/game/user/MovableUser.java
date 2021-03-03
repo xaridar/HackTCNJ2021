@@ -17,39 +17,60 @@ import java.util.Map;
 
 public class MovableUser extends NetUser implements Player {
 
+    // The currently active sprite being used by the player
     private SpriteInfo currentSprite;
 
+    // Specifies types of sprites that users can have
     public enum PlayerSprite {
         DOWN, UP, LEFT, RIGHT,
     }
 
-    // game variables
     public int x;
     public int y;
     Map<PlayerSprite, String> sprites;
     boolean isOverseer;
     private MovableUser.PlayerSprite lastDir;
-
     public MovableUser() {
 
     }
 
+    /**
+     * Sets sprites of the user to a map of sprites
+     * @param sprites a map of sprites for the user to use
+     */
     public MovableUser(Map<PlayerSprite, String> sprites) {
         this.x = 0;
         this.y = 0;
         this.sprites = sprites;
     }
 
+    /**
+     * Sets sprites of the user to a map of sprites
+     * @param x the starting x coordinate of the user
+     * @param y the starting y coordinate of the user
+     * @param sprites a map of sprites for the user to use
+     */
     public MovableUser(int x, int y, Map<PlayerSprite, String> sprites) {
         this.x = x;
         this.y = y;
         this.sprites = sprites;
     }
 
+    /**
+     * Constructor for online games
+     * @param id the id to set to the client
+     * @param host a boolean representing this user is the host of the room
+     */
     public MovableUser(int id, boolean host) {
         super(id, host);
     }
 
+    /**
+     * Moves the MovableUser in a specified direction, first checking whether this allowed based on its surrounding Tiles
+     * @param directionX the x component of the direction to move
+     * @param directionY the y component of the direction to move
+     * @return a boolean representing whether the move was successful
+     */
     public boolean move(int directionX, int directionY) {
         int temp_x = x + directionX;
         int temp_y = y + directionY;
