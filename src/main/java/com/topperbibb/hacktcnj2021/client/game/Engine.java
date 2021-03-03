@@ -238,11 +238,11 @@ public class Engine implements KeyListener, MouseListener {
     }
 
     public void renderSpawn() {
+        SpriteInfo sprite = SpriteManager.get("Spawn_point");
         BufferedImage image = renderer.renderSpawn();
-        Image img = image.getScaledInstance((int) (image.getWidth() * SpriteManager.pixelScale), (int) (image.getHeight() * SpriteManager.pixelScale), Image.SCALE_DEFAULT);
+        Image img = image.getScaledInstance((int) (sprite.width * sprite.pixelScale), (int) (sprite.height * sprite.pixelScale), Image.SCALE_DEFAULT);
         spawnPanel.removeAll();
         JLabel label = new JLabel(new ImageIcon(img));
-        SpriteInfo sprite = SpriteManager.get("Spawn_point");
         label.setBounds((int) ((SpriteManager.tileSize * SpriteManager.pixelScale - sprite.width * sprite.pixelScale) / 2), (int) ((SpriteManager.tileSize * SpriteManager.pixelScale - sprite.height * sprite.pixelScale) / 2), (int) (sprite.width * sprite.pixelScale), (int) (sprite.height * sprite.pixelScale));
         spawnPanel.add(label);
         spawnPanel.setBounds((int) (SpriteManager.pixelScale * SpriteManager.tileSize * Board.getSpawnTile(Board.board).getY()), (int) (SpriteManager.pixelScale * SpriteManager.tileSize * Board.getSpawnTile(Board.board).getX()), (int) (image.getHeight() * SpriteManager.pixelScale), (int) (image.getWidth() * SpriteManager.pixelScale));
@@ -252,11 +252,11 @@ public class Engine implements KeyListener, MouseListener {
     }
 
     public void renderEnd() {
+        SpriteInfo sprite = SpriteManager.get("End");
         BufferedImage image = renderer.renderEnd();
-        Image img = image.getScaledInstance((int) (image.getWidth() * SpriteManager.pixelScale), (int) (image.getHeight() * SpriteManager.pixelScale), Image.SCALE_DEFAULT);
+        Image img = image.getScaledInstance((int) (sprite.width * sprite.pixelScale), (int) (sprite.height * sprite.pixelScale), Image.SCALE_DEFAULT);
         endPanel.removeAll();
         JLabel label = new JLabel(new ImageIcon(img));
-        SpriteInfo sprite = SpriteManager.get("End");
         label.setBounds((int) ((SpriteManager.tileSize * SpriteManager.pixelScale - sprite.width * sprite.pixelScale) / 2), (int) ((SpriteManager.tileSize * SpriteManager.pixelScale - sprite.height * sprite.pixelScale) / 2), (int) (sprite.width * sprite.pixelScale), (int) (sprite.height * sprite.pixelScale));
         endPanel.add(label);
         endPanel.setBounds((int) (SpriteManager.pixelScale * SpriteManager.tileSize * Board.getEndTile(Board.board).getY()), (int) (SpriteManager.pixelScale * SpriteManager.tileSize * Board.getEndTile(Board.board).getX()), (int) (image.getHeight() * SpriteManager.pixelScale), (int) (image.getWidth() * SpriteManager.pixelScale));
