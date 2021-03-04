@@ -1,5 +1,8 @@
 package com.topperbibb.hacktcnj2021.client.game.graphics;
 
+/**
+ * Determines axis that a sprite must be flipped by
+ */
 public enum FlipEnum {
     NONE, X, Y, BOTH;
 
@@ -19,10 +22,18 @@ public enum FlipEnum {
         }
     }
 
+    /**
+     * used to determine whether sprite is flipped on the x axis
+     * @return whether sprite is flipped on the x axis
+     */
     public boolean flipX() {
         return this == X || this == BOTH;
     }
 
+    /**
+     * used to determine whether sprite is flipped on the y axis
+     * @return whether sprite is flipped on the y axis
+     */
     public boolean flipY() {
         return this == Y || this == BOTH;
     }
