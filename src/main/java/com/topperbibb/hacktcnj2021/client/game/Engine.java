@@ -48,6 +48,8 @@ public class Engine {
     private JPanel spawnPanel;
     private JPanel endPanel;
     private ArrayList<JPanel> objectPanels;
+    public static final long keyTimeout = 300;
+    private long keyPressed;
 
 
     // Holds the current Engine (for singleton use)

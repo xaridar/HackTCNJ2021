@@ -85,7 +85,6 @@ public class MovableUser extends NetUser implements Player {
                     return false;
                 }
             } else if (tile.getObject() != null && tile.getObject() instanceof Key) {
-                System.out.println("true");
                 ((Key) tile.getObject()).collect();
             }
             setPos(temp_x, temp_y);
