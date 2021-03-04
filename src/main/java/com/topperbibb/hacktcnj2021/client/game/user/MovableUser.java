@@ -1,11 +1,9 @@
 package com.topperbibb.hacktcnj2021.client.game.user;
 
-import com.topperbibb.hacktcnj2021.client.Client;
 import com.topperbibb.hacktcnj2021.client.game.Board;
 import com.topperbibb.hacktcnj2021.client.game.Engine;
 import com.topperbibb.hacktcnj2021.client.game.graphics.SpriteInfo;
 import com.topperbibb.hacktcnj2021.client.game.graphics.SpriteManager;
-import com.topperbibb.hacktcnj2021.client.game.graphics.Spritesheet;
 import com.topperbibb.hacktcnj2021.client.game.objects.BoardObject;
 import com.topperbibb.hacktcnj2021.client.game.objects.Key;
 import com.topperbibb.hacktcnj2021.client.game.objects.Player;
@@ -140,6 +138,9 @@ public class MovableUser extends NetUser implements Player {
         return new MovableUser(x, y, sprites);
     }
 
+    /**
+     * Kills the player and places them at the spawn point, replacing any collected keys
+     */
     public void die() {
         if (Board.getSpawnTile().getObject() != null && Board.getSpawnTile().getObject() != this) {
             System.out.println("Spawn covered; resetting level");
@@ -155,6 +156,11 @@ public class MovableUser extends NetUser implements Player {
         Engine.INSTANCE.applyChanges();
     }
 
+    /**
+     * Sets the next sprite to show based on direction of motion
+     * @param dirX the x coordinate of the direction moved
+     * @param dirY the y coordinate of the direction moved
+     */
     public void setNextSprite(int dirX, int dirY) {
         MovableUser.PlayerSprite dir = dirX < 0 ? PlayerSprite.LEFT : dirX > 0 ? PlayerSprite.RIGHT : dirY < 0 ? PlayerSprite.UP : PlayerSprite.DOWN;
         setSprite(getSprite(dir));
