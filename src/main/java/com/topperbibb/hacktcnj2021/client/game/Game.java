@@ -4,6 +4,7 @@ import com.topperbibb.hacktcnj2021.client.Client;
 import com.topperbibb.hacktcnj2021.client.game.user.MovableUser;
 import com.topperbibb.hacktcnj2021.client.game.user.NetUser;
 
+import javax.sound.sampled.Clip;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 import java.io.IOException;
@@ -22,6 +23,19 @@ public class Game {
     private static void createSinglePlayer() {
         MovableUser u = new MovableUser();
         Engine.startSinglePlayerEngine(u);
+        try {
+            AudioPlayer introPlayer = AudioPlayer.getInstance("DeathIsKeyIntro.wav");
+            introPlayer.addFinishListener(() -> {
+                try {
+                    AudioPlayer.getInstance("DeathIsKeySong.wav").startLoop(Clip.LOOP_CONTINUOUSLY, 85);
+                } catch (IOException | UnsupportedAudioFileException | LineUnavailableException e) {
+                    e.printStackTrace();
+                }
+            });
+            introPlayer.start(85);
+        } catch (IOException | UnsupportedAudioFileException | LineUnavailableException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
