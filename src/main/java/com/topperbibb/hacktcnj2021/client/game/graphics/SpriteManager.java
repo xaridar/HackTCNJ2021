@@ -3,6 +3,9 @@ package com.topperbibb.hacktcnj2021.client.game.graphics;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Adds new sprites to a pool of sprites with keys and SpriteSets, so that they can be used by used universally
+ */
 public class SpriteManager {
     public static double pixelScale = 4;
     private static final Map<String, SpriteSet> sprites = new HashMap<>();
@@ -10,6 +13,10 @@ public class SpriteManager {
     public static Spritesheet spritesheet;
     public static boolean tileBorders = false;
 
+    /**
+     * Adds a sprite to the map in the form of a SpriteInfo instance, as long as there aren't duplicates.
+     * @param sprite The SpriteInfo to add to the map
+     */
     public static void addSprite(SpriteInfo sprite) {
         if (!sprites.containsKey(sprite.key)) {
             sprites.put(sprite.key, new SpriteSet(sprite));
@@ -18,6 +25,12 @@ public class SpriteManager {
         }
     }
 
+    /**
+     * Adds a
+     * @param sprite
+     * @param pos
+     * @throws IndexOutOfBoundsException
+     */
     public static void addSprite(SpriteInfo sprite, int pos) throws IndexOutOfBoundsException {
         if (!sprites.containsKey(sprite.key)) {
             sprites.put(sprite.key, new SpriteSet(sprite));

@@ -36,7 +36,7 @@ public class SpriteInfo {
      * @param y the y offset on the Spritesheet
      * @param flipType the axis that the sprite should be flipped over
      * @param key the key used for drawing the sprite
-     * @param spritesheet the spritesheet that the sprites are drawn fro
+     * @param spritesheet the spritesheet that the sprites are drawn from
      */
     public SpriteInfo(int width, int height, int x, int y, FlipEnum flipType, String key, Spritesheet spritesheet) {
         this.spritesheet = spritesheet;
@@ -50,13 +50,13 @@ public class SpriteInfo {
 
     /**
      * A constructor for setting all fields without flipping and using custom pixel scale
-     * @param width
-     * @param height
-     * @param x
-     * @param y
-     * @param key
-     * @param spritesheet
-     * @param pixelScale
+     * @param width the width of the sprite
+     * @param height the height of the sprite
+     * @param x the x offset on the Spritesheet
+     * @param y the y offset on the Spritesheet
+     * @param key the key used for drawing the sprite
+     * @param spritesheet the spritesheet that the sprites are drawn from
+     * @param pixelScale the scale that each pixel has
      */
     public SpriteInfo(int width, int height, int x, int y, String key, Spritesheet spritesheet, double pixelScale) {
         this.pixelScale = pixelScale;
@@ -68,6 +68,17 @@ public class SpriteInfo {
         this.y = y;
     }
 
+    /**
+     * A constructor for setting all fields
+     * @param width the width of the sprite
+     * @param height the height of the sprite
+     * @param x the x offset on the Spritesheet
+     * @param y the y offset on the Spritesheet
+     * @param flipType the axis that the sprite should be flipped over
+     * @param key the key used for drawing the sprite
+     * @param spritesheet the spritesheet that the sprites are drawn from
+     * @param pixelScale the scale that each pixel has
+     */
     public SpriteInfo(int width, int height, int x, int y, FlipEnum flipType, String key, Spritesheet spritesheet, double pixelScale) {
         this.pixelScale = pixelScale;
         this.spritesheet = spritesheet;
@@ -79,14 +90,27 @@ public class SpriteInfo {
         this.flipType = flipType;
     }
 
+    /**
+     * Returns a new SpriteInfo with the flipped version of the current sprite
+     * @param flipType the axis that the sprite is flipped over
+     * @return The SpriteInfo that is flipped
+     */
     public SpriteInfo flipped(FlipEnum flipType) {
         return new SpriteInfo(width, height, x, y, this.flipType.flipped(flipType), key + "_flipped_" + flipType.name().toLowerCase(), this.spritesheet);
     }
 
+    /**
+     * Flips sprite over the x axis
+     * @return the new sprite info that is flipped
+     */
     public boolean flipX() {
         return flipType.flipX();
     }
 
+    /**
+     * Flips sprite over the y axis
+     * @return the new sprite info that is flipped
+     */
     public boolean flipY() {
         return flipType.flipY();
     }
