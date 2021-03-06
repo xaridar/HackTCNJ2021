@@ -23,19 +23,6 @@ public class Game {
     private static void createSinglePlayer() {
         MovableUser u = new MovableUser();
         Engine.startSinglePlayerEngine(u);
-        try {
-            AudioPlayer introPlayer = AudioPlayer.getInstance("DeathIsKeyIntro.wav");
-            introPlayer.addFinishListener(() -> {
-                try {
-                    AudioPlayer.getInstance("DeathIsKeySong.wav").startLoop(Clip.LOOP_CONTINUOUSLY, 85);
-                } catch (IOException | UnsupportedAudioFileException | LineUnavailableException e) {
-                    e.printStackTrace();
-                }
-            });
-            introPlayer.start(85);
-        } catch (IOException | UnsupportedAudioFileException | LineUnavailableException e) {
-            e.printStackTrace();
-        }
     }
 
     /**

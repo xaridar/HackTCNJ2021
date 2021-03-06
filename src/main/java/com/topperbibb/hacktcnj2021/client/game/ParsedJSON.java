@@ -3,6 +3,7 @@ package com.topperbibb.hacktcnj2021.client.game;
 import com.topperbibb.hacktcnj2021.client.game.graphics.FlipEnum;
 import com.topperbibb.hacktcnj2021.client.game.graphics.SpriteManager;
 import com.topperbibb.hacktcnj2021.client.game.util.Triplet;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -13,7 +14,7 @@ import java.util.List;
 /**
  * Represents a config.json file as a list of sprites and other config options
  */
-public class SpriteJson {
+public class ParsedJSON {
 
     /**
      * Represents a singular sprite from a json
@@ -63,21 +64,49 @@ public class SpriteJson {
     // A list of sprite sets for sprites; each contains a sprite name, a list of sprites, and a boolean telling whether it should be randomized
     public List<Triplet<String, List<JsonSprite>, Boolean>> spriteSets = new ArrayList<>();
 
+    // Variables to hold music information from the config.
+    public String introPath;
+    public String songPath;
+    public List<String> songPaths = new ArrayList<>();
+    public boolean shuffled;
+    double volume = 1.00;
+
     /**
-     * Statically creates a SpriteJson object from a {@link JSONObject}
+     * Statically creates a ParsedJSON object from a {@link JSONObject}
      * @param obj a JSONObject parsed from config.json
-     * @return a new SpriteJson with the information from {@code obj}
+     * @return a new ParsedJSON with the information from {@code obj}
      * @throws JSONException if a required value cannot be found
      * @throws ClassCastException if a value is of the wrong type
      */
-    public static SpriteJson createSpriteJson(JSONObject obj) throws JSONException, ClassCastException {
-        SpriteJson json = new SpriteJson();
+    public static ParsedJSON parseJSON(JSONObject obj) throws JSONException, ClassCastException {
+        ParsedJSON json = new ParsedJSON();
         json.spriteSheetPath = obj.getString("spriteSheetPath");
         json.tileSize = obj.getInt("tileSize");
         if (obj.has("pixelScale"))
             json.pixelScale = obj.getDouble("pixelScale");
         else json.pixelScale = 4;
         Iterator<String> it = obj.getJSONObject("sprites").keys();
+        if (obj.has("music")) {
+            if (obj.get("music").getClass() == String.class) {
+                json.songPath = obj.getString("music");
+            } else {
+                JSONObject musicObj = obj.getJSONObject("music");
+                if (musicObj.has("intro")) json.introPath = musicObj.getString("intro");
+                if (musicObj.get("songs").getClass() == String.class) json.songPath = musicObj.getString("songs");
+                else {
+                    boolean shuffled = false;
+                    if (musicObj.has("shuffled")) {
+                        shuffled = musicObj.getBoolean("shuffled");
+                    }
+                    JSONArray arr = musicObj.getJSONArray("songs");
+                    arr.forEach(str -> json.songPaths.add((String) str));
+                    json.shuffled = shuffled;
+                }
+            }
+            if (obj.has("volume")) {
+                json.volume = obj.getDouble("volume");
+            }
+        }
         while (it.hasNext()) {
             String key = it.next();
             JSONObject o = obj.getJSONObject("sprites").getJSONObject(key);

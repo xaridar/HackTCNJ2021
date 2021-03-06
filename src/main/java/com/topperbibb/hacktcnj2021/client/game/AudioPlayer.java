@@ -3,10 +3,7 @@ package com.topperbibb.hacktcnj2021.client.game;
 import javax.sound.sampled.*;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.HashSet;
-import java.util.Random;
-import java.util.Set;
-import java.util.function.Function;
+import java.util.*;
 
 @SuppressWarnings("unused")
 public class AudioPlayer {
@@ -24,7 +21,7 @@ public class AudioPlayer {
         return INSTANCES.stream().filter(audioPlayer -> audioPlayer.path.equals(file)).findFirst().orElse(new AudioPlayer(file));
     }
 
-    public AudioPlayer(String path) throws IOException, UnsupportedAudioFileException, LineUnavailableException {
+    private AudioPlayer(String path) throws IOException, UnsupportedAudioFileException, LineUnavailableException {
         this.path = path;
         InputStream is = Engine.class.getResourceAsStream("/audio/" + path);
         if (is == null) throw new IOException("Cannot find resource file audio/" + path);
@@ -36,7 +33,10 @@ public class AudioPlayer {
         clip.open(audioInputStream);
         clip.addLineListener(event -> {
             if (event.getType() == LineEvent.Type.STOP) {
-                afterPlay.forEach(AudioFinishListener::onFinish);
+                clip.setFramePosition(0);
+                if (afterPlay != null) {
+                    afterPlay.forEach(AudioFinishListener::onFinish);
+                }
             }
         });
     }
@@ -85,6 +85,10 @@ public class AudioPlayer {
         start();
     }
 
+    public void removeFinishListener(AudioFinishListener listener) {
+        afterPlay.remove(listener);
+    }
+
     public void addFinishListener(AudioFinishListener listener) {
         afterPlay.add(listener);
     }
@@ -92,20 +96,31 @@ public class AudioPlayer {
     public static void playQueue(AudioPlayer... players) {
         for (int i = 0; i < players.length - 1; i++) {
             final int finalI = i;
-            players[i].addFinishListener(() -> players[finalI+1].start());
+            players[i].addFinishListener(new AudioFinishListener() {
+                @Override
+                public void onFinish() {
+                    players[finalI + 1].start();
+                    players[finalI].removeFinishListener(this);
+                }
+            });
         }
         players[0].start();
     }
 
-    public void playShuffle(AudioPlayer... players) {
+    public static void playShuffle(AudioPlayer... players) {
         AudioPlayer[] temp = new AudioPlayer[players.length];
         Random rand = new Random();
-        for (int i = 0; i < temp.length; i++) {
-            int r = rand.nextInt(temp.length - i);
-            temp[i] = players[r];
-        }
+        List<AudioPlayer> tempList = Arrays.asList(players);
+        Collections.shuffle(tempList);
+        tempList.toArray(temp);
         playQueue(temp);
-        temp[temp.length - 1].addFinishListener(() -> playShuffle(players));
+        temp[temp.length - 1].addFinishListener(new AudioFinishListener() {
+            @Override
+            public void onFinish() {
+                playShuffle(players);
+                temp[temp.length - 1].removeFinishListener(this);
+            }
+        });
     }
 
     public interface AudioFinishListener {
