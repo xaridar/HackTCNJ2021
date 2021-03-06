@@ -21,6 +21,7 @@ public class Config {
 
     /**
      * Reads information from config.json, if it exists, and parses out Sprites into the game for use in-game, as well as other configuration variables
+     * This method also starts music from the config file, if any is specified
      * If any errors occur, or if any sprites are not specified, default sprites from defaulttiles.png are used
      */
     public static void readConfig() {
@@ -46,7 +47,7 @@ public class Config {
                     for (int i = 0; i < sprites.songPaths.size(); i++) {
                         String path = sprites.songPaths.get(i);
                         players[i] = AudioPlayer.getInstance(path);
-                        players[i].setVolume((int) (sprites.volume * 100));
+                        players[i].setVolume(sprites.volume * 100);
                     }
                     if (sprites.shuffled) {
                         AudioPlayer.playShuffle(players);
@@ -61,10 +62,10 @@ public class Config {
                     }
                 } else {
                     AudioPlayer player = AudioPlayer.getInstance(sprites.songPath);
-                    player.setVolume((int) (sprites.volume * 100));
+                    player.setVolume(sprites.volume * 100);
                     if (sprites.introPath != null) {
                         AudioPlayer introPlayer = AudioPlayer.getInstance(sprites.introPath);
-                        introPlayer.setVolume((int) (sprites.volume * 100));
+                        introPlayer.setVolume(sprites.volume * 100);
                         introPlayer.playThen(() -> player.startLoop(Clip.LOOP_CONTINUOUSLY));
                     } else {
                         player.startLoop(Clip.LOOP_CONTINUOUSLY);
