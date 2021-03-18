@@ -89,7 +89,6 @@ public class Board {
      * @param y the y position of the Tile to set as the spawn
      */
     public static void setSpawn(int x, int y) {
-        System.out.println(x + ", " + y);
         getSpawnTile(board).getInfo().removeSpawnPoint();
         spawnTile = board[x][y];
         board[x][y].getInfo().setSpawnPoint();

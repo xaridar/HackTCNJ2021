@@ -86,7 +86,6 @@ public class MovableUser extends NetUser implements Player {
                     return false;
                 }
             } else if (tile.getObject() != null && tile.getObject() instanceof Key) {
-                System.out.println("true");
                 ((Key) tile.getObject()).collect();
             }
             setPos(temp_x, temp_y);
@@ -108,10 +107,19 @@ public class MovableUser extends NetUser implements Player {
         this.currentSprite = sprite;
     }
 
+    /**
+     * Gets the sprite that the user is currently using, based off of a spriteEnum value
+     * @param spriteEnum a value that is assigned to certain sprites
+     * @return information about the sprite that should be used
+     */
     public SpriteInfo getSprite(PlayerSprite spriteEnum) {
         return SpriteManager.get(sprites.get(spriteEnum));
     }
 
+    /**
+     * Sets the sprite pool that the player can be drawn from
+     * @param sprites a map of actions that the sprite corresponds to, and a string of that action
+     */
     public void setSprites(Map<PlayerSprite, String> sprites) {
         this.sprites = sprites;
     }

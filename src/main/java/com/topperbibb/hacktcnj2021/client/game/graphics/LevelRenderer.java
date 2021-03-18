@@ -8,12 +8,19 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
+/**
+ * A pane that draws parts of the game in different layers
+ */
 public class LevelRenderer extends JLayeredPane {
 
 
     public LevelRenderer() {
     }
 
+    /**
+     * Renders all static objects on the board, such as walls and floors
+     * @return a BufferedImage with all the sprites that should be drawn
+     */
     public BufferedImage renderStatic() {
         BufferedImage img = new BufferedImage(Board.board[0].length * SpriteManager.tileSize, Board.board.length * SpriteManager.tileSize, BufferedImage.TYPE_INT_ARGB);
         SpriteInfo sprite;
@@ -34,6 +41,11 @@ public class LevelRenderer extends JLayeredPane {
         return img;
     }
 
+    /**
+     * Renders the player sprite with whatever direction that it should be facing
+     * @param player the player that the returned BufferedImage should draw
+     * @return a BufferedImage of the player with the correct sprite
+     */
     public BufferedImage renderPlayer(MovableUser player) {
         SpriteInfo sprite = player.getSprite();
         BufferedImage img = new BufferedImage(sprite.width, sprite.height, BufferedImage.TYPE_INT_ARGB);
@@ -47,6 +59,10 @@ public class LevelRenderer extends JLayeredPane {
         return img;
     }
 
+    /**
+     * Renders all objects, in their own JPanel, and sets its size and offsets
+     * @return an ArrayList of JPanels that contain a JLabel containing an ImageIcon of the object sprite, drawn to as close to the middle as possible
+     */
     public ArrayList<JPanel> renderObjects() {
         ArrayList<JPanel> out = new ArrayList<>();
 
@@ -80,6 +96,10 @@ public class LevelRenderer extends JLayeredPane {
         return out;
     }
 
+    /**
+     * Renders the spawn tile drawn onto a BufferedImage
+     * @return a BufferedImage containing the spawn sprite
+     */
     public BufferedImage renderSpawn() {
         SpriteInfo sprite = SpriteManager.get("Spawn_point");
         BufferedImage img = new BufferedImage(sprite.width, sprite.height, BufferedImage.TYPE_INT_ARGB);
@@ -93,6 +113,10 @@ public class LevelRenderer extends JLayeredPane {
         return img;
     }
 
+    /**
+     * Renders the end tile drawn onto a BufferedImage
+     * @return a BufferedImage containing the end sprite
+     */
     public BufferedImage renderEnd() {
         SpriteInfo sprite = SpriteManager.get("End");
         BufferedImage img = new BufferedImage(sprite.width, sprite.height, BufferedImage.TYPE_INT_ARGB);
