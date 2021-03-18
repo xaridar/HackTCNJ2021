@@ -2,6 +2,7 @@ package com.topperbibb.hacktcnj2021.client.game.user;
 
 import com.topperbibb.hacktcnj2021.client.game.Board;
 import com.topperbibb.hacktcnj2021.client.game.Engine;
+import com.topperbibb.hacktcnj2021.client.game.SfxManager;
 import com.topperbibb.hacktcnj2021.client.game.graphics.SpriteInfo;
 import com.topperbibb.hacktcnj2021.client.game.graphics.SpriteManager;
 import com.topperbibb.hacktcnj2021.client.game.objects.BoardObject;
@@ -142,6 +143,7 @@ public class MovableUser extends NetUser implements Player {
      * Kills the player and places them at the spawn point, replacing any collected keys
      */
     public void die() {
+        SfxManager.playSound("Die");
         if (Board.getSpawnTile().getObject() != null && Board.getSpawnTile().getObject() != this) {
             System.out.println("Spawn covered; resetting level");
             Engine.INSTANCE.getCurrLevel().reset();

@@ -13,6 +13,7 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -41,6 +42,15 @@ public class Config {
             for (Triplet<String, List<ParsedJSON.JsonSprite>, Boolean> set : sprites.spriteSets) {
                 List<Tuple<Double, SpriteInfo>> probList = set.getSecond().stream().map(jsonSprite -> Tuple.of(jsonSprite.prob, new SpriteInfo(jsonSprite.width, jsonSprite.height, jsonSprite.x, jsonSprite.y, jsonSprite.flipped, jsonSprite.name, SpriteManager.spritesheet, jsonSprite.pixelScale))).collect(Collectors.toList());
                 SpriteManager.addSprite(new SpriteSet(probList, set.getFirst(), set.getThird()));
+            }
+            try {
+                for (Map.Entry<String, String> entry : sprites.sfx.entrySet()) {
+                    String key = entry.getKey();
+                    String value = entry.getValue();
+                    SfxManager.add(key, value);
+                }
+            } catch (UnsupportedAudioFileException|IOException|LineUnavailableException e) {
+                e.printStackTrace();
             }
             try {
                 if (sprites.songPaths.size() > 0) {

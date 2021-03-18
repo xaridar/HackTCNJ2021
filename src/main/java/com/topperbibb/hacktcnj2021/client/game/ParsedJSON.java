@@ -7,9 +7,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 /**
  * Represents a config.json file as a list of sprites and other config options
@@ -74,6 +72,9 @@ public class ParsedJSON {
     public boolean shuffled;
     double volume = 1.00;
 
+    // A map of String names to SFX
+    public Map<String, String> sfx = new HashMap<>();
+
     /**
      * Statically creates a ParsedJSON object from a {@link JSONObject}
      * @param obj a JSONObject parsed from config.json
@@ -109,6 +110,11 @@ public class ParsedJSON {
             if (obj.has("volume")) {
                 json.volume = obj.getDouble("volume");
             }
+        }
+        if (obj.has("sfx")) {
+            obj.getJSONObject("sfx").keys().forEachRemaining(key -> {
+                json.sfx.put(key, obj.getJSONObject("sfx").getString(key));
+            });
         }
         while (it.hasNext()) {
             String key = it.next();
