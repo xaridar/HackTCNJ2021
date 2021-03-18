@@ -14,7 +14,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-public class KeyShowcase extends Level{
+public class KeyShowcase extends Level {
 
     public KeyShowcase(MovableUser movableUser, StaticUser staticUser) {
         super(movableUser, staticUser);

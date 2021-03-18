@@ -1,6 +1,8 @@
 package com.topperbibb.hacktcnj2021.client.game;
 
 import javax.sound.sampled.*;
+import javax.swing.*;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
@@ -50,7 +52,11 @@ public class AudioPlayer {
         this.path = path;
         InputStream is = Engine.class.getResourceAsStream("/audio/" + path);
         if (is == null) throw new IOException("Cannot find resource file audio/" + path);
-        this.audioInputStream = AudioSystem.getAudioInputStream(is);
+        if (path.endsWith(".wav"))
+            this.audioInputStream = AudioSystem.getAudioInputStream(is);
+        else {
+
+        }
         AudioFormat format = audioInputStream.getFormat();
 
         DataLine.Info info = new DataLine.Info(Clip.class, format);
@@ -192,6 +198,19 @@ public class AudioPlayer {
             public void onFinish() {
                 playShuffle(players);
                 temp[temp.length - 1].removeFinishListener(this);
+            }
+        });
+    }
+
+    /**
+     * Closes all open audio input streams
+     */
+    public static void closePlayers() {
+        INSTANCES.forEach(player -> {
+            try {
+                player.audioInputStream.close();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         });
     }

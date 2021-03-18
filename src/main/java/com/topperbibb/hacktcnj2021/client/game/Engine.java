@@ -15,6 +15,8 @@ import com.topperbibb.hacktcnj2021.shared.StateChangePacket;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -200,6 +202,12 @@ public class Engine {
         renderer.setFocusable(true);
         renderer.requestFocusInWindow();
         window.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        window.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                AudioPlayer.closePlayers();
+            }
+        });
         window.pack();
         window.setVisible(true);
     }

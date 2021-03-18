@@ -7,9 +7,6 @@
     "intro": "DeathIsKeyIntro.wav",
     "songs": "DeathIsKeySong.wav"
   },
-  "sfx": {
-    "Die": "Death.wav"
-  },
   "sprites": {
     "Basic_ground": {
       "randomized": true,
