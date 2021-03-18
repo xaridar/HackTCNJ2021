@@ -2,6 +2,7 @@ package com.topperbibb.hacktcnj2021.client.game;
 
 import com.topperbibb.hacktcnj2021.client.game.graphics.*;
 import com.topperbibb.hacktcnj2021.client.game.util.Triplet;
+import com.topperbibb.hacktcnj2021.client.game.util.Tuple;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
@@ -38,8 +39,8 @@ public class Config {
                 SpriteManager.addSprite(new SpriteInfo(sprite.width, sprite.height, sprite.x, sprite.y, sprite.flipped, sprite.name, SpriteManager.spritesheet, sprite.pixelScale));
             }
             for (Triplet<String, List<ParsedJSON.JsonSprite>, Boolean> set : sprites.spriteSets) {
-                List<SpriteInfo> infoList = set.getSecond().stream().map(jsonSprite -> new SpriteInfo(jsonSprite.width, jsonSprite.height, jsonSprite.x, jsonSprite.y, jsonSprite.flipped, jsonSprite.name, SpriteManager.spritesheet, jsonSprite.pixelScale)).collect(Collectors.toList());
-                SpriteManager.addSprite(new SpriteSet(infoList, set.getFirst(), set.getThird()));
+                List<Tuple<Double, SpriteInfo>> probList = set.getSecond().stream().map(jsonSprite -> Tuple.of(jsonSprite.prob, new SpriteInfo(jsonSprite.width, jsonSprite.height, jsonSprite.x, jsonSprite.y, jsonSprite.flipped, jsonSprite.name, SpriteManager.spritesheet, jsonSprite.pixelScale))).collect(Collectors.toList());
+                SpriteManager.addSprite(new SpriteSet(probList, set.getFirst(), set.getThird()));
             }
             try {
                 if (sprites.songPaths.size() > 0) {

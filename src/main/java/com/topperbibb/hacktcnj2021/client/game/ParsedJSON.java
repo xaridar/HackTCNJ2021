@@ -27,6 +27,7 @@ public class ParsedJSON {
         public double pixelScale;
         public int width;
         public int height;
+        public double prob;
 
         /**
          * @param x the x pixel position of the sprite in the sprite sheet
@@ -36,8 +37,9 @@ public class ParsedJSON {
          * @param pixelScale the scale the display a sprite in in-game
          * @param height the pixel height of the sprite in the sprite sheet
          * @param width the pixel width of the sprite in the sprite sheet
+         * @param prob the probability of this sprite occurring in a random list
          */
-        public JsonSprite(int x, int y, String name, FlipEnum flipped, double pixelScale, int height, int width) {
+        public JsonSprite(int x, int y, String name, FlipEnum flipped, double pixelScale, int height, int width, double prob) {
             this.x = x;
             this.y = y;
             this.name = name;
@@ -45,6 +47,7 @@ public class ParsedJSON {
             this.height = height;
             this.width = width;
             this.flipped = flipped;
+            this.prob = prob;
         }
     }
 
@@ -139,6 +142,7 @@ public class ParsedJSON {
         int y = o.getInt("y");
         int height;
         int width;
+        double prob = 1;
         try {
             height = o.getInt("height");
             width = o.getInt("width");
@@ -152,7 +156,10 @@ public class ParsedJSON {
         if (o.has("pixelScale")) {
             pixelScale = o.getDouble("pixelScale");
         }
-        return new JsonSprite(x, y, key, flipped, pixelScale, height, width);
+        if (o.has("probability")) {
+            prob = o.getDouble("probability");
+        }
+        return new JsonSprite(x, y, key, flipped, pixelScale, height, width, prob);
     }
 
 }
