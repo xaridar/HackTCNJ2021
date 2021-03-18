@@ -4,6 +4,7 @@ import com.topperbibb.hacktcnj2021.client.Client;
 import com.topperbibb.hacktcnj2021.client.game.user.MovableUser;
 import com.topperbibb.hacktcnj2021.client.game.user.NetUser;
 
+import javax.sound.sampled.Clip;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 import java.io.IOException;

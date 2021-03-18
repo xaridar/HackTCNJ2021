@@ -3,12 +3,12 @@ package com.topperbibb.hacktcnj2021.client.game.util;
 import com.topperbibb.hacktcnj2021.client.game.Board;
 import com.topperbibb.hacktcnj2021.client.game.Engine;
 import com.topperbibb.hacktcnj2021.client.game.user.MovableUser;
-import com.topperbibb.hacktcnj2021.client.game.user.NetUser;
 import com.topperbibb.hacktcnj2021.shared.LevelSelectPacket;
 
-import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+
+import static java.awt.event.KeyEvent.*;
 
 /**
  * Handles Key events from the player
@@ -29,9 +29,9 @@ public class PlayerKeyListener extends KeyAdapter {
     public void keyPressed(KeyEvent e) {
         if (engine.localUser instanceof MovableUser) {
             MovableUser user = engine.getCurrLevel().getMovableUser();
-            switch (e.getKeyChar()) {
-                case 'W':
-                case 'w':
+            switch (e.getKeyCode()) {
+                case KeyEvent.VK_W:
+                case VK_UP:
                     if (keyPressed + keyTimeout <= System.currentTimeMillis()) {
                         if (user.move(0, -1)) {
                             engine.getCurrLevel().incrementCountdown();
@@ -41,8 +41,8 @@ public class PlayerKeyListener extends KeyAdapter {
                         keyPressed = System.currentTimeMillis();
                     }
                     break;
-                case 'S':
-                case 's':
+                case KeyEvent.VK_S:
+                case VK_DOWN:
                     if (keyPressed + keyTimeout <= System.currentTimeMillis()) {
                         if (user.move(0, 1)) {
                             engine.getCurrLevel().incrementCountdown();
@@ -52,8 +52,8 @@ public class PlayerKeyListener extends KeyAdapter {
                         keyPressed = System.currentTimeMillis();
                     }
                     break;
-                case 'A':
-                case 'a':
+                case KeyEvent.VK_A:
+                case VK_LEFT:
                     if (keyPressed + keyTimeout <= System.currentTimeMillis()) {
                         if (user.move(-1, 0)) {
                             engine.getCurrLevel().incrementCountdown();
@@ -63,8 +63,8 @@ public class PlayerKeyListener extends KeyAdapter {
                         keyPressed = System.currentTimeMillis();
                     }
                     break;
-                case 'D':
-                case 'd':
+                case KeyEvent.VK_D:
+                case VK_RIGHT:
                     if (keyPressed + keyTimeout <= System.currentTimeMillis()) {
                         if (user.move(1, 0)) {
                             engine.getCurrLevel().incrementCountdown();
@@ -74,8 +74,7 @@ public class PlayerKeyListener extends KeyAdapter {
                         keyPressed = System.currentTimeMillis();
                     }
                     break;
-                case 'Q':
-                case 'q':
+                case KeyEvent.VK_Q:
                     user.die();
                     engine.renderPlayer(user);
                     engine.renderObjects();

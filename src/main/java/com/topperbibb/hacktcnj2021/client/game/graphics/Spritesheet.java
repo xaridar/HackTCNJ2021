@@ -19,7 +19,7 @@ public class Spritesheet {
         BufferedImage image;
 
         try {
-            InputStream stream = Engine.class.getResourceAsStream(path);
+            InputStream stream = Engine.class.getResourceAsStream("/" + path);
             if (stream != null) {
                 image = ImageIO.read(stream);
             } else {

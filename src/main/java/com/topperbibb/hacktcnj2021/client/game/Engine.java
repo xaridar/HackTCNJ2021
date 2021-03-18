@@ -139,7 +139,7 @@ public class Engine {
      * @param self the local user of the game
      */
     public static void startEngine(NetUser self) {
-        Config.readSprites();
+        Config.readConfig();
         Engine engine = new Engine(self);
         INSTANCE = engine;
         engine.createRenderWindow();
@@ -155,7 +155,7 @@ public class Engine {
      * @param u a MovableUser to use as the player
      */
     public static void startSinglePlayerEngine(MovableUser u) {
-        Config.readSprites();
+        Config.readConfig();
         Engine engine = new Engine(u, true);
         INSTANCE = engine;
         engine.createRenderWindow();
