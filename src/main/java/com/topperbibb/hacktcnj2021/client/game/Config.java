@@ -89,7 +89,7 @@ public class Config {
             sprites = null;
         }
 
-        Spritesheet defaultSpriteSheet = new Spritesheet("defaulttiles.png");
+        Spritesheet defaultSpriteSheet = new Spritesheet("C:\\Users\\Elliot\\Documents\\HackTCNJ2021\\src\\main\\res\\defaulttiles.png");
 
         SpriteManager.addSpriteDefault(new SpriteSet(Arrays.asList(new SpriteInfo(16, 16, 32, 88, "Player_right", defaultSpriteSheet), new SpriteInfo(16, 16, 48, 88, "Player_right", defaultSpriteSheet)), "Player_right"));
         SpriteManager.addSpriteDefault(new SpriteSet(Arrays.asList(new SpriteInfo(16, 16, 32, 88, FlipEnum.X,"Player_left", defaultSpriteSheet), new SpriteInfo(16, 16, 48, 88, FlipEnum.X,"Player_left", defaultSpriteSheet)), "Player_left"));

@@ -1,11 +1,14 @@
 {
-  "spriteSheetPath": "maybe.png",
+  "spriteSheetPath": "C:\\Users\\Elliot\\Documents\\HackTCNJ2021\\src\\main\\res\\maybe.png",
   "tileSize": 32,
   "pixelScale": 2,
   "volume": 0.75,
   "music": {
-    "intro": "DeathIsKeyIntro.wav",
-    "songs": "DeathIsKeySong.wav"
+    "intro": "C:\\Users\\Elliot\\Documents\\HackTCNJ2021\\src\\main\\res\\audio\\DeathIsKeyIntro.wav",
+    "songs": "C:\\Users\\Elliot\\Documents\\HackTCNJ2021\\src\\main\\res\\audio\\DeathIsKeySong.wav"
+  },
+  "sfx": {
+    "Die": "C:\\Users\\Elliot\\Documents\\HackTCNJ2021\\src\\main\\res\\audio\\Death.wav"
   },
   "sprites": {
     "Basic_ground": {

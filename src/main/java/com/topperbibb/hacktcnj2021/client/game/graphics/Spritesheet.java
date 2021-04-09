@@ -4,6 +4,7 @@ import com.topperbibb.hacktcnj2021.client.game.Engine;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -19,12 +20,8 @@ public class Spritesheet {
         BufferedImage image;
 
         try {
-            InputStream stream = Engine.class.getResourceAsStream("/" + path);
-            if (stream != null) {
-                image = ImageIO.read(stream);
-            } else {
-                throw new IOException();
-            }
+            InputStream stream = new FileInputStream(path);
+            image = ImageIO.read(stream);
         } catch (IOException e) {
             System.out.println("Spritesheet not found: " + path);
             System.exit(0);

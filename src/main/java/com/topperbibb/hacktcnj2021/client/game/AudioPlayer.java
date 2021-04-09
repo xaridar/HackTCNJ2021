@@ -1,10 +1,8 @@
 package com.topperbibb.hacktcnj2021.client.game;
 
 import javax.sound.sampled.*;
-import javax.swing.*;
-import java.io.FileInputStream;
+import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.*;
 
 /**
@@ -50,13 +48,8 @@ public class AudioPlayer {
      */
     private AudioPlayer(String path) throws IOException, UnsupportedAudioFileException, LineUnavailableException {
         this.path = path;
-        InputStream is = Engine.class.getResourceAsStream("/audio/" + path);
-        if (is == null) throw new IOException("Cannot find resource file audio/" + path);
-        if (path.endsWith(".wav"))
-            this.audioInputStream = AudioSystem.getAudioInputStream(is);
-        else {
-
-        }
+//        InputStream is = new FileInputStream(path);
+        this.audioInputStream = AudioSystem.getAudioInputStream(new File(path));
         AudioFormat format = audioInputStream.getFormat();
 
         DataLine.Info info = new DataLine.Info(Clip.class, format);
