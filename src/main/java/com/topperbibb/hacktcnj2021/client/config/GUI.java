@@ -6,9 +6,13 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +25,12 @@ public class GUI extends JFrame {
     JMusicPlayer musicPlayer;
     JPanel addSongPanel;
     JPanel rightPanel;
+    private boolean shuffled = false;
+    private JCheckBox shuffleCheckBox;
+
+    private MusicOption introOption;
+    private JCheckBox introCheckBox;
+    private boolean intro = false;
 
     public GUI() throws IOException {
         super("Sprite Sheet Config");
@@ -50,29 +60,84 @@ public class GUI extends JFrame {
         panel.add(musicPlayer, BorderLayout.NORTH);
 
         // Right-side config
+        JPanel rightSide = new JPanel();
         rightPanel = new JPanel();
+        JScrollPane scroll = new JScrollPane(rightPanel);
+        scroll.setBorder(null);
+        scroll.setPreferredSize(new Dimension(300, ZoomablePannableLabel.SIZE));
+        scroll.setMinimumSize(new Dimension(0, ZoomablePannableLabel.SIZE));
+        scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        scroll.getVerticalScrollBar().setUnitIncrement(16);
+        rightSide.add(scroll);
         rightPanel.setLayout(new BoxLayout(rightPanel, BoxLayout.Y_AXIS));
+        rightPanel.addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentResized(ComponentEvent e) {
+                scroll.setPreferredSize(new Dimension(e.getComponent().getWidth(), ZoomablePannableLabel.SIZE));
+                setPreferredSize(new Dimension(ZoomablePannableLabel.SIZE + e.getComponent().getWidth() + 50, getHeight()));
+                scroll.repaint();
+                scroll.revalidate();
+                rightSide.repaint();
+                rightSide.revalidate();
+            }
+        });
         MusicOption mainOption = new MusicOption(musicPlayer);
         mainOption.setupOption(this);
+
+        // Intro
+        introCheckBox = new JCheckBox("Add intro song");
+        JPanel introPanel = new JPanel();
+        introPanel.setLayout(new BoxLayout(introPanel, BoxLayout.Y_AXIS));
+        introPanel.add(introCheckBox);
+        rightPanel.add(introPanel);
+        introCheckBox.setAlignmentX(SwingConstants.WEST);
+        introCheckBox.addActionListener((e) -> {
+            intro = introCheckBox.isSelected();
+            if (intro) {
+                if (introOption == null) {
+                    introOption = new MusicOption(musicPlayer, "Choose Intro Song", "Change Intro Song");
+                    introOption.setupOption(this);
+                }
+                introPanel.add(introOption);
+            } else {
+                introPanel.remove(introOption);
+            }
+            introPanel.repaint();
+            introPanel.revalidate();
+        });
+
         musicOptions.add(mainOption);
         rightPanel.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Color.BLACK));
         rightPanel.add(mainOption);
 
         // Add song button
-
         MouseAdapter addSong = new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if (e.getButton() == MouseEvent.BUTTON1) {
+                    if (shuffleCheckBox != null) rightPanel.remove(shuffleCheckBox);
                     rightPanel.remove(addSongPanel);
                     MusicOption option = new MusicOption(musicPlayer);
                     option.setupOption(GUI.this);
                     musicOptions.add(option);
                     rightPanel.add(option);
+                    if (musicOptions.size() > 1) {
+                        shuffleCheckBox = new JCheckBox("Shuffle songs");
+                        shuffleCheckBox.setSelected(shuffled);
+                        shuffleCheckBox.setAlignmentX(SwingConstants.WEST);
+                        shuffleCheckBox.addActionListener((ev) -> {
+                            shuffled = shuffleCheckBox.isSelected();
+                        });
+                        rightPanel.add(shuffleCheckBox);
+                    }
                     rightPanel.add(addSongPanel);
                     rightPanel.repaint();
                     rightPanel.revalidate();
                     repaint();
+                    SwingUtilities.invokeLater(() -> {
+                        JScrollBar bar = scroll.getVerticalScrollBar();
+                        bar.setValue(bar.getMaximum());
+                    });
                 }
             }
         };
@@ -93,7 +158,7 @@ public class GUI extends JFrame {
         rightPanel.add(addSongPanel);
 
 
-        panel.add(rightPanel, BorderLayout.EAST);
+        panel.add(rightSide, BorderLayout.EAST);
 
         // Image Editor
         image = new ZoomablePannableLabel();

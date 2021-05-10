@@ -3,6 +3,7 @@ package com.topperbibb.hacktcnj2021.client.config;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.List;
 
 public class ZoomablePannableLabel extends JLabel implements MouseWheelListener, MouseMotionListener, MouseListener, KeyListener {
 
@@ -14,7 +15,7 @@ public class ZoomablePannableLabel extends JLabel implements MouseWheelListener,
 
     public double scale = DEFAULT_SCALE;
     private int xPos = 0, yPos = 0;
-    private JLabel imageLabel;
+    private GriddedLabel imageLabel;
 
     private Image fullImage = null;
     private Icon currImage;
@@ -23,7 +24,7 @@ public class ZoomablePannableLabel extends JLabel implements MouseWheelListener,
 
     public ZoomablePannableLabel(ImageIcon image, int horizontalAlignment) {
         super();
-        imageLabel = new JLabel(image, horizontalAlignment);
+        imageLabel = new GriddedLabel(image, horizontalAlignment, scale);
         fullImage = image.getImage();
         currImage = image;
         setLabel();
@@ -31,7 +32,7 @@ public class ZoomablePannableLabel extends JLabel implements MouseWheelListener,
 
     public ZoomablePannableLabel(ImageIcon image) {
         super();
-        imageLabel = new JLabel(image);
+        imageLabel = new GriddedLabel(image, scale);
         fullImage = image.getImage();
         currImage = image;
         setLabel();
@@ -39,7 +40,7 @@ public class ZoomablePannableLabel extends JLabel implements MouseWheelListener,
 
     public ZoomablePannableLabel() {
         super();
-        imageLabel = new JLabel();
+        imageLabel = new GriddedLabel(scale);
         setLabel();
     }
 
@@ -51,12 +52,16 @@ public class ZoomablePannableLabel extends JLabel implements MouseWheelListener,
         addKeyListener(this);
         setOpaque(true);
         imageLabel.setOpaque(true);
+        imageLabel.setSelectionListener(System.out::println);
+        setTileSize(20);
     }
 
     /**
      * Called to update position of image label / redraws it
      */
     private void setImageLabel() {
+        imageLabel.setScale(scale);
+        imageLabel.setPos(xPos, yPos);
         setPreferredSize(new Dimension(SIZE, SIZE));
         imageLabel.setBackground(Color.WHITE);
         if (currImage != null) imageLabel.setBounds(xPos, yPos, currImage.getIconWidth(), currImage.getIconHeight());
@@ -67,8 +72,9 @@ public class ZoomablePannableLabel extends JLabel implements MouseWheelListener,
     public void setIcon(Icon icon) {
         if (icon == null) return;
         imageLabel.setIcon(icon);
-        if (fullImage == null)
+        if (fullImage == null) {
             fullImage = ((ImageIcon) icon).getImage();
+        }
         currImage = icon;
         setImageLabel();
     }
@@ -88,10 +94,10 @@ public class ZoomablePannableLabel extends JLabel implements MouseWheelListener,
     }
 
     public void zoom(double amt, Point pos) {
+        if (currImage == null) return;
         scale += amt;
         scale = (double) Math.round(scale * 10) / 10;
         scale = Math.max(MIN_SCALE, Math.min(MAX_SCALE, scale));
-        System.out.println(scale);
 
         // move image to keep percentage
         double perX = ((double) pos.x - xPos) / currImage.getIconWidth();
@@ -110,6 +116,7 @@ public class ZoomablePannableLabel extends JLabel implements MouseWheelListener,
 
     @Override
     public void mouseDragged(MouseEvent e) {
+        if (currImage == null) return;
         if (MouseEvent.getMouseModifiersText(e.getModifiersEx()).equals("Button3")) {
 
             if (lastPoint != null) {
@@ -136,36 +143,61 @@ public class ZoomablePannableLabel extends JLabel implements MouseWheelListener,
 
             lastPoint = new Point(e.getPoint());
         }
+        if (e.getX() >= imageLabel.getX() && e.getX() <= imageLabel.getX() + imageLabel.getWidth()
+                && e.getY() >= imageLabel.getY() && e.getY() <= imageLabel.getY() + imageLabel.getHeight()) {
+            imageLabel.mouseDragged(e);
+        }
     }
 
     @Override
     public void mouseMoved(MouseEvent e) {
-
+        if (e.getX() >= imageLabel.getX() && e.getX() <= imageLabel.getX() + imageLabel.getWidth()
+            && e.getY() >= imageLabel.getY() && e.getY() <= imageLabel.getY() + imageLabel.getHeight()) {
+            imageLabel.mouseMoved(e);
+        }
     }
 
     @Override
     public void mouseClicked(MouseEvent e) {
-
+        lastPoint = new Point(e.getPoint());
+        if (e.getX() >= imageLabel.getX() && e.getX() <= imageLabel.getX() + imageLabel.getWidth()
+                && e.getY() >= imageLabel.getY() && e.getY() <= imageLabel.getY() + imageLabel.getHeight()) {
+            imageLabel.mouseClicked(e);
+        }
     }
 
     @Override
     public void mousePressed(MouseEvent e) {
         lastPoint = new Point(e.getPoint());
+        if (e.getX() >= imageLabel.getX() && e.getX() <= imageLabel.getX() + imageLabel.getWidth()
+                && e.getY() >= imageLabel.getY() && e.getY() <= imageLabel.getY() + imageLabel.getHeight()) {
+            imageLabel.mousePressed(e);
+        }
     }
 
     @Override
     public void mouseReleased(MouseEvent e) {
         lastPoint = null;
+        if (e.getX() >= imageLabel.getX() && e.getX() <= imageLabel.getX() + imageLabel.getWidth()
+                && e.getY() >= imageLabel.getY() && e.getY() <= imageLabel.getY() + imageLabel.getHeight()) {
+            imageLabel.mouseReleased(e);
+        }
     }
 
     @Override
     public void mouseEntered(MouseEvent e) {
-
+        if (e.getX() >= imageLabel.getX() && e.getX() <= imageLabel.getX() + imageLabel.getWidth()
+                && e.getY() >= imageLabel.getY() && e.getY() <= imageLabel.getY() + imageLabel.getHeight()) {
+            imageLabel.mouseEntered(e);
+        }
     }
 
     @Override
     public void mouseExited(MouseEvent e) {
-
+        if (e.getX() >= imageLabel.getX() && e.getX() <= imageLabel.getX() + imageLabel.getWidth()
+                && e.getY() >= imageLabel.getY() && e.getY() <= imageLabel.getY() + imageLabel.getHeight()) {
+            imageLabel.mouseExited(e);
+        }
     }
 
     @Override
@@ -193,8 +225,14 @@ public class ZoomablePannableLabel extends JLabel implements MouseWheelListener,
         }
     }
 
+    private void setTileSize(int size) {
+        imageLabel.setTileSize(size);
+        setImageLabel();
+    }
+
     @Override
     public void keyReleased(KeyEvent e) {
 
     }
+
 }

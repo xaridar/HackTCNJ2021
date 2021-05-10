@@ -33,7 +33,25 @@ public class JMusicPlayer extends JPanel {
         this.pauseImg = pauseImg;
         setColor(pauseImg, COLOR_INACTIVE);
         setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
-        progressBar = new ProgressBar(Color.lightGray, Color.darkGray, new Dimension(250, ICON_SIZE));
+        progressBar = new ProgressBar(Color.lightGray, Color.darkGray, Color.decode("#1e1e1e"), new Dimension(250, ICON_SIZE));
+
+        progressBar.setSeekListener(new ProgressBar.SeekListener() {
+            @Override
+            public boolean onSeek(double progress) {
+                if (canSeek()) {
+                    clipPos = (int) (progress * currentlyPlaying.clip.getFrameLength());
+                    currentlyPlaying.clip.setFramePosition(clipPos);
+                    return true;
+                }
+                return false;
+            }
+
+            @Override
+            public boolean canSeek() {
+                return currentlyPlaying != null;
+            }
+        });
+
         panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
@@ -97,23 +115,25 @@ public class JMusicPlayer extends JPanel {
             public void run() {
                 updateProgressTask.run();
             }
-        }, 0, 200);
+        }, 0, 100);
     }
 
     public void pause() {
         if (updateProgressTimer != null) updateProgressTimer.cancel();
-        if (currentlyPlaying != null) {
+        if (currentlyPlaying != null && !paused) {
             paused = true;
             clipPos = currentlyPlaying.clip.getFramePosition();
+            progressBar.setProgress((float) clipPos / currentlyPlaying.clip.getFrameLength());
             currentlyPlaying.pause();
             setColor(pauseImg, COLOR_INACTIVE);
             setColor(playImg, COLOR_PLAY_ACTIVE);
             setPanel();
+            repaint();
         }
     }
 
     public void unpause() {
-        if (currentlyPlaying != null) {
+        if (currentlyPlaying != null && paused) {
             paused = false;
             currentlyPlaying.clip.setFramePosition(clipPos);
             currentlyPlaying.start();
@@ -127,14 +147,14 @@ public class JMusicPlayer extends JPanel {
             public void run() {
                 updateProgressTask.run();
             }
-        }, 0, 200);
+        }, 0, 100);
     }
 
     private final Runnable updateProgressTask = new Runnable() {
         @Override
         public void run() {
             if (currentlyPlaying == null) return;
-            if (!currentlyPlaying.clip.isRunning()) {
+            if (!currentlyPlaying.clip.isRunning() && !paused) {
                 purge();
                 return;
             }
