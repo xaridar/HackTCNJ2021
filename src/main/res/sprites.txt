@@ -1,0 +1,10 @@
+Basic Ground
+Player Up
+Player Down
+Player Left
+Player Right
+Wall
+Spawn Point
+End
+Key
+Crate

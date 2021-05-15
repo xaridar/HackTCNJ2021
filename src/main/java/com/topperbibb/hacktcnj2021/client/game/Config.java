@@ -64,12 +64,7 @@ public class Config {
                         AudioPlayer.playShuffle(players);
                     } else {
                         AudioPlayer.playQueue(players);
-                        players[players.length - 1].addFinishListener(new AudioPlayer.AudioFinishListener() {
-                            @Override
-                            public void onFinish() {
-                                AudioPlayer.playQueue(players);
-                            }
-                        });
+                        players[players.length - 1].addFinishListener(() -> AudioPlayer.playQueue(players));
                     }
                 } else {
                     AudioPlayer player = AudioPlayer.getInstance(sprites.songPath);

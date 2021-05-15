@@ -1,4 +1,4 @@
-package com.topperbibb.hacktcnj2021.client.config;
+package com.topperbibb.hacktcnj2021.client.config.audio;
 
 import com.topperbibb.hacktcnj2021.client.game.AudioPlayer;
 

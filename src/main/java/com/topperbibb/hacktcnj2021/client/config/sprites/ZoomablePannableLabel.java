@@ -1,9 +1,9 @@
-package com.topperbibb.hacktcnj2021.client.config;
+package com.topperbibb.hacktcnj2021.client.config.sprites;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.util.List;
+import java.awt.image.BufferedImage;
 
 public class ZoomablePannableLabel extends JLabel implements MouseWheelListener, MouseMotionListener, MouseListener, KeyListener {
 
@@ -15,7 +15,7 @@ public class ZoomablePannableLabel extends JLabel implements MouseWheelListener,
 
     public double scale = DEFAULT_SCALE;
     private int xPos = 0, yPos = 0;
-    private GriddedLabel imageLabel;
+    private final GriddedLabel imageLabel;
 
     private Image fullImage = null;
     private Icon currImage;
@@ -52,14 +52,16 @@ public class ZoomablePannableLabel extends JLabel implements MouseWheelListener,
         addKeyListener(this);
         setOpaque(true);
         imageLabel.setOpaque(true);
-        imageLabel.setSelectionListener(System.out::println);
-        setTileSize(20);
+    }
+
+    public void setListener(GriddedLabel.SelectionListener listener) {
+        imageLabel.setSelectionListener(listener);
     }
 
     /**
      * Called to update position of image label / redraws it
      */
-    private void setImageLabel() {
+    public void setImageLabel() {
         imageLabel.setScale(scale);
         imageLabel.setPos(xPos, yPos);
         setPreferredSize(new Dimension(SIZE, SIZE));
@@ -79,12 +81,13 @@ public class ZoomablePannableLabel extends JLabel implements MouseWheelListener,
         setImageLabel();
     }
 
-    public void setNewIcon(Icon icon) {
+    public void setNewIcon(Icon icon, BufferedImage originalImage) {
         if (icon == null) return;
         xPos = 0;
         yPos = 0;
         scale = DEFAULT_SCALE;
         fullImage = ((ImageIcon) icon).getImage();
+        imageLabel.setDims(originalImage.getWidth(), originalImage.getHeight(), icon.getIconWidth(), icon.getIconHeight());
         setIcon(icon);
     }
 
@@ -122,21 +125,6 @@ public class ZoomablePannableLabel extends JLabel implements MouseWheelListener,
             if (lastPoint != null) {
                 xPos += e.getPoint().x - lastPoint.x;
                 yPos += e.getPoint().y - lastPoint.y;
-
-                if (scale > DEFAULT_SCALE) {
-                    xPos = Math.min(0, xPos);
-                    yPos = Math.min(0, yPos);
-                    if (currImage.getIconWidth() + xPos < SIZE) xPos = SIZE - currImage.getIconWidth();
-                    if (currImage.getIconHeight() + yPos < SIZE) yPos = SIZE - currImage.getIconHeight();
-                } else if (scale < DEFAULT_SCALE) {
-                    xPos = Math.max(0, xPos);
-                    yPos = Math.max(0, yPos);
-                    if (currImage.getIconWidth() + xPos > SIZE) xPos = SIZE - currImage.getIconWidth();
-                    if (currImage.getIconHeight() + yPos > SIZE) yPos = SIZE - currImage.getIconHeight();
-                } else {
-                    xPos = 0;
-                    yPos = 0;
-                }
 
                 setImageLabel();
             }
@@ -225,8 +213,13 @@ public class ZoomablePannableLabel extends JLabel implements MouseWheelListener,
         }
     }
 
-    private void setTileSize(int size) {
+    public void setTileSize(int size) {
         imageLabel.setTileSize(size);
+        setImageLabel();
+    }
+
+    public void setSelection(Rectangle selection) {
+        imageLabel.setSelected(selection);
         setImageLabel();
     }
 
@@ -235,4 +228,11 @@ public class ZoomablePannableLabel extends JLabel implements MouseWheelListener,
 
     }
 
+    public int[] getFullSize() {
+        return new int[]{imageLabel.origWidth, imageLabel.origHeight};
+    }
+
+    public int getTileSize() {
+        return imageLabel.tileSize;
+    }
 }

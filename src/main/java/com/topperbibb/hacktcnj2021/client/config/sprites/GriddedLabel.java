@@ -1,20 +1,23 @@
-package com.topperbibb.hacktcnj2021.client.config;
+package com.topperbibb.hacktcnj2021.client.config.sprites;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
-import java.util.ArrayList;
-import java.util.List;
 
-class GriddedLabel extends JLabel implements MouseMotionListener, MouseListener {
+public class GriddedLabel extends JLabel implements MouseMotionListener, MouseListener {
     private Rectangle selectedArea;
     private int[] firstSelected;
     private SelectionListener listener;
     private double scale;
-    private int tileSize;
+    public int tileSize;
     private int xPos, yPos;
+    public int origHeight;
+    public int origWidth;
+    private int newHeight;
+    private int newWidth;
+    private boolean dragged;
 
     public GriddedLabel(String text, Icon icon, int horizontalAlignment, double scale) {
         super(text, icon, horizontalAlignment);
@@ -53,13 +56,16 @@ class GriddedLabel extends JLabel implements MouseMotionListener, MouseListener 
     }
 
     public void setTileSize(int size) {
-        this.tileSize = size;
+        if (size == 0) return;
+        if (origWidth % size != 0 || origHeight % size != 0) this.tileSize = 0;
+        else this.tileSize = size / 2;
         firstSelected = null;
         repaint();
     }
 
     public void setScale(double scale) {
         this.scale = scale;
+        setBorder(BorderFactory.createLineBorder(Color.black));
         repaint();
     }
 
@@ -67,6 +73,20 @@ class GriddedLabel extends JLabel implements MouseMotionListener, MouseListener 
         this.xPos = xPos;
         this.yPos = yPos;
         repaint();
+    }
+
+    public void setDims(int width, int height, int newHeight, int newWidth) {
+        this.origWidth = width;
+        this.origHeight = height;
+        this.newWidth = newWidth;
+        this.newHeight = newHeight;
+        firstSelected = null;
+        dragged = false;
+    }
+
+    public void setSelected(Rectangle selected) {
+        selectedArea = new Rectangle(selected.x, selected.y, selected.width, selected.height);
+        dragged = selected.width > 0 && selected.height > 0;
     }
 
     public void setSelectionListener(SelectionListener listener) {
@@ -79,23 +99,27 @@ class GriddedLabel extends JLabel implements MouseMotionListener, MouseListener 
         if (tileSize * scale > 0) {
             Graphics2D g2d = (Graphics2D) g;
             g2d.setColor(Color.black);
-            for (int x = 0; x <= getWidth() / (tileSize * scale); x++) {
-                for (int y = 0; y <= getHeight() / (tileSize * scale); y++) {
-                    g2d.drawRect((int) (x * tileSize * scale) - 1, (int) (y * tileSize * scale) - 1, (int) (tileSize * scale), (int) (tileSize * scale));
-                }
+            for (int x = 0; x <= origWidth / tileSize; x++) {
+                g2d.drawLine((int) (x * newWidth * tileSize * scale / origWidth), 0, (int) (x * newWidth * tileSize * scale / origWidth), getHeight());
+            }
+            for (int y = 0; y <= origHeight / tileSize; y++) {
+                g2d.drawLine(0, (int) (y * newHeight * tileSize * scale / origHeight), getWidth(), (int) (y * newHeight * tileSize * scale / origHeight));
             }
             if (selectedArea != null) {
                 g2d.setColor(new Color(0, 0, 255, 50));
-                g2d.fillRect((int) (selectedArea.x * tileSize * scale), (int) (selectedArea.y * tileSize * scale), (int) (selectedArea.width * tileSize * scale), (int) (selectedArea.height * tileSize * scale));
+                g2d.fillRect((int) (selectedArea.x * newWidth * tileSize * scale / origWidth) + 1,
+                        (int) (selectedArea.y * newHeight * tileSize * scale / origHeight) + 1,
+                        (int) (selectedArea.width * newWidth * tileSize * scale / origWidth),
+                        (int) (selectedArea.height * newHeight * tileSize * scale / origHeight));
             }
         }
     }
 
     @Override
     public void mouseDragged(MouseEvent e) {
-        if (MouseEvent.getModifiersExText(e.getModifiersEx()).equals("Button1")) {
-            int x = (e.getX() - xPos) / (int) (tileSize * scale);
-            int y = (e.getY() - yPos ) / (int) (tileSize * scale);
+        if (MouseEvent.getModifiersExText(e.getModifiersEx()).equals("Button1") && (int) (tileSize * scale) > 0) {
+            int x = (int) ((e.getX() - xPos) / (newWidth * tileSize * scale / origWidth));
+            int y = (int) ((e.getY() - yPos ) / (newHeight * tileSize * scale / origHeight));
             if (firstSelected == null) {
                 firstSelected = new int[]{x, y};
                 selectedArea = new Rectangle(x, y, 1, 1);
@@ -122,17 +146,19 @@ class GriddedLabel extends JLabel implements MouseMotionListener, MouseListener 
             }
             repaint();
             revalidate();
+            dragged = true;
         }
     }
 
     @Override
     public void mouseMoved(MouseEvent e) {
-        if (firstSelected == null) {
-            int x = (e.getX() - xPos) / (int) (tileSize * scale);
-            int y = (e.getY() - yPos ) / (int) (tileSize * scale);
+        if (firstSelected == null && (int) (tileSize * scale) > 0 && !dragged) {
+            int x = (int) ((e.getX() - xPos) / (newWidth * tileSize * scale / origWidth));
+            int y = (int) ((e.getY() - yPos ) / (newHeight * tileSize * scale / origHeight));
             selectedArea = new Rectangle(x, y, 1, 1);
             repaint();
             revalidate();
+            dragged = false;
         }
     }
 
@@ -140,20 +166,22 @@ class GriddedLabel extends JLabel implements MouseMotionListener, MouseListener 
     public void mouseClicked(MouseEvent e) {
         firstSelected = null;
         selectedArea = null;
+        dragged = false;
         repaint();
     }
 
     @Override
     public void mousePressed(MouseEvent e) {
-        if (MouseEvent.getModifiersExText(e.getModifiersEx()).equals("Button1")) {
+        if (e.getButton() == 1 && tileSize * scale > 0) {
             firstSelected = null;
             selectedArea = null;
+            dragged = false;
         }
     }
 
     @Override
     public void mouseReleased(MouseEvent e) {
-        if (listener != null && selectedArea != null && (selectedArea.width != 1 || selectedArea.height != 1)) {
+        if (e.getButton() == 1 && listener != null && selectedArea != null && tileSize * scale > 0) {
             listener.onSelect(selectedArea);
         }
     }
@@ -165,9 +193,7 @@ class GriddedLabel extends JLabel implements MouseMotionListener, MouseListener 
 
     @Override
     public void mouseExited(MouseEvent e) {
-        if (MouseEvent.getModifiersExText(e.getModifiersEx()).equals("Button1")) {
-            firstSelected = null;
-        }
+
     }
 
     public interface SelectionListener {

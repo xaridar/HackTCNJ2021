@@ -1,9 +1,8 @@
-package com.topperbibb.hacktcnj2021.client.config;
+package com.topperbibb.hacktcnj2021.client.config.audio;
 
+import com.topperbibb.hacktcnj2021.client.config.audio.JMusicPlayer;
 import com.topperbibb.hacktcnj2021.client.game.AudioPlayer;
-import com.topperbibb.hacktcnj2021.client.game.Engine;
 
-import javax.imageio.ImageIO;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.*;

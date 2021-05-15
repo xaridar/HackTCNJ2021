@@ -1,5 +1,8 @@
 package com.topperbibb.hacktcnj2021.client.config;
 
+import com.topperbibb.hacktcnj2021.client.config.audio.JMusicPlayer;
+import com.topperbibb.hacktcnj2021.client.config.audio.MusicOption;
+import com.topperbibb.hacktcnj2021.client.config.sprites.*;
 import com.topperbibb.hacktcnj2021.client.game.Engine;
 
 import javax.imageio.ImageIO;
@@ -11,15 +14,17 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.io.IOException;
+import java.net.URISyntaxException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class GUI extends JFrame {
 
-    String spritesheetPath;
+    String spriteSheetPath;
     List<MusicOption> musicOptions = new ArrayList<>();
     ZoomablePannableLabel image;
     JMusicPlayer musicPlayer;
@@ -29,7 +34,7 @@ public class GUI extends JFrame {
     private JCheckBox shuffleCheckBox;
 
     private MusicOption introOption;
-    private JCheckBox introCheckBox;
+    private final JCheckBox introCheckBox;
     private boolean intro = false;
 
     public GUI() throws IOException {
@@ -107,7 +112,6 @@ public class GUI extends JFrame {
         });
 
         musicOptions.add(mainOption);
-        rightPanel.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Color.BLACK));
         rightPanel.add(mainOption);
 
         // Add song button
@@ -125,9 +129,7 @@ public class GUI extends JFrame {
                         shuffleCheckBox = new JCheckBox("Shuffle songs");
                         shuffleCheckBox.setSelected(shuffled);
                         shuffleCheckBox.setAlignmentX(SwingConstants.WEST);
-                        shuffleCheckBox.addActionListener((ev) -> {
-                            shuffled = shuffleCheckBox.isSelected();
-                        });
+                        shuffleCheckBox.addActionListener((ev) -> shuffled = shuffleCheckBox.isSelected());
                         rightPanel.add(shuffleCheckBox);
                     }
                     rightPanel.add(addSongPanel);
@@ -163,6 +165,93 @@ public class GUI extends JFrame {
         // Image Editor
         image = new ZoomablePannableLabel();
 
+        // Bottom Panel for tiling
+        JPanel bottomPanel = new JPanel();
+        bottomPanel.setLayout(new BoxLayout(bottomPanel, BoxLayout.Y_AXIS));
+        JSpinner spinner = new JSpinner(new SpinnerNumberModel(0, 0, 10000, 1));
+        spinner.addChangeListener(e -> image.setTileSize(((int) spinner.getValue())));
+        JLabel tileSizeLabel = new JLabel("Base Tile Size");
+        JPanel tileSize = new JPanel();
+        tileSize.add(tileSizeLabel);
+        tileSize.add(spinner);
+        bottomPanel.add(tileSize);
+
+        try {
+            JComboBox<SpriteConfig> spritesBox = new JComboBox<>();
+            GriddedLabel.SelectionListener listener = selectedArea -> {
+                if (image.getTileSize() != 0) image.setSelection(new Rectangle(
+                        selectedArea.x / image.getTileSize(),
+                        selectedArea.y / image.getTileSize(),
+                        selectedArea.width / image.getTileSize(),
+                        selectedArea.height / image.getTileSize()
+                ));
+            };
+            spritesBox.addItem(new SpriteConfig("", null));
+            SpriteConfig.SpriteSelectListener spriteSelectListener = config -> {
+                if (image.getTileSize() == 0) return;
+                Sprite s = config.getSprite();
+                image.setSelection(
+                        new Rectangle(
+                                s.x / image.getTileSize(),
+                                s.y / image.getTileSize(),
+                                s.w / image.getTileSize(),
+                                s.h / image.getTileSize()
+                        )
+                );
+                image.setImageLabel();
+            };
+            Files.readAllLines(Path.of(Engine.class.getResource("/sprites.txt").toURI()))
+                    .stream()
+                    .map(sprite -> new SpriteConfig(sprite, listener))
+                    .forEach(item -> {
+                        spritesBox.addItem(item);
+                        item.addSpriteSelectListener(spriteSelectListener);
+                    });
+            image.setListener(area -> {
+                IndividualSpriteConfig config = ((SpriteConfig) Objects.requireNonNull(spritesBox.getSelectedItem())).getSelected();
+                if (config == null) return;
+                Sprite s = config.getSprite();
+                s.x = area.x * image.getTileSize();
+                s.y = area.y * image.getTileSize();
+                s.w = area.width * image.getTileSize();
+                s.h = area.height * image.getTileSize();
+                config.setUpPanel(((SpriteConfig) spritesBox.getSelectedItem()).randomized);
+            });
+            spritesBox.setSelectedIndex(0);
+            JPanel underPanel = new JPanel();
+            spritesBox.addActionListener(e -> {
+                underPanel.removeAll();
+                underPanel.add(((SpriteConfig) spritesBox.getSelectedItem()));
+                assert spritesBox.getSelectedItem() != null;
+                if (((SpriteConfig) spritesBox.getSelectedItem()).getSelected() != null && image.getTileSize() != 0) {
+                    Sprite s = ((SpriteConfig) spritesBox.getSelectedItem()).getSelected().getSprite();
+                    image.setSelection(
+                            new Rectangle(
+                                    s.x / image.getTileSize(),
+                                    s.y / image.getTileSize(),
+                                    s.w / image.getTileSize(),
+                                    s.h / image.getTileSize()
+                            )
+                    );
+                    image.setImageLabel();
+                }
+                bottomPanel.repaint();
+                bottomPanel.revalidate();
+            });
+            JPanel spriteBoxPanel = new JPanel();
+            JLabel spriteTypeLabel = new JLabel("Sprite Type");
+            spriteBoxPanel.add(spriteTypeLabel);
+            spriteBoxPanel.add(spritesBox);
+            bottomPanel.add(spriteBoxPanel);
+            bottomPanel.add(underPanel);
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
+
+
+        panel.add(bottomPanel, BorderLayout.SOUTH);
+
+
         panel.add(image, BorderLayout.WEST);
 
         pack();
@@ -175,7 +264,7 @@ public class GUI extends JFrame {
         fileChooser.setFileFilter(new FileNameExtensionFilter("images", "png", "jpg", "jpeg", "gif", "tiff", "bmp"));
         int returnVal = fileChooser.showDialog(this, "Select");
         if (returnVal == JFileChooser.APPROVE_OPTION) {
-            spritesheetPath = fileChooser.getSelectedFile().getAbsolutePath();
+            spriteSheetPath = fileChooser.getSelectedFile().getAbsolutePath();
             try {
                 int w, h;
                 BufferedImage i = ImageIO.read(fileChooser.getSelectedFile());
@@ -186,7 +275,7 @@ public class GUI extends JFrame {
                     h = ZoomablePannableLabel.SIZE;
                     w = (int) (((double) ZoomablePannableLabel.SIZE / i.getHeight()) * i.getWidth());
                 }
-                image.setNewIcon(new ImageIcon(i.getScaledInstance(w, h, Image.SCALE_SMOOTH)));
+                image.setNewIcon(new ImageIcon(i.getScaledInstance(w, h, Image.SCALE_SMOOTH)), i);
                 pack();
                 image.grabFocus();
             } catch (IOException e) {
@@ -196,6 +285,6 @@ public class GUI extends JFrame {
     }
 
     public static void main(String[] args) throws IOException {
-        GUI gui = new GUI();
+        new GUI();
     }
 }
