@@ -61,6 +61,7 @@ public class MusicOption extends JPanel {
     private void chooseAudioFile(JFrame parent, JButton pressed, JLabel labelToSet) {
         musicPlayer.purge();
         JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setCurrentDirectory(new File(System.getProperty("user.dir")).getParentFile());
         fileChooser.setFileFilter(new FileNameExtensionFilter("WAV files", "wav"));
         int returnVal = fileChooser.showDialog(parent, "Select");
         if (returnVal == JFileChooser.APPROVE_OPTION) {

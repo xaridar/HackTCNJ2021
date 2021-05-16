@@ -14,6 +14,7 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
@@ -261,6 +262,7 @@ public class GUI extends JFrame {
 
     private void chooseImageFile() {
         JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setCurrentDirectory(new File(System.getProperty("user.dir")).getParentFile());
         fileChooser.setFileFilter(new FileNameExtensionFilter("images", "png", "jpg", "jpeg", "gif", "tiff", "bmp"));
         int returnVal = fileChooser.showDialog(this, "Select");
         if (returnVal == JFileChooser.APPROVE_OPTION) {
